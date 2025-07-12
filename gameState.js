@@ -73,7 +73,7 @@ const iceCreams = {
     emoji: "🍦",
     name: "Vanille IJs",
     price: 15,
-    sellPrice: 10, // Verkoop prijs (minder dan koop prijs)
+    sellPrice: 110, // Verkoop prijs (minder dan koop prijs)
     description: "Klassiek vanille ijs",
     happiness: 5,
   },
@@ -82,7 +82,7 @@ const iceCreams = {
     emoji: "🍓",
     name: "Aardbei IJs",
     price: 20,
-    sellPrice: 35, // Verkoop prijs - 2 aardbeien (€24) + winst!
+    sellPrice: 135, // Verkoop prijs - 2 aardbeien (€24) + winst!
     description: "Fris aardbei ijs",
     happiness: 7,
     canCraft: true,
@@ -92,7 +92,7 @@ const iceCreams = {
     emoji: "🍎",
     name: "Appel IJs",
     price: 25,
-    sellPrice: 50, // Verkoop prijs - 3 appels (€45) + winst!
+    sellPrice: 150, // Verkoop prijs - 3 appels (€45) + winst!
     description: "Zoet appel ijs",
     happiness: 8,
     canCraft: true,
@@ -102,7 +102,7 @@ const iceCreams = {
     emoji: "🥕",
     name: "Wortel IJs",
     price: 22,
-    sellPrice: 25, // Verkoop prijs - 2 wortels (€16) + winst!
+    sellPrice: 125, // Verkoop prijs - 2 wortels (€16) + winst!
     description: "Uniek wortel ijs (gezond!)",
     happiness: 9,
     canCraft: true,
@@ -112,7 +112,7 @@ const iceCreams = {
     emoji: "🌽",
     name: "Maïs IJs",
     price: 28,
-    sellPrice: 50, // Verkoop prijs - 2 maïs (€40) + winst!
+    sellPrice: 150, // Verkoop prijs - 2 maïs (€40) + winst!
     description: "Exotisch maïs ijs",
     happiness: 10,
     canCraft: true,
@@ -122,7 +122,7 @@ const iceCreams = {
     emoji: "🫐",
     name: "Bessen Mix IJs",
     price: 35,
-    sellPrice: 60, // Verkoop prijs - 1 winterbes (€25) + 1 framboos (€18) + winst!
+    sellPrice: 160, // Verkoop prijs - 1 winterbes (€25) + 1 framboos (€18) + winst!
     description: "Deluxe bessen combinatie",
     happiness: 12,
     canCraft: true,
@@ -134,7 +134,7 @@ const iceCreams = {
     emoji: "🏝️",
     name: "Tropisch Paradijs IJs",
     price: 80,
-    sellPrice: 350, // 2 mango (€140) + kiwi (€60) + drakenvrucht (€90) = €290 + flinke winst!
+    sellPrice: 550, // 2 mango (€140) + kiwi (€60) + drakenvrucht (€90) = €290 + flinke winst!
     description: "Exotische tropische vruchten mix - exclusief!",
     happiness: 20,
     canCraft: true,
@@ -146,7 +146,7 @@ const iceCreams = {
     emoji: "🍂",
     name: "Herfst Oogst IJs",
     price: 60,
-    sellPrice: 90, // 2 appels (€30) + pompoen (€35) + aardappel (€7) = €72 + winst!
+    sellPrice: 390, // 2 appels (€30) + pompoen (€35) + aardappel (€7) = €72 + winst!
     description: "Rijke herfst smaken combinatie",
     happiness: 16,
     canCraft: true,
@@ -158,7 +158,7 @@ const iceCreams = {
     emoji: "🌈",
     name: "Regenboog Deluxe IJs",
     price: 100,
-    sellPrice: 120, // 1 aardbei (€12) + 1 appel (€15) + 1 maïs (€20) + 1 winterbes (€25) + 1 wortel (€8) = €80 + winst!
+    sellPrice: 420, // 1 aardbei (€12) + 1 appel (€15) + 1 maïs (€20) + 1 winterbes (€25) + 1 wortel (€8) = €80 + winst!
     description: "Alle kleuren van de regenboog - ultiem!",
     happiness: 25,
     canCraft: true,
@@ -170,7 +170,7 @@ const iceCreams = {
     emoji: "🥗",
     name: "Groente Verrassing IJs",
     price: 45,
-    sellPrice: 55, // 2 wortels (€16) + aardappel (€7) + tomaat (€14) = €37 + winst!
+    sellPrice: 255, // 2 wortels (€16) + aardappel (€7) + tomaat (€14) = €37 + winst!
     description: "Verrassend lekker groente ijs",
     happiness: 14,
     canCraft: true,
@@ -182,7 +182,7 @@ const iceCreams = {
     emoji: "🎪",
     name: "Zomer Festival IJs",
     price: 55,
-    sellPrice: 75, // 2 aardbeien (€24) + framboos (€18) + tomaat (€14) = €56 + winst!
+    sellPrice: 375, // 2 aardbeien (€24) + framboos (€18) + tomaat (€14) = €56 + winst!
     description: "Feestelijke zomer smaak combinatie",
     happiness: 17,
     canCraft: true,
@@ -194,7 +194,7 @@ const iceCreams = {
     emoji: "💰",
     name: "Gouden Schat IJs",
     price: 120,
-    sellPrice: 500, // 2 mango (€140) + 2 drakenvrucht (€180) + perzik (€50) + abrikoos (€40) = €410 + winst!
+    sellPrice: 1000, // 2 mango (€140) + 2 drakenvrucht (€180) + perzik (€50) + abrikoos (€40) = €410 + winst!
     description: "De meest waardevolle ijscreatie - zeldzaam!",
     happiness: 30,
     canCraft: true,
