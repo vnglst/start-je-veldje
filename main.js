@@ -9,13 +9,20 @@ function initializeGame() {
     if (!gameState.wellPosition) {
       gameState.wellPosition = { x: 7, y: 2 };
     }
-    // Ensure winter berry exists for older saves
-    if (gameState.seeds.winterBerry === undefined) {
-      gameState.seeds.winterBerry = 0;
+    if (!gameState.shopPosition) {
+      gameState.shopPosition = { x: 0, y: 5 };
     }
-    if (gameState.fruits.winterBerry === undefined) {
-      gameState.fruits.winterBerry = 0;
-    }
+
+    // Ensure all crops exist for older saves
+    const allCrops = ["winterBerry", "raspberry", "pumpkin", "strawberry", "potato", "tomato"];
+    allCrops.forEach((crop) => {
+      if (gameState.seeds[crop] === undefined) {
+        gameState.seeds[crop] = 0;
+      }
+      if (gameState.fruits[crop] === undefined) {
+        gameState.fruits[crop] = 0;
+      }
+    });
 
     initializeFarm();
     updateUI();

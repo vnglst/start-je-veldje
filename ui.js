@@ -106,6 +106,13 @@ function updateGameMap() {
         tile.title = "Put - Klik om water te halen";
         tile.onclick = () => getWaterFromWell();
       }
+      // Check if this is the shop position
+      else if (x === gameState.shopPosition.x && y === gameState.shopPosition.y) {
+        tile.classList.add("shop");
+        tile.innerHTML = "🏪";
+        tile.title = "Winkel - Klik om te winkelen";
+        tile.onclick = () => interactWithShop();
+      }
       // Regular pathway tiles
       else {
         tile.innerHTML = "";
@@ -207,29 +214,12 @@ function updateShopDisplay() {
   const shopSection = document.querySelector(".shop-section");
   let shopHTML = '<h3 class="section-title">🏪 Winkel</h3>';
 
-  // Add crop seeds based on seasonal availability
-  Object.entries(crops).forEach(([cropType, crop]) => {
-    const isAvailable = crop.seasons.includes(gameState.season);
-    const disabledClass = isAvailable ? "" : " disabled";
-    const opacity = isAvailable ? "1" : "0.5";
-
-    shopHTML += `
-      <div class="shop-item${disabledClass}" onclick="${
-      isAvailable ? `buySeeds('${cropType}')` : ""
-    }" style="opacity: ${opacity}">
-        <div class="item-info">
-          <span class="item-emoji">${crop.emoji}</span>
-          <span class="item-name">${crop.name} Zaad${!isAvailable ? " (Niet beschikbaar)" : ""}</span>
-        </div>
-        <div class="item-price">€${crop.seedPrice}</div>
-      </div>
-    `;
-  });
-
-  // Add note about the well instead of selling water
+  // Replace shop items with direction to physical shop
   shopHTML += `
-    <div style="padding: 10px; background: #e6f3ff; border-radius: 8px; margin-top: 10px; text-align: center; color: #2e8b57; font-style: italic;">
-      💧 Voor water: loop naar de put! 🏗️
+    <div style="padding: 15px; background: #fff8dc; border: 2px solid #daa520; border-radius: 8px; text-align: center; color: #2e8b57; line-height: 1.5;">
+      <div style="font-size: 1.2em; margin-bottom: 10px;">🏪 Bezoek de Winkel!</div>
+      <div style="margin-bottom: 10px; font-style: italic;">Loop naar de winkel (🏪) op de kaart om zaden te kopen.</div>
+      <div style="font-size: 0.9em; color: #666;">💧 Voor water: ga naar de put 🏗️</div>
     </div>
   `;
 
@@ -246,19 +236,19 @@ function updateSeasonInfo() {
   const seasonDescriptions = {
     Lente: {
       description: "🌸 Lente: Gewassen groeien 20% sneller!",
-      tips: "Perfect voor wortels en appels.",
+      tips: "Perfekt voor wortels, aardbeien, appels en aardappels.",
     },
     Zomer: {
       description: "☀️ Zomer: Warm weer, 10% snellere groei.",
-      tips: "Ideaal voor maïs. Alle gewassen groeien goed.",
+      tips: "Ideaal voor tomaten, maïs, frambozen en aardbeien.",
     },
     Herfst: {
       description: "🍂 Herfst: Normale groeisnelheid.",
-      tips: "Laatste kans voor wortels en appels.",
+      tips: "Pompoenen, frambozen, wortels en appels groeien goed.",
     },
     Winter: {
       description: "❄️ Winter: Gewassen groeien 50% langzamer!",
-      tips: "Winterbessen zijn nu beschikbaar - duur maar waardevol!",
+      tips: "Alleen winterbessen en aardappels kunnen groeien.",
     },
   };
 
@@ -289,6 +279,19 @@ function updateGameStats() {
     <div style="margin-bottom: 8px;">🎯 ${grownCrops} gewassen klaar voor oogst</div>
     <div style="margin-bottom: 8px;">📦 ${totalSeeds + totalFruits} items in inventaris</div>
   `;
+}
+
+// Show available crops for current season
+function showSeasonalCrops() {
+  const currentSeasonCrops = Object.entries(crops)
+    .filter(([_, crop]) => crop.seasons.includes(gameState.season))
+    .sort((a, b) => a[1].seedPrice - b[1].seedPrice); // Sort by price
+
+  let cropList = currentSeasonCrops
+    .map(([_, crop]) => `${crop.emoji} ${crop.name} (€${crop.seedPrice}→€${crop.fruitPrice})`)
+    .join(" • ");
+
+  return cropList || "Geen gewassen beschikbaar";
 }
 
 // Show message function

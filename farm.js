@@ -143,7 +143,17 @@ function toggleWateringMode() {
 // Get the best available seed for current season
 function getBestAvailableSeed() {
   // Priority order: cheapest first for easier gameplay
-  const seedPriority = ["carrot", "apple", "corn", "winterBerry"];
+  const seedPriority = [
+    "potato", // €4 - cheapest
+    "carrot", // €5
+    "strawberry", // €6
+    "tomato", // €7
+    "apple", // €8
+    "raspberry", // €10
+    "corn", // €12
+    "winterBerry", // €15
+    "pumpkin", // €20 - most expensive
+  ];
 
   for (const seedType of seedPriority) {
     if (gameState.seeds[seedType] > 0 && crops[seedType].seasons.includes(gameState.season)) {

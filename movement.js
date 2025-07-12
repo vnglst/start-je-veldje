@@ -49,6 +49,13 @@ function movePlayer(direction) {
       showMessage("Je bent bij de put! Druk op spatie of klik op de 💧 knop voor water.", "success");
     }
 
+    // Check if player is near the shop
+    const shopX = gameState.shopPosition.x;
+    const shopY = gameState.shopPosition.y;
+    if (Math.abs(newX - shopX) <= 1 && Math.abs(newY - shopY) <= 1) {
+      showMessage("Je bent bij de winkel! Druk op spatie of klik op de 🏪 voor winkelen.", "success");
+    }
+
     updateGameMap();
     saveGame();
   }
@@ -105,14 +112,23 @@ document.addEventListener("keydown", function (event) {
     case " ":
     case "Enter":
       event.preventDefault();
-      // Interact with well if near it
-      const wellX = gameState.wellPosition.x;
-      const wellY = gameState.wellPosition.y;
       const playerX = gameState.playerPosition.x;
       const playerY = gameState.playerPosition.y;
 
+      // Check if near well
+      const wellX = gameState.wellPosition.x;
+      const wellY = gameState.wellPosition.y;
       if (Math.abs(playerX - wellX) <= 1 && Math.abs(playerY - wellY) <= 1) {
         getWaterFromWell();
+        break;
+      }
+
+      // Check if near shop
+      const shopX = gameState.shopPosition.x;
+      const shopY = gameState.shopPosition.y;
+      if (Math.abs(playerX - shopX) <= 1 && Math.abs(playerY - shopY) <= 1) {
+        interactWithShop();
+        break;
       }
       break;
     case "n":
@@ -123,5 +139,29 @@ document.addEventListener("keydown", function (event) {
         startNewGame();
       }
       break;
+    case "c":
+    case "C":
+      // Cheat code: Ctrl+C for starter pack
+      if (event.ctrlKey || event.metaKey) {
+        event.preventDefault();
+        giveStarterPack();
+      }
+      break;
   }
 });
+
+// Cheat function: Give starter pack with money and seeds
+function giveStarterPack() {
+  if (confirm("Wil je een starter pack krijgen? (€500 + diverse zaden)")) {
+    gameState.money += 500;
+
+    // Give 2 of each seed type
+    Object.keys(gameState.seeds).forEach((seedType) => {
+      gameState.seeds[seedType] += 2;
+    });
+
+    updateUI();
+    saveGame();
+    showMessage("Starter pack gekregen! €500 + 2 van elk zaad type! 🎁", "success");
+  }
+}

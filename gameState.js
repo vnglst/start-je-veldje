@@ -6,12 +6,22 @@ let gameState = {
     apple: 0,
     corn: 0,
     winterBerry: 0,
+    raspberry: 0,
+    pumpkin: 0,
+    strawberry: 0,
+    potato: 0,
+    tomato: 0,
   },
   fruits: {
     carrot: 0,
     apple: 0,
     corn: 0,
     winterBerry: 0,
+    raspberry: 0,
+    pumpkin: 0,
+    strawberry: 0,
+    potato: 0,
+    tomato: 0,
   },
   farm: [],
   day: 1,
@@ -20,6 +30,7 @@ let gameState = {
   water: 10,
   playerPosition: { x: 0, y: 0 }, // Player position on the map
   wellPosition: { x: 7, y: 2 }, // Well position outside the farm grid
+  shopPosition: { x: 0, y: 5 }, // Shop position at bottom left
 };
 
 // Game mode
@@ -59,6 +70,46 @@ const crops = {
     growthTime: 4, // days
     seasons: ["Winter"], // Only available in winter
   },
+  raspberry: {
+    emoji: "🫐",
+    name: "Framboos",
+    seedPrice: 10,
+    fruitPrice: 18,
+    growthTime: 4, // days
+    seasons: ["Zomer", "Herfst"], // Available in summer and autumn
+  },
+  strawberry: {
+    emoji: "🍓",
+    name: "Aardbei",
+    seedPrice: 6,
+    fruitPrice: 12,
+    growthTime: 3, // days
+    seasons: ["Lente", "Zomer"], // Available in spring and summer
+  },
+  pumpkin: {
+    emoji: "🎃",
+    name: "Pompoen",
+    seedPrice: 20,
+    fruitPrice: 35,
+    growthTime: 8, // days
+    seasons: ["Herfst"], // Only available in autumn
+  },
+  potato: {
+    emoji: "🥔",
+    name: "Aardappel",
+    seedPrice: 4,
+    fruitPrice: 7,
+    growthTime: 5, // days
+    seasons: ["Lente", "Herfst", "Winter"], // Available most seasons except summer
+  },
+  tomato: {
+    emoji: "🍅",
+    name: "Tomaat",
+    seedPrice: 7,
+    fruitPrice: 14,
+    growthTime: 6, // days
+    seasons: ["Zomer"], // Only available in summer
+  },
 };
 
 // Save and load functions
@@ -87,12 +138,22 @@ function startNewGame() {
         apple: 0,
         corn: 0,
         winterBerry: 0,
+        raspberry: 0,
+        pumpkin: 0,
+        strawberry: 0,
+        potato: 0,
+        tomato: 0,
       },
       fruits: {
         carrot: 0,
         apple: 0,
         corn: 0,
         winterBerry: 0,
+        raspberry: 0,
+        pumpkin: 0,
+        strawberry: 0,
+        potato: 0,
+        tomato: 0,
       },
       farm: [],
       day: 1,
@@ -101,6 +162,7 @@ function startNewGame() {
       water: 10,
       playerPosition: { x: 0, y: 0 },
       wellPosition: { x: 7, y: 2 },
+      shopPosition: { x: 0, y: 5 },
     };
 
     // Reset watering mode
@@ -148,8 +210,14 @@ function importGameData() {
             // Ensure all required properties exist for backwards compatibility
             if (!gameState.playerPosition) gameState.playerPosition = { x: 0, y: 0 };
             if (!gameState.wellPosition) gameState.wellPosition = { x: 7, y: 2 };
-            if (!gameState.seeds.winterBerry) gameState.seeds.winterBerry = 0;
-            if (!gameState.fruits.winterBerry) gameState.fruits.winterBerry = 0;
+            if (!gameState.shopPosition) gameState.shopPosition = { x: 0, y: 5 };
+
+            // Add new crops for backwards compatibility
+            const newCrops = ["winterBerry", "raspberry", "pumpkin", "strawberry", "potato", "tomato"];
+            newCrops.forEach((crop) => {
+              if (gameState.seeds[crop] === undefined) gameState.seeds[crop] = 0;
+              if (gameState.fruits[crop] === undefined) gameState.fruits[crop] = 0;
+            });
 
             initializeFarm();
             updateUI();
