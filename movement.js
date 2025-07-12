@@ -81,6 +81,18 @@ function movePlayer(direction) {
         showMessage("Je bent bij de winkel! Druk op spatie of klik op de 🏪 voor winkelen.", "success");
       }
 
+      const iceCreamShopX = gameState.iceCreamShopPosition.x;
+      const iceCreamShopY = gameState.iceCreamShopPosition.y;
+      if (Math.abs(newX - iceCreamShopX) <= 1 && Math.abs(newY - iceCreamShopY) <= 1) {
+        showMessage("Je bent bij de ijswinkel! Druk op spatie of klik op de 🍦 voor lekker ijs.", "success");
+      }
+
+      const iceCreamMachineX = gameState.iceCreamMachinePosition.x;
+      const iceCreamMachineY = gameState.iceCreamMachinePosition.y;
+      if (Math.abs(newX - iceCreamMachineX) <= 1 && Math.abs(newY - iceCreamMachineY) <= 1) {
+        showMessage("Je bent bij de ijsmachine! Druk op spatie of klik op de 🏭 om ijs te maken.", "success");
+      }
+
       const greenhouseX = gameState.greenhousePosition.x;
       const greenhouseY = gameState.greenhousePosition.y;
       if (Math.abs(newX - greenhouseX) <= 1 && Math.abs(newY - greenhouseY) <= 1) {
@@ -204,6 +216,22 @@ document.addEventListener("keydown", function (event) {
         const shopY = gameState.shopPosition.y;
         if (Math.abs(playerX - shopX) <= 1 && Math.abs(playerY - shopY) <= 1) {
           interactWithShop();
+          break;
+        }
+
+        // Check if near ice cream shop
+        const iceCreamShopX = gameState.iceCreamShopPosition.x;
+        const iceCreamShopY = gameState.iceCreamShopPosition.y;
+        if (Math.abs(playerX - iceCreamShopX) <= 1 && Math.abs(playerY - iceCreamShopY) <= 1) {
+          interactWithIceCreamShop();
+          break;
+        }
+
+        // Check if near ice cream machine
+        const iceCreamMachineX = gameState.iceCreamMachinePosition.x;
+        const iceCreamMachineY = gameState.iceCreamMachinePosition.y;
+        if (Math.abs(playerX - iceCreamMachineX) <= 1 && Math.abs(playerY - iceCreamMachineY) <= 1) {
+          interactWithIceCreamMachine();
           break;
         }
 

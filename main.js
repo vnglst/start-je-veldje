@@ -15,6 +15,36 @@ function initializeGame() {
     if (!gameState.greenhousePosition) {
       gameState.greenhousePosition = { x: 0, y: 0 };
     }
+    if (!gameState.iceCreamShopPosition) {
+      gameState.iceCreamShopPosition = { x: 7, y: 0 };
+    }
+    if (!gameState.iceCreamMachinePosition) {
+      gameState.iceCreamMachinePosition = { x: 0, y: 1 };
+    }
+
+    // Ensure ice cream inventory exists for older saves (zonder regenboog, mint, chocolade)
+    if (!gameState.iceCream) {
+      gameState.iceCream = {
+        vanilla: 0,
+        strawberry: 0,
+        apple: 0,
+        carrot: 0,
+        corn: 0,
+        berry_mix: 0,
+      };
+    } else {
+      // Add new ice cream types to existing saves (en verwijder oude types)
+      const newIceCreams = ["apple", "carrot", "corn", "berry_mix"];
+      newIceCreams.forEach((iceCream) => {
+        if (gameState.iceCream[iceCream] === undefined) {
+          gameState.iceCream[iceCream] = 0;
+        }
+      });
+      // Remove old ice cream types if they exist
+      if (gameState.iceCream.chocolate !== undefined) delete gameState.iceCream.chocolate;
+      if (gameState.iceCream.mint !== undefined) delete gameState.iceCream.mint;
+      if (gameState.iceCream.rainbow !== undefined) delete gameState.iceCream.rainbow;
+    }
 
     // Ensure greenhouse property exists for older saves
     if (gameState.greenhouse === undefined) {

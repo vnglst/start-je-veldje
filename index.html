@@ -14,6 +14,7 @@
         <div class="stat">💰 Geld: €<span id="money">100</span></div>
         <div class="stat">🌱 Zaden: <span id="seedCount">0</span></div>
         <div class="stat">🍎 Fruit: <span id="fruitCount">0</span></div>
+        <div class="stat">🍦 IJs: <span id="iceCreamCount">0</span></div>
         <div class="stat">💧 Water: <span id="water">10</span></div>
         <div class="stat">📅 Dag: <span id="day">1</span></div>
         <div class="stat">🌸 <span id="season">Lente</span></div>
@@ -30,7 +31,7 @@
           </div>
 
           <p style="text-align: center; color: #8b4513; font-style: italic; margin-top: 10px">
-            Gebruik pijltjestoetsen om te bewegen! Ga naar de winkel 🏪, put 🏗️ en kas 🏡.
+            Gebruik pijltjestoetsen om te bewegen! Ga naar de winkel 🏪, ijswinkel 🍦, ijsmachine 🏭, put 🏗️ en kas 🏡.
           </p>
 
           <div class="help-section">
@@ -59,6 +60,10 @@
               >
                 <ul style="color: #8b4513; line-height: 1.3; padding-left: 20px; margin: 0">
                   <li>🏪 Loop naar de winkel om zaden te kopen</li>
+                  <li>🍦 Bezoek de ijswinkel voor een geluksboost</li>
+                  <li>🏭 Gebruik de ijsmachine om fruit te verwerken tot ijs</li>
+                  <li>💰 Verkoop ijs voor meer winst dan gewoon fruit!</li>
+                  <li>🍓 Maak je eigen ijs van verbouwde vruchten!</li>
                   <li>🚶 Beweeg naar een leeg veldje</li>
                   <li>🌱 Klik om te planten</li>
                   <li>🚿 Gebruik gieter mode om water te geven</li>
@@ -97,6 +102,8 @@
                 <button class="tool-button" onclick="toggleInfoMode()" id="infoButton">🔍 Info</button>
                 <button class="tool-button" onclick="getWaterFromWell()">💧 Water</button>
                 <button class="tool-button" onclick="interactWithShop()">🏪 Winkel</button>
+                <button class="tool-button" onclick="interactWithIceCreamShop()">🍦 IJswinkel</button>
+                <button class="tool-button" onclick="interactWithIceCreamMachine()">🏭 IJsmachine</button>
                 <button
                   class="tool-button greenhouse-button"
                   onclick="interactWithGreenhouse()"
@@ -155,6 +162,8 @@
     <script src="farm.js"></script>
     <script src="shop.js"></script>
     <script src="shop-interaction.js"></script>
+    <script src="ice-cream-shop.js"></script>
+    <script src="ice-cream-machine.js"></script>
     <script src="game.js"></script>
     <script src="movement.js"></script>
     <script src="main.js"></script>

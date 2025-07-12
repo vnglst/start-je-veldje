@@ -7,3 +7,15 @@ function sellFruit(fruitType) {
     updateUI();
   }
 }
+
+// Sell ice cream from inventory
+function sellIceCreamFromInventory(iceCreamType) {
+  if (gameState.iceCream[iceCreamType] > 0) {
+    const iceCream = iceCreams[iceCreamType];
+    gameState.iceCream[iceCreamType]--;
+    gameState.money += iceCream.sellPrice;
+    showMessage(`Je hebt ${iceCream.name} verkocht voor €${iceCream.sellPrice}! 💰`, "success");
+    updateUI();
+    saveGame();
+  }
+}

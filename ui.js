@@ -117,6 +117,14 @@ function updateInventory() {
     }
   }
 
+  // Show ice creams
+  const iceCreamItems = [];
+  for (const [type, count] of Object.entries(gameState.iceCreams)) {
+    if (count > 0) {
+      iceCreamItems.push({ type, count, name: iceCreams[type].name, emoji: iceCreams[type].emoji, sellPrice: iceCreams[type].sellPrice });
+    }
+  }
+
   // Create compact inventory display
   if (seedItems.length > 0) {
     const seedSection = document.createElement("div");
@@ -152,7 +160,34 @@ function updateInventory() {
     inventoryList.appendChild(fruitSection);
   }
 
-  if (seedItems.length === 0 && fruitItems.length === 0) {
+  if (iceCreamItems.length > 0) {
+    const iceCreamSection = document.createElement("div");
+    iceCreamSection.className = "inventory-section";
+    iceCreamSection.style.marginTop = "15px";
+
+    let iceCreamHtml = `<h4 style="color: #2e8b57; margin-bottom: 8px; font-size: 0.9em;">🍦 IJsjes</h4>`;
+
+    iceCreamItems.forEach((item) => {
+      iceCreamHtml += `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-size: 0.8em;">
+          <span>${item.emoji} ${item.name} (${item.count})</span>
+          <div style="display: flex; gap: 5px;">
+            <button class="eat-btn" onclick="eatIceCream('${item.type}')" style="padding: 2px 6px; font-size: 0.7em; background: #ff69b4; color: white; border: none; border-radius: 4px; cursor: pointer;">
+              🍴 Eet
+            </button>
+            <button class="sell-ice-btn" onclick="sellIceCreamFromInventory('${item.type}')" style="padding: 2px 6px; font-size: 0.7em; background: #4682b4; color: white; border: none; border-radius: 4px; cursor: pointer;">
+              €${iceCreams[item.type]?.sellPrice || 0}
+            </button>
+          </div>
+        </div>
+      `;
+    });
+
+    iceCreamSection.innerHTML = iceCreamHtml;
+    inventoryList.appendChild(iceCreamSection);
+  }
+
+  if (seedItems.length === 0 && fruitItems.length === 0 && iceCreamItems.length === 0) {
     inventoryList.innerHTML =
       '<div style="text-align: center; color: #666; font-style: italic; padding: 20px;">Geen items in inventaris</div>';
   }
@@ -211,6 +246,20 @@ function renderRegularMap(gameMap) {
         tile.innerHTML = "🏪";
         tile.title = "Winkel - Klik om te winkelen";
         tile.onclick = () => interactWithShop();
+      }
+      // Check if this is the ice cream shop position
+      else if (x === gameState.iceCreamShopPosition.x && y === gameState.iceCreamShopPosition.y) {
+        tile.classList.add("ice-cream-shop");
+        tile.innerHTML = "🍦";
+        tile.title = "IJswinkel - Klik om ijs te kopen";
+        tile.onclick = () => interactWithIceCreamShop();
+      }
+      // Check if this is the ice cream machine position
+      else if (x === gameState.iceCreamMachinePosition.x && y === gameState.iceCreamMachinePosition.y) {
+        tile.classList.add("ice-cream-machine");
+        tile.innerHTML = "🏭";
+        tile.title = "IJsmachine - Klik om ijs te maken en verkopen";
+        tile.onclick = () => interactWithIceCreamMachine();
       }
       // Check if this is the greenhouse position
       else if (x === gameState.greenhousePosition.x && y === gameState.greenhousePosition.y) {

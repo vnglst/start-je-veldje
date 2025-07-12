@@ -41,6 +41,9 @@ start-je-veldje/
 - **Dag/Nacht Cyclus**: Ga slapen om tijd vooruit te zetten
 - **Seizoenen**: Veranderen elke 30 dagen
 - **Water Systeem**: Planten hebben dagelijks water nodig
+- **IJswinkel**: Koop ijs voor een geluksboost! 🍦
+- **IJsmachine**: Verwerk fruit tot ijs en verkoop voor winst! 🏭➡️💰
+- **IJs Recepten**: Maak je eigen ijs van verbouwde vruchten! 🍓➡️🍦
 - **Auto-Save**: Spel wordt elke 5 seconden opgeslagen
 
 ## 🚀 Hoe te runnen
