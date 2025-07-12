@@ -13,7 +13,7 @@ function initializeGame() {
       gameState.shopPosition = { x: 0, y: 5 };
     }
     if (!gameState.greenhousePosition) {
-      gameState.greenhousePosition = { x: 7, y: 0 };
+      gameState.greenhousePosition = { x: 0, y: 0 };
     }
 
     // Ensure greenhouse property exists for older saves
@@ -22,7 +22,19 @@ function initializeGame() {
     }
 
     // Ensure all crops exist for older saves
-    const allCrops = ["winterBerry", "raspberry", "pumpkin", "strawberry", "potato", "tomato"];
+    const allCrops = [
+      "winterBerry",
+      "raspberry",
+      "pumpkin",
+      "strawberry",
+      "potato",
+      "tomato",
+      "apricot",
+      "peach",
+      "kiwi",
+      "mango",
+      "dragon_fruit",
+    ];
     allCrops.forEach((crop) => {
       if (gameState.seeds[crop] === undefined) {
         gameState.seeds[crop] = 0;
@@ -31,6 +43,14 @@ function initializeGame() {
         gameState.fruits[crop] = 0;
       }
     });
+
+    // Add greenhouse farm for backwards compatibility
+    if (!gameState.greenhouseFarm) {
+      gameState.greenhouseFarm = [];
+    }
+    if (gameState.inGreenhouse === undefined) {
+      gameState.inGreenhouse = false;
+    }
 
     initializeFarm();
     updateUI();

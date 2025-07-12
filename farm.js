@@ -1,6 +1,6 @@
 // Farm management functions
 function initializeFarm() {
-  // Initialize farm plots data (no DOM manipulation here since we use gameMap now)
+  // Initialize regular farm plots data (24 plots)
   for (let i = 0; i < 24; i++) {
     // Only initialize if the plot doesn't exist or is incomplete
     if (!gameState.farm[i]) {
@@ -24,11 +24,38 @@ function initializeFarm() {
       }
     }
   }
+
+  // Initialize greenhouse farm plots data (24 plots - same size as regular farm)
+  for (let i = 0; i < 24; i++) {
+    if (!gameState.greenhouseFarm[i]) {
+      gameState.greenhouseFarm[i] = {
+        planted: false,
+        cropType: null,
+        plantedDay: null,
+        grown: false,
+        watered: false,
+        lastWateredDay: null,
+        daysWithoutWater: 0,
+        growthDays: 0,
+      };
+    } else {
+      // Ensure all properties exist for backwards compatibility
+      if (gameState.greenhouseFarm[i].daysWithoutWater === undefined) {
+        gameState.greenhouseFarm[i].daysWithoutWater = 0;
+      }
+      if (gameState.greenhouseFarm[i].growthDays === undefined) {
+        gameState.greenhouseFarm[i].growthDays = gameState.greenhouseFarm[i].plantedDay
+          ? gameState.day - gameState.greenhouseFarm[i].plantedDay
+          : 0;
+      }
+    }
+  }
 }
 
 // Plant seed function
 function plantSeed(plotIndex) {
-  const plot = gameState.farm[plotIndex];
+  const currentFarm = gameState.inGreenhouse ? gameState.greenhouseFarm : gameState.farm;
+  const plot = currentFarm[plotIndex];
 
   if (plot.planted) {
     if (plot.grown) {
@@ -39,20 +66,36 @@ function plantSeed(plotIndex) {
     return;
   }
 
-  // Find available seed that can be planted in current season
+  // Find available seed that can be planted
   let seedType = null;
   for (const [type, count] of Object.entries(gameState.seeds)) {
-    if (count > 0 && crops[type].seasons.includes(gameState.season)) {
-      seedType = type;
-      break;
+    if (count > 0) {
+      const crop = crops[type];
+      // In greenhouse: can plant greenhouse-only crops or regular crops
+      // Outside: can only plant regular crops that are in season
+      if (gameState.inGreenhouse) {
+        if (crop.greenhouseOnly || crop.seasons.includes(gameState.season)) {
+          seedType = type;
+          break;
+        }
+      } else {
+        if (!crop.greenhouseOnly && crop.seasons.includes(gameState.season)) {
+          seedType = type;
+          break;
+        }
+      }
     }
   }
 
   if (!seedType) {
-    // Check if player has seeds but they're not in season
+    // Check if player has seeds but they're not suitable for current location
     const hasSeeds = Object.values(gameState.seeds).some((count) => count > 0);
     if (hasSeeds) {
-      showMessage(`Je zaden kunnen niet geplant worden in ${gameState.season}! 🚫`, "error");
+      if (gameState.inGreenhouse) {
+        showMessage("Je hebt geen zaden die geschikt zijn voor de kas! 🏡", "error");
+      } else {
+        showMessage(`Je zaden kunnen niet geplant worden in ${gameState.season}! 🚫`, "error");
+      }
     } else {
       showMessage("Je hebt geen zaden! Koop eerst zaden in de winkel. 🏪", "error");
     }
@@ -67,17 +110,20 @@ function plantSeed(plotIndex) {
   plot.grown = false;
   plot.watered = false;
   plot.lastWateredDay = null;
-  plot.growthDays = 0; // Track actual growth days (only increases when watered)
+  plot.growthDays = 0;
   plot.daysWithoutWater = 0;
 
-  showMessage(`Je hebt ${crops[seedType].name} zaad geplant! Vergeet niet om water te geven. 🌱`, "success");
+  const cropName = crops[seedType].name;
+  const locationText = gameState.inGreenhouse ? "in de kas" : "op je boerderij";
+  showMessage(`Je hebt ${cropName} zaad geplant ${locationText}! Vergeet niet om water te geven. 🌱`, "success");
   updateUI();
   saveGame();
 }
 
 // Harvest crop function
 function harvestCrop(plotIndex) {
-  const plot = gameState.farm[plotIndex];
+  const currentFarm = gameState.inGreenhouse ? gameState.greenhouseFarm : gameState.farm;
+  const plot = currentFarm[plotIndex];
 
   if (!plot.grown) {
     showMessage("Deze plant is nog niet klaar om te oogsten! ⏰", "error");
@@ -113,7 +159,8 @@ function harvestCrop(plotIndex) {
 
 // Water plant function
 function waterPlant(plotIndex) {
-  const plot = gameState.farm[plotIndex];
+  const currentFarm = gameState.inGreenhouse ? gameState.greenhouseFarm : gameState.farm;
+  const plot = currentFarm[plotIndex];
 
   if (!plot.planted || plot.grown) {
     showMessage("Er is geen plant om water te geven! 🌱", "error");
@@ -235,7 +282,8 @@ function quickPlant(plotIndex) {
 
 // Show plant information when clicking on a planted crop
 function showPlantInfo(plotIndex) {
-  const plot = gameState.farm[plotIndex];
+  const currentFarm = gameState.inGreenhouse ? gameState.greenhouseFarm : gameState.farm;
+  const plot = currentFarm[plotIndex];
 
   if (!plot.planted || !plot.cropType) {
     showMessage("Er groeit geen plant op dit veldje.", "error");
@@ -267,10 +315,12 @@ function showPlantInfo(plotIndex) {
     statusMessage = `${crop.emoji} ${crop.name} groeit goed! Nog ${daysLeft} dagen tot oogst.`;
     statusEmoji = "🌱";
   }
-  const infoText = `${statusEmoji} ${statusMessage}\n\n📊 Plantinfo:\n• Geplant op dag ${
+
+  const locationText = gameState.inGreenhouse ? "🏡 In de kas" : "🚜 Op de boerderij";
+  const infoText = `${statusEmoji} ${statusMessage}\n\n📊 Plantinfo:\n• Locatie: ${locationText}\n• Geplant op dag ${
     plot.plantedDay
   }\n• Groeidagen: ${Math.round(actualGrowthDays * 10) / 10}/${crop.growthTime}\n• Verkoopprijs: €${crop.fruitPrice}${
-    gameState.greenhouse ? "\n• 🏡 Kas bonus: +50% groeisnelheid!" : ""
+    crop.greenhouseOnly ? "\n• � Exclusief kas gewas!" : ""
   }`;
 
   showMessage(infoText, daysWithoutWater >= 1 ? "error" : needsWater ? "warning" : "info");

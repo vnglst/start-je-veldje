@@ -1041,3 +1041,103 @@ body.herfst .map-tile.farm-plot {
   border-color: #228b22 !important;
   transform: scale(1.05);
 }
+
+/* Greenhouse interior styling */
+.greenhouse-interior {
+  background: linear-gradient(135deg, #e6ffe6 0%, #ccffcc 100%);
+  border: 3px solid #90ee90;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(50, 205, 50, 0.3);
+}
+
+.greenhouse-tile {
+  background: #f0fff0;
+  border: 2px solid #98fb98;
+}
+
+.greenhouse-plot {
+  background: #8fbc8f;
+  border: 2px solid #556b2f;
+  cursor: pointer;
+}
+
+.greenhouse-plot.empty {
+  background: #8fbc8f;
+  border: 2px solid #556b2f;
+}
+
+.greenhouse-plot.planted {
+  background: #228b22;
+  border: 2px solid #006400;
+}
+
+.greenhouse-plot.grown {
+  background: #ffd700;
+  border: 2px solid #daa520;
+  animation: pulse 2s infinite;
+}
+
+.greenhouse-plot.needs-water {
+  background: #cd853f;
+  border: 2px solid #a0522d;
+  animation: shake 1s infinite;
+}
+
+.greenhouse-plot.dying {
+  background: #8b0000;
+  border: 2px solid #660000;
+  animation: shake 0.5s infinite;
+}
+
+.greenhouse-exit {
+  background: #f5deb3;
+  border: 2px solid #d2b48c;
+  cursor: pointer;
+  font-size: 30px;
+}
+
+.greenhouse-exit:hover {
+  background: #deb887;
+  transform: scale(1.1);
+}
+
+/* Greenhouse map grid styling */
+.greenhouse-interior .game-map {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: 8px;
+  padding: 15px;
+  min-height: 360px;
+}
+
+/* Location indicator */
+.farm-area h3::after {
+  content: attr(data-location);
+  font-size: 0.8em;
+  opacity: 0.7;
+  margin-left: 10px;
+}
+
+.greenhouse-interior .farm-area h3 {
+  color: #2e8b57;
+}
+
+.greenhouse-interior .farm-area h3::before {
+  content: "🏡 ";
+}
+
+/* Greenhouse specific animations */
+@keyframes greenhouse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(50, 205, 50, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(50, 205, 50, 0.6);
+  }
+}
+
+.greenhouse-interior {
+  animation: greenhouse-glow 3s infinite;
+}

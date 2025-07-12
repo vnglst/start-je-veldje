@@ -96,9 +96,21 @@ function updateShopModal() {
   shopGrid.innerHTML = "";
   moneyDisplay.textContent = gameState.money;
 
-  // Add crop seeds based on seasonal availability
+  // Add crop seeds based on seasonal availability and location
   Object.entries(crops).forEach(([cropType, crop]) => {
-    const isAvailable = crop.seasons.includes(gameState.season);
+    let isAvailable = false;
+    let availabilityText = "";
+
+    if (crop.greenhouseOnly) {
+      // Greenhouse-only crops
+      isAvailable = gameState.greenhouse;
+      availabilityText = isAvailable ? "Kas beschikbaar" : "Kas vereist";
+    } else {
+      // Regular crops
+      isAvailable = crop.seasons.includes(gameState.season);
+      availabilityText = isAvailable ? `${gameState.season} seizoen` : "Verkeerd seizoen";
+    }
+
     const canAfford = gameState.money >= crop.seedPrice;
     const disabledClass = isAvailable && canAfford ? "" : " disabled";
 
@@ -111,13 +123,16 @@ function updateShopModal() {
         <div class="item-price">€${crop.seedPrice}</div>
         <div class="item-info-text">
           Groei: ${crop.growthTime} dagen<br>
-          Verkoop: €${crop.fruitPrice}
+          Verkoop: €${crop.fruitPrice}<br>
+          <small style="color: ${isAvailable ? "#4a6741" : "#8b4513"};">
+            ${availabilityText}${crop.greenhouseOnly ? " 🏡" : ""}
+          </small>
         </div>
       </div>
       <button class="buy-button ${disabledClass}" 
               onclick="buyFromModal('${cropType}')"
               ${!isAvailable || !canAfford ? "disabled" : ""}>
-        ${!isAvailable ? "Seizoen" : !canAfford ? "Te duur" : "Koop"}
+        ${!isAvailable ? (crop.greenhouseOnly ? "Kas" : "Seizoen") : !canAfford ? "Te duur" : "Koop"}
       </button>
     `;
     shopGrid.appendChild(shopItem);
@@ -136,7 +151,8 @@ function updateShopModal() {
         <div class="item-name">Kas</div>
         <div class="item-price">€1000</div>
         <div class="item-info-text">
-          Versnelt groei van ALLE planten!<br>
+          Aparte ruimte voor speciale gewassen!<br>
+          Toegang tot exotische vruchten<br>
           Eenmalige aankoop
         </div>
       </div>
@@ -163,16 +179,29 @@ function buySeeds(cropType) {
   const crop = crops[cropType];
   const price = crop.seedPrice;
 
-  // Check if crop is available in current season
-  if (!crop.seasons.includes(gameState.season)) {
-    showMessage(`${crop.name} zaad is niet beschikbaar in ${gameState.season}! 🚫`, "error");
-    return false;
+  // Check availability based on crop type
+  let isAvailable = false;
+  if (crop.greenhouseOnly) {
+    // Greenhouse-only crops require greenhouse to be built
+    isAvailable = gameState.greenhouse;
+    if (!isAvailable) {
+      showMessage(`${crop.name} zaad is alleen beschikbaar als je een kas hebt! Koop eerst een kas. 🏡`, "error");
+      return false;
+    }
+  } else {
+    // Regular crops require correct season
+    isAvailable = crop.seasons.includes(gameState.season);
+    if (!isAvailable) {
+      showMessage(`${crop.name} zaad is niet beschikbaar in ${gameState.season}! 🚫`, "error");
+      return false;
+    }
   }
 
   if (gameState.money >= price) {
     gameState.money -= price;
     gameState.seeds[cropType]++;
-    showMessage(`Je hebt ${crop.name} zaad gekocht! 🌱`, "success");
+    const location = crop.greenhouseOnly ? "voor in de kas" : "voor je boerderij";
+    showMessage(`Je hebt ${crop.name} zaad gekocht ${location}! 🌱`, "success");
     updateUI();
     saveGame();
     return true;
@@ -194,7 +223,10 @@ function buyGreenhouse() {
   if (gameState.money >= price) {
     gameState.money -= price;
     gameState.greenhouse = true;
-    showMessage("🎉 Kas gekocht! Alle planten groeien nu sneller! 🏡", "success");
+    showMessage(
+      "🎉 Kas gekocht! Je kunt nu exotische gewassen planten! Ga naar de kas om binnen te gaan! 🏡",
+      "success"
+    );
     updateUI();
     saveGame();
     updateShopModal(); // Refresh the modal to hide greenhouse

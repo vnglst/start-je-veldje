@@ -11,6 +11,12 @@ let gameState = {
     strawberry: 0,
     potato: 0,
     tomato: 0,
+    // Kas gewassen
+    apricot: 0,
+    peach: 0,
+    kiwi: 0,
+    mango: 0,
+    dragon_fruit: 0,
   },
   fruits: {
     carrot: 0,
@@ -22,8 +28,16 @@ let gameState = {
     strawberry: 0,
     potato: 0,
     tomato: 0,
+    // Kas gewassen
+    apricot: 0,
+    peach: 0,
+    kiwi: 0,
+    mango: 0,
+    dragon_fruit: 0,
   },
   farm: [],
+  greenhouseFarm: [], // Aparte boerderij voor in de kas
+  inGreenhouse: false, // Of de speler momenteel in de kas is
   day: 1,
   season: "Lente",
   wateringCan: true,
@@ -32,7 +46,7 @@ let gameState = {
   playerPosition: { x: 0, y: 0 }, // Player position on the map
   wellPosition: { x: 7, y: 1 }, // Well position outside the farm grid
   shopPosition: { x: 0, y: 5 }, // Shop position at bottom left
-  greenhousePosition: { x: 7, y: 0 }, // Greenhouse position at top right
+  greenhousePosition: { x: 0, y: 0 }, // Greenhouse position at top left
 };
 
 // Game mode
@@ -113,6 +127,52 @@ const crops = {
     growthTime: 6, // days
     seasons: ["Zomer"], // Only available in summer
   },
+  // Kas-specifieke gewassen (kunnen altijd groeien in de kas)
+  apricot: {
+    emoji: "🍑",
+    name: "Abrikoos",
+    seedPrice: 25,
+    fruitPrice: 40,
+    growthTime: 8, // days
+    seasons: ["Kas"], // Only available in greenhouse
+    greenhouseOnly: true,
+  },
+  peach: {
+    emoji: "�",
+    name: "Perzik",
+    seedPrice: 30,
+    fruitPrice: 50,
+    growthTime: 10, // days
+    seasons: ["Kas"], // Only available in greenhouse
+    greenhouseOnly: true,
+  },
+  kiwi: {
+    emoji: "🥝",
+    name: "Kiwi",
+    seedPrice: 35,
+    fruitPrice: 60,
+    growthTime: 12, // days
+    seasons: ["Kas"], // Only available in greenhouse
+    greenhouseOnly: true,
+  },
+  mango: {
+    emoji: "🥭",
+    name: "Mango",
+    seedPrice: 40,
+    fruitPrice: 70,
+    growthTime: 14, // days
+    seasons: ["Kas"], // Only available in greenhouse
+    greenhouseOnly: true,
+  },
+  dragon_fruit: {
+    emoji: "�",
+    name: "Drakenvrucht",
+    seedPrice: 50,
+    fruitPrice: 90,
+    growthTime: 16, // days
+    seasons: ["Kas"], // Only available in greenhouse
+    greenhouseOnly: true,
+  },
 };
 
 // Save and load functions
@@ -146,6 +206,12 @@ function startNewGame() {
         strawberry: 0,
         potato: 0,
         tomato: 0,
+        // Kas gewassen
+        apricot: 0,
+        peach: 0,
+        kiwi: 0,
+        mango: 0,
+        dragon_fruit: 0,
       },
       fruits: {
         carrot: 0,
@@ -157,8 +223,16 @@ function startNewGame() {
         strawberry: 0,
         potato: 0,
         tomato: 0,
+        // Kas gewassen
+        apricot: 0,
+        peach: 0,
+        kiwi: 0,
+        mango: 0,
+        dragon_fruit: 0,
       },
       farm: [],
+      greenhouseFarm: [],
+      inGreenhouse: false,
       day: 1,
       season: "Lente",
       wateringCan: true,
@@ -167,7 +241,7 @@ function startNewGame() {
       playerPosition: { x: 0, y: 0 },
       wellPosition: { x: 7, y: 1 },
       shopPosition: { x: 0, y: 5 },
-      greenhousePosition: { x: 7, y: 0 },
+      greenhousePosition: { x: 0, y: 0 },
     };
 
     // Reset watering mode and info mode
@@ -219,11 +293,27 @@ function importGameData() {
             if (!gameState.shopPosition) gameState.shopPosition = { x: 0, y: 5 };
 
             // Add new crops for backwards compatibility
-            const newCrops = ["winterBerry", "raspberry", "pumpkin", "strawberry", "potato", "tomato"];
+            const newCrops = [
+              "winterBerry",
+              "raspberry",
+              "pumpkin",
+              "strawberry",
+              "potato",
+              "tomato",
+              "apricot",
+              "peach",
+              "kiwi",
+              "mango",
+              "dragon_fruit",
+            ];
             newCrops.forEach((crop) => {
               if (gameState.seeds[crop] === undefined) gameState.seeds[crop] = 0;
               if (gameState.fruits[crop] === undefined) gameState.fruits[crop] = 0;
             });
+
+            // Add greenhouse farm for backwards compatibility
+            if (!gameState.greenhouseFarm) gameState.greenhouseFarm = [];
+            if (gameState.inGreenhouse === undefined) gameState.inGreenhouse = false;
 
             initializeFarm();
             updateUI();

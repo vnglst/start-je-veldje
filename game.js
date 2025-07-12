@@ -12,11 +12,12 @@ function sleep() {
     const seasonIndex = Math.floor((gameState.day - 1) / 30) % 4;
     gameState.season = seasons[seasonIndex];
 
-    // Check for crop growth
+    // Check for crop growth on regular farm
     let newlyGrownCrops = 0;
     let witheredPlants = 0;
     let deadPlants = 0;
 
+    // Process regular farm
     gameState.farm.forEach((plot, index) => {
       if (plot.planted && !plot.grown && plot.cropType) {
         const wasWateredYesterday = plot.watered && plot.lastWateredDay === gameState.day - 1;
@@ -39,11 +40,6 @@ function sleep() {
             else if (gameState.season === "Zomer") growthRate = 1.1; // 10% faster in summer
             else if (gameState.season === "Herfst") growthRate = 1.0; // Normal in autumn
             else if (gameState.season === "Winter") growthRate = 0.5; // 50% slower in winter
-
-            // Apply greenhouse bonus if owned
-            if (gameState.greenhouse) {
-              growthRate *= 1.5; // 50% faster growth with greenhouse
-            }
 
             plot.growthDays += growthRate;
           }
@@ -98,6 +94,59 @@ function sleep() {
         }
       }
     });
+
+    // Process greenhouse farm (if greenhouse exists)
+    if (gameState.greenhouse) {
+      gameState.greenhouseFarm.forEach((plot, index) => {
+        if (plot.planted && !plot.grown && plot.cropType) {
+          const wasWateredYesterday = plot.watered && plot.lastWateredDay === gameState.day - 1;
+          const crop = crops[plot.cropType];
+
+          if (wasWateredYesterday) {
+            // Plant was watered yesterday - greenhouse plants always grow optimally
+            plot.daysWithoutWater = 0;
+
+            // Initialize growthDays if it doesn't exist
+            if (!plot.growthDays) {
+              plot.growthDays = gameState.day - plot.plantedDay;
+            } else {
+              // Greenhouse provides steady optimal growth (no seasonal effects)
+              plot.growthDays += 1;
+            }
+
+            // Check if plant is fully grown
+            if (plot.growthDays >= crop.growthTime) {
+              plot.grown = true;
+              newlyGrownCrops++;
+            }
+          } else {
+            // Plant was not watered yesterday
+            plot.daysWithoutWater = (plot.daysWithoutWater || 0) + 1;
+
+            if (plot.daysWithoutWater >= 2) {
+              // Plant dies after 2 days without water (even in greenhouse)
+              plot.planted = false;
+              plot.cropType = null;
+              plot.plantedDay = null;
+              plot.grown = false;
+              plot.watered = false;
+              plot.lastWateredDay = null;
+              plot.growthDays = 0;
+              plot.daysWithoutWater = 0;
+              deadPlants++;
+            } else {
+              // Plant is withering but still alive
+              witheredPlants++;
+            }
+          }
+
+          // Reset daily watering status
+          if (plot.lastWateredDay < gameState.day - 1) {
+            plot.watered = false;
+          }
+        }
+      });
+    }
 
     // Update UI and show morning message
     updateUI();

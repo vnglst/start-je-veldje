@@ -1,5 +1,17 @@
 // UI Update functions
 function updateUI() {
+  // Update farm title based on location
+  const farmTitle = document.getElementById("farmTitle");
+  if (farmTitle) {
+    if (gameState.inGreenhouse) {
+      farmTitle.innerHTML = "🏡 Je Kas";
+      farmTitle.style.color = "#2e8b57";
+    } else {
+      farmTitle.innerHTML = "🚜 Je Boerderij";
+      farmTitle.style.color = "#8b4513";
+    }
+  }
+
   // Safe element updates with null checks
   const moneyEl = document.getElementById("money");
   if (moneyEl) moneyEl.textContent = gameState.money;
@@ -157,6 +169,19 @@ function updateGameMap() {
   // Clear and rebuild the entire map
   gameMap.innerHTML = "";
 
+  if (gameState.inGreenhouse) {
+    // Render greenhouse interior (6x4 grid)
+    gameMap.classList.add("greenhouse-interior");
+    renderGreenhouseMap(gameMap);
+  } else {
+    // Render regular farm map (8x6 grid)
+    gameMap.classList.remove("greenhouse-interior");
+    renderRegularMap(gameMap);
+  }
+}
+
+// Render regular farm map
+function renderRegularMap(gameMap) {
   // Create 8x6 grid (farm is 6x4, plus space for well and pathways)
   for (let y = 0; y < 6; y++) {
     for (let x = 0; x < 8; x++) {
@@ -192,7 +217,7 @@ function updateGameMap() {
         tile.classList.add("greenhouse");
         if (gameState.greenhouse) {
           tile.innerHTML = "🏡";
-          tile.title = "Kas - Versnelt de groei van al je planten!";
+          tile.title = "Kas - Klik om binnen te gaan!";
           tile.onclick = () => interactWithGreenhouse();
         } else {
           tile.innerHTML = "🏗️";
@@ -201,6 +226,49 @@ function updateGameMap() {
         }
       }
       // Regular pathway tiles
+      else {
+        tile.innerHTML = "";
+      }
+
+      // Add player if on this tile
+      if (x === gameState.playerPosition.x && y === gameState.playerPosition.y) {
+        const player = document.createElement("div");
+        player.className = "player";
+        player.innerHTML = "🧑‍🌾";
+        tile.appendChild(player);
+      }
+
+      gameMap.appendChild(tile);
+    }
+  }
+}
+
+// Render greenhouse interior map
+function renderGreenhouseMap(gameMap) {
+  // Create 8x6 grid for greenhouse interior (same size as regular farm)
+  for (let y = 0; y < 6; y++) {
+    for (let x = 0; x < 8; x++) {
+      const tile = document.createElement("div");
+      tile.className = "map-tile greenhouse-tile";
+      tile.id = `greenhouse-tile-${x}-${y}`;
+
+      // Exit at top left corner
+      if (x === 0 && y === 0) {
+        tile.classList.add("greenhouse-exit");
+        tile.innerHTML = "🚪";
+        tile.title = "Uitgang - Klik om de kas te verlaten";
+        tile.onclick = () => interactWithGreenhouse();
+      }
+      // Farm plots in the greenhouse (center 6x4 area, 24 total plots)
+      else if (x >= 1 && x <= 6 && y >= 1 && y <= 4) {
+        const farmIndex = (y - 1) * 6 + (x - 1);
+        tile.classList.add("greenhouse-plot");
+        tile.id = `greenhouse-plot-${farmIndex}`;
+
+        // Update greenhouse farm plot content
+        updateGreenhousePlot(tile, farmIndex);
+      }
+      // Regular greenhouse interior tiles
       else {
         tile.innerHTML = "";
       }
@@ -318,6 +386,69 @@ function updateFarmPlot(plotElement, index) {
         showMessage("Je bent te ver weg! Loop dichter naar het veldje.", "error");
       }
     };
+  }
+}
+
+// Update greenhouse farm plot content
+function updateGreenhousePlot(tile, plotIndex) {
+  const plot = gameState.greenhouseFarm[plotIndex];
+  tile.innerHTML = "";
+
+  // Add plot click handlers
+  tile.onclick = (e) => {
+    e.stopPropagation();
+    if (isPlayerNearPlot(plotIndex)) {
+      if (wateringMode) {
+        waterPlant(plotIndex);
+      } else if (infoMode) {
+        showPlantInfo(plotIndex);
+      } else {
+        plantSeed(plotIndex);
+      }
+    } else {
+      showMessage("Je bent te ver van dit veldje! Loop er naartoe. 🏃‍♂️", "error");
+    }
+  };
+
+  if (plot.planted) {
+    const crop = crops[plot.cropType];
+    let status = "";
+
+    if (plot.grown) {
+      status = "grown";
+      tile.innerHTML = crop.emoji;
+      tile.classList.add("grown");
+      tile.title = `${crop.name} - Klaar voor oogst! Klik om te oogsten.`;
+    } else {
+      const needsWater = !plot.watered || plot.lastWateredDay < gameState.day;
+      const daysWithoutWater = plot.daysWithoutWater || 0;
+
+      if (daysWithoutWater >= 1) {
+        status = "dying";
+        tile.classList.add("dying");
+        tile.innerHTML = "💀";
+        tile.title = `${crop.name} - Kritiek! Plant gaat morgen dood zonder water!`;
+      } else if (needsWater) {
+        status = "needs-water";
+        tile.classList.add("needs-water");
+        tile.innerHTML = "🌱";
+        tile.title = `${crop.name} - Heeft water nodig!`;
+      } else {
+        status = "growing";
+        tile.classList.add("growing");
+        tile.innerHTML = "🌿";
+        tile.title = `${crop.name} - Groeit goed! Nog ${Math.ceil(crop.growthTime - (plot.growthDays || 0))} dagen.`;
+      }
+    }
+  } else {
+    tile.innerHTML = "🟫";
+    tile.title = "Leeg veldje - Klik om een zaad te planten";
+    tile.classList.add("empty");
+  }
+
+  // Check if player can reach this plot
+  if (!isPlayerNearPlot(plotIndex)) {
+    tile.classList.add("unreachable");
   }
 }
 

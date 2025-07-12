@@ -2,11 +2,20 @@
 
 // Check if player is near a farm plot (adjacent or on the plot)
 function isPlayerNearPlot(plotIndex) {
-  const plotX = (plotIndex % 6) + 1; // Farm starts at x=1
-  const plotY = Math.floor(plotIndex / 6) + 1; // Farm starts at y=1
-
   const playerX = gameState.playerPosition.x;
   const playerY = gameState.playerPosition.y;
+
+  let plotX, plotY;
+
+  if (gameState.inGreenhouse) {
+    // Greenhouse plots (6 wide, 4 tall - same as regular farm)
+    plotX = (plotIndex % 6) + 1; // Greenhouse farm starts at x=1
+    plotY = Math.floor(plotIndex / 6) + 1; // Greenhouse farm starts at y=1
+  } else {
+    // Regular farm plots (6 wide, 4 tall)
+    plotX = (plotIndex % 6) + 1; // Farm starts at x=1
+    plotY = Math.floor(plotIndex / 6) + 1; // Farm starts at y=1
+  }
 
   // Check if player is adjacent to or on the plot
   const deltaX = Math.abs(playerX - plotX);
@@ -22,18 +31,28 @@ function movePlayer(direction) {
   let newX = currentX;
   let newY = currentY;
 
+  // Set boundaries based on current location
+  let maxX, maxY;
+  if (gameState.inGreenhouse) {
+    maxX = 7; // Greenhouse is same size as regular map (8x6)
+    maxY = 5;
+  } else {
+    maxX = 7; // Regular map (8x6)
+    maxY = 5;
+  }
+
   switch (direction) {
     case "up":
       newY = Math.max(0, currentY - 1);
       break;
     case "down":
-      newY = Math.min(5, currentY + 1);
+      newY = Math.min(maxY, currentY + 1);
       break;
     case "left":
       newX = Math.max(0, currentX - 1);
       break;
     case "right":
-      newX = Math.min(7, currentX + 1);
+      newX = Math.min(maxX, currentX + 1);
       break;
   }
 
@@ -42,18 +61,31 @@ function movePlayer(direction) {
     gameState.playerPosition.x = newX;
     gameState.playerPosition.y = newY;
 
-    // Check if player is near the well
-    const wellX = gameState.wellPosition.x;
-    const wellY = gameState.wellPosition.y;
-    if (Math.abs(newX - wellX) <= 1 && Math.abs(newY - wellY) <= 1) {
-      showMessage("Je bent bij de put! Druk op spatie of klik op de 💧 knop voor water.", "success");
-    }
+    // Location-specific messages
+    if (gameState.inGreenhouse) {
+      // In greenhouse - no special locations except exit
+      if (newX === 0 && newY === 0) {
+        showMessage("Je bent bij de uitgang! Druk op spatie om de kas te verlaten. 🚪", "success");
+      }
+    } else {
+      // Outside greenhouse - check for well, shop, etc.
+      const wellX = gameState.wellPosition.x;
+      const wellY = gameState.wellPosition.y;
+      if (Math.abs(newX - wellX) <= 1 && Math.abs(newY - wellY) <= 1) {
+        showMessage("Je bent bij de put! Druk op spatie of klik op de 💧 knop voor water.", "success");
+      }
 
-    // Check if player is near the shop
-    const shopX = gameState.shopPosition.x;
-    const shopY = gameState.shopPosition.y;
-    if (Math.abs(newX - shopX) <= 1 && Math.abs(newY - shopY) <= 1) {
-      showMessage("Je bent bij de winkel! Druk op spatie of klik op de 🏪 voor winkelen.", "success");
+      const shopX = gameState.shopPosition.x;
+      const shopY = gameState.shopPosition.y;
+      if (Math.abs(newX - shopX) <= 1 && Math.abs(newY - shopY) <= 1) {
+        showMessage("Je bent bij de winkel! Druk op spatie of klik op de 🏪 voor winkelen.", "success");
+      }
+
+      const greenhouseX = gameState.greenhousePosition.x;
+      const greenhouseY = gameState.greenhousePosition.y;
+      if (Math.abs(newX - greenhouseX) <= 1 && Math.abs(newY - greenhouseY) <= 1) {
+        showMessage("Je bent bij de kas! Druk op spatie om binnen te gaan. 🏡", "success");
+      }
     }
 
     updateGameMap();
@@ -99,30 +131,24 @@ function interactWithGreenhouse() {
   const deltaY = Math.abs(playerY - greenhouseY);
 
   if (deltaX <= 1 && deltaY <= 1) {
-    showGreenhouseInfo();
+    // Toggle between inside and outside greenhouse
+    if (gameState.inGreenhouse) {
+      // Exit greenhouse
+      gameState.inGreenhouse = false;
+      gameState.playerPosition = { x: 1, y: 0 }; // Position next to greenhouse exit
+      showMessage("Je verlaat de kas en gaat terug naar je boerderij! 🚜", "success");
+    } else {
+      // Enter greenhouse
+      gameState.inGreenhouse = true;
+      gameState.playerPosition = { x: 1, y: 1 }; // Position inside greenhouse (avoid exit)
+      showMessage("Welkom in je kas! 🏡 Hier kun je speciale gewassen planten die het hele jaar groeien!", "success");
+    }
+    updateGameMap();
+    updateUI();
+    saveGame();
   } else {
     showMessage("Je bent te ver van de kas! Loop er naartoe. 🏃‍♂️", "error");
   }
-}
-
-// Show greenhouse information
-function showGreenhouseInfo() {
-  const totalPlants = gameState.farm.filter((plot) => plot.planted && !plot.grown).length;
-  const growingPlants = gameState.farm.filter((plot) => plot.planted && !plot.grown && plot.watered).length;
-
-  let infoMessage = "🏡 Je Kas\n\n";
-  infoMessage += "✨ Effect: +50% groeisnelheid voor alle planten!\n\n";
-  infoMessage += "📊 Huidige status:\n";
-  infoMessage += `• Totaal groeiende planten: ${totalPlants}\n`;
-  infoMessage += `• Planten met water vandaag: ${growingPlants}\n`;
-
-  if (totalPlants > 0) {
-    infoMessage += `• Geschatte tijd besparing: ~${Math.round(totalPlants * 0.5)} dagen per oogst!\n`;
-  }
-
-  infoMessage += "\n💡 Tip: Kas werkt automatisch voor alle planten op je boerderij!";
-
-  showMessage(infoMessage, "success");
 }
 
 // Keyboard event listener for player movement
@@ -158,28 +184,36 @@ document.addEventListener("keydown", function (event) {
       const playerX = gameState.playerPosition.x;
       const playerY = gameState.playerPosition.y;
 
-      // Check if near well
-      const wellX = gameState.wellPosition.x;
-      const wellY = gameState.wellPosition.y;
-      if (Math.abs(playerX - wellX) <= 1 && Math.abs(playerY - wellY) <= 1) {
-        getWaterFromWell();
-        break;
-      }
+      if (gameState.inGreenhouse) {
+        // In greenhouse - check for exit
+        if (playerX === 0 && playerY === 0) {
+          interactWithGreenhouse(); // This will exit the greenhouse
+        }
+      } else {
+        // Outside greenhouse - check for buildings
+        // Check if near well
+        const wellX = gameState.wellPosition.x;
+        const wellY = gameState.wellPosition.y;
+        if (Math.abs(playerX - wellX) <= 1 && Math.abs(playerY - wellY) <= 1) {
+          getWaterFromWell();
+          break;
+        }
 
-      // Check if near shop
-      const shopX = gameState.shopPosition.x;
-      const shopY = gameState.shopPosition.y;
-      if (Math.abs(playerX - shopX) <= 1 && Math.abs(playerY - shopY) <= 1) {
-        interactWithShop();
-        break;
-      }
+        // Check if near shop
+        const shopX = gameState.shopPosition.x;
+        const shopY = gameState.shopPosition.y;
+        if (Math.abs(playerX - shopX) <= 1 && Math.abs(playerY - shopY) <= 1) {
+          interactWithShop();
+          break;
+        }
 
-      // Check if near greenhouse
-      const greenhouseX = gameState.greenhousePosition.x;
-      const greenhouseY = gameState.greenhousePosition.y;
-      if (Math.abs(playerX - greenhouseX) <= 1 && Math.abs(playerY - greenhouseY) <= 1) {
-        interactWithGreenhouse();
-        break;
+        // Check if near greenhouse
+        const greenhouseX = gameState.greenhousePosition.x;
+        const greenhouseY = gameState.greenhousePosition.y;
+        if (Math.abs(playerX - greenhouseX) <= 1 && Math.abs(playerY - greenhouseY) <= 1) {
+          interactWithGreenhouse();
+          break;
+        }
       }
       break;
     case "n":
@@ -203,8 +237,9 @@ document.addEventListener("keydown", function (event) {
 
 // Cheat function: Give starter pack with money and seeds
 function giveStarterPack() {
-  if (confirm("Wil je een starter pack krijgen? (€500 + diverse zaden)")) {
+  if (confirm("Wil je een starter pack krijgen? (€500 + diverse zaden + kas)")) {
     gameState.money += 500;
+    gameState.greenhouse = true; // Give greenhouse for free in cheat
 
     // Give 2 of each seed type
     Object.keys(gameState.seeds).forEach((seedType) => {
@@ -213,6 +248,6 @@ function giveStarterPack() {
 
     updateUI();
     saveGame();
-    showMessage("Starter pack gekregen! €500 + 2 van elk zaad type! 🎁", "success");
+    showMessage("Starter pack gekregen! €500 + 2 van elk zaad type + kas! 🎁", "success");
   }
 }
