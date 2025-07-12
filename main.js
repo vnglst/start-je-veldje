@@ -7,10 +7,18 @@ function initializeGame() {
       gameState.playerPosition = { x: 0, y: 0 };
     }
     if (!gameState.wellPosition) {
-      gameState.wellPosition = { x: 7, y: 2 };
+      gameState.wellPosition = { x: 7, y: 1 };
     }
     if (!gameState.shopPosition) {
       gameState.shopPosition = { x: 0, y: 5 };
+    }
+    if (!gameState.greenhousePosition) {
+      gameState.greenhousePosition = { x: 7, y: 0 };
+    }
+
+    // Ensure greenhouse property exists for older saves
+    if (gameState.greenhouse === undefined) {
+      gameState.greenhouse = false;
     }
 
     // Ensure all crops exist for older saves

@@ -28,9 +28,11 @@ let gameState = {
   season: "Lente",
   wateringCan: true,
   water: 10,
+  greenhouse: false, // Whether player has bought a greenhouse
   playerPosition: { x: 0, y: 0 }, // Player position on the map
-  wellPosition: { x: 7, y: 2 }, // Well position outside the farm grid
+  wellPosition: { x: 7, y: 1 }, // Well position outside the farm grid
   shopPosition: { x: 0, y: 5 }, // Shop position at bottom left
+  greenhousePosition: { x: 7, y: 0 }, // Greenhouse position at top right
 };
 
 // Game mode
@@ -161,9 +163,11 @@ function startNewGame() {
       season: "Lente",
       wateringCan: true,
       water: 10,
+      greenhouse: false,
       playerPosition: { x: 0, y: 0 },
-      wellPosition: { x: 7, y: 2 },
+      wellPosition: { x: 7, y: 1 },
       shopPosition: { x: 0, y: 5 },
+      greenhousePosition: { x: 7, y: 0 },
     };
 
     // Reset watering mode and info mode

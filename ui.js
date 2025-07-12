@@ -1,10 +1,20 @@
 // UI Update functions
 function updateUI() {
-  document.getElementById("money").textContent = gameState.money;
-  document.getElementById("seedCount").textContent = Object.values(gameState.seeds).reduce((a, b) => a + b, 0);
-  document.getElementById("fruitCount").textContent = Object.values(gameState.fruits).reduce((a, b) => a + b, 0);
-  document.getElementById("water").textContent = gameState.water;
-  document.getElementById("day").textContent = gameState.day;
+  // Safe element updates with null checks
+  const moneyEl = document.getElementById("money");
+  if (moneyEl) moneyEl.textContent = gameState.money;
+
+  const seedCountEl = document.getElementById("seedCount");
+  if (seedCountEl) seedCountEl.textContent = Object.values(gameState.seeds).reduce((a, b) => a + b, 0);
+
+  const fruitCountEl = document.getElementById("fruitCount");
+  if (fruitCountEl) fruitCountEl.textContent = Object.values(gameState.fruits).reduce((a, b) => a + b, 0);
+
+  const waterEl = document.getElementById("water");
+  if (waterEl) waterEl.textContent = gameState.water;
+
+  const dayEl = document.getElementById("day");
+  if (dayEl) dayEl.textContent = gameState.day;
 
   // Update season with emoji and apply seasonal theme
   const seasonEmojis = {
@@ -14,14 +24,39 @@ function updateUI() {
     Winter: "❄️",
   };
 
-  document.getElementById("season").textContent = gameState.season;
+  const seasonEl = document.getElementById("season");
+  if (seasonEl) seasonEl.textContent = gameState.season;
 
   // Apply seasonal body class for visual themes
   document.body.className = gameState.season.toLowerCase();
 
   // Update season emoji in stats
-  const seasonStat = document.querySelector("#season").parentElement;
-  seasonStat.innerHTML = `${seasonEmojis[gameState.season]} <span id="season">${gameState.season}</span>`;
+  const seasonStat = document.querySelector("#season");
+  if (seasonStat && seasonStat.parentElement) {
+    seasonStat.parentElement.innerHTML = `${seasonEmojis[gameState.season]} <span id="season">${
+      gameState.season
+    }</span>`;
+  }
+
+  // Update greenhouse status
+  const greenhouseStat = document.getElementById("greenhouseStat");
+  if (greenhouseStat) {
+    if (gameState.greenhouse) {
+      greenhouseStat.style.display = "block";
+    } else {
+      greenhouseStat.style.display = "none";
+    }
+  }
+
+  // Update greenhouse button visibility
+  const greenhouseButton = document.getElementById("greenhouseButton");
+  if (greenhouseButton) {
+    if (gameState.greenhouse) {
+      greenhouseButton.style.display = "block";
+    } else {
+      greenhouseButton.style.display = "none";
+    }
+  }
 
   // Update tool buttons
   const wateringButton = document.getElementById("wateringButton");
@@ -39,14 +74,19 @@ function updateUI() {
 
   updateInventory();
   updateGameMap();
-  updateShopDisplay();
+  // updateShopDisplay(); // Disabled - element doesn't exist
   updateSeasonInfo();
-  updateGameStats();
+  // updateGameStats(); // Disabled - element doesn't exist
 }
 
 // Update inventory display
 function updateInventory() {
   const inventoryList = document.getElementById("inventoryList");
+  if (!inventoryList) {
+    console.warn("inventoryList element not found");
+    return;
+  }
+
   inventoryList.innerHTML = "";
 
   // Show seeds
@@ -109,6 +149,10 @@ function updateInventory() {
 // Update game map display
 function updateGameMap() {
   const gameMap = document.getElementById("gameMap");
+  if (!gameMap) {
+    console.warn("gameMap element not found");
+    return;
+  }
 
   // Clear and rebuild the entire map
   gameMap.innerHTML = "";
@@ -142,6 +186,19 @@ function updateGameMap() {
         tile.innerHTML = "🏪";
         tile.title = "Winkel - Klik om te winkelen";
         tile.onclick = () => interactWithShop();
+      }
+      // Check if this is the greenhouse position
+      else if (x === gameState.greenhousePosition.x && y === gameState.greenhousePosition.y) {
+        tile.classList.add("greenhouse");
+        if (gameState.greenhouse) {
+          tile.innerHTML = "🏡";
+          tile.title = "Kas - Versnelt de groei van al je planten!";
+          tile.onclick = () => interactWithGreenhouse();
+        } else {
+          tile.innerHTML = "🏗️";
+          tile.title = "Bouwplaats - Koop een kas in de winkel voor €1000";
+          tile.onclick = () => showMessage("Je hebt nog geen kas! Koop er een in de winkel voor €1000. 🏪", "error");
+        }
       }
       // Regular pathway tiles
       else {
@@ -266,24 +323,19 @@ function updateFarmPlot(plotElement, index) {
 
 // Update shop display based on current season
 function updateShopDisplay() {
-  const shopSection = document.querySelector(".shop-section");
-  let shopHTML = '<h3 class="section-title">🏪 Winkel</h3>';
-
-  // Replace shop items with direction to physical shop
-  shopHTML += `
-    <div style="padding: 15px; background: #fff8dc; border: 2px solid #daa520; border-radius: 8px; text-align: center; color: #2e8b57; line-height: 1.5;">
-      <div style="font-size: 1.2em; margin-bottom: 10px;">🏪 Bezoek de Winkel!</div>
-      <div style="margin-bottom: 10px; font-style: italic;">Loop naar de winkel (🏪) op de kaart om zaden te kopen.</div>
-      <div style="font-size: 0.9em; color: #666;">💧 Voor water: ga naar de put 🏗️</div>
-    </div>
-  `;
-
-  shopSection.innerHTML = shopHTML;
+  // This function is disabled since .shop-section element doesn't exist in current HTML
+  // Keeping function for potential future use
+  return;
 }
 
 // Update seasonal information display
 function updateSeasonInfo() {
   const seasonInfo = document.getElementById("seasonInfo");
+  if (!seasonInfo) {
+    console.warn("seasonInfo element not found");
+    return;
+  }
+
   const currentDay = gameState.day;
   const dayInSeason = ((currentDay - 1) % 30) + 1;
   const daysLeft = 30 - dayInSeason;
@@ -320,20 +372,9 @@ function updateSeasonInfo() {
 
 // Update game statistics display
 function updateGameStats() {
-  const gameStats = document.getElementById("gameStats");
-  const totalSeeds = Object.values(gameState.seeds).reduce((a, b) => a + b, 0);
-  const totalFruits = Object.values(gameState.fruits).reduce((a, b) => a + b, 0);
-  const plantsOnFarm = gameState.farm.filter((plot) => plot && plot.planted).length;
-  const grownCrops = gameState.farm.filter((plot) => plot && plot.grown).length;
-  const year = Math.floor((gameState.day - 1) / 120) + 1;
-  const totalPlots = 24; // 6x4 farm grid
-
-  gameStats.innerHTML = `
-    <div style="margin-bottom: 8px;">🗓️ Jaar ${year} • Dag ${gameState.day}</div>
-    <div style="margin-bottom: 8px;">🌱 ${plantsOnFarm}/${totalPlots} veldjes beplant</div>
-    <div style="margin-bottom: 8px;">🎯 ${grownCrops} gewassen klaar voor oogst</div>
-    <div style="margin-bottom: 8px;">📦 ${totalSeeds + totalFruits} items in inventaris</div>
-  `;
+  // This function is disabled since gameStats element doesn't exist in current HTML
+  // Keeping function for potential future use
+  return;
 }
 
 // Show available crops for current season
@@ -352,6 +393,11 @@ function showSeasonalCrops() {
 // Show message function
 function showMessage(text, type) {
   const messageArea = document.getElementById("messageArea");
+  if (!messageArea) {
+    console.warn("messageArea element not found");
+    return;
+  }
+
   // Convert newlines to HTML breaks for multi-line messages
   const formattedText = text.replace(/\n/g, "<br>");
   messageArea.innerHTML = `<div class="message ${type}">${formattedText}</div>`;
@@ -359,7 +405,9 @@ function showMessage(text, type) {
   // Longer timeout for info messages since they have more content
   const timeout = type === "info" ? 6000 : 3000;
   setTimeout(() => {
-    messageArea.innerHTML = "";
+    if (messageArea) {
+      messageArea.innerHTML = "";
+    }
   }, timeout);
 }
 

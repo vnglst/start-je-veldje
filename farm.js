@@ -269,7 +269,52 @@ function showPlantInfo(plotIndex) {
   }
   const infoText = `${statusEmoji} ${statusMessage}\n\n📊 Plantinfo:\n• Geplant op dag ${
     plot.plantedDay
-  }\n• Groeidagen: ${Math.round(actualGrowthDays * 10) / 10}/${crop.growthTime}\n• Verkoopprijs: €${crop.fruitPrice}`;
+  }\n• Groeidagen: ${Math.round(actualGrowthDays * 10) / 10}/${crop.growthTime}\n• Verkoopprijs: €${crop.fruitPrice}${
+    gameState.greenhouse ? "\n• 🏡 Kas bonus: +50% groeisnelheid!" : ""
+  }`;
 
   showMessage(infoText, daysWithoutWater >= 1 ? "error" : needsWater ? "warning" : "info");
+}
+
+// Debug function to show greenhouse for testing
+function debugShowGreenhouse() {
+  gameState.greenhouse = true;
+  updateUI();
+  showMessage("🔧 Debug: Kas geforceerd getoond voor testing!", "success");
+}
+
+// Temporary function to give player money for testing
+function debugGiveMoney() {
+  gameState.money += 1000;
+  updateUI();
+  saveGame();
+  showMessage("🔧 Debug: +€1000 toegevoegd!", "success");
+}
+
+// Debug function to show all positions
+function debugShowPositions() {
+  console.log("🔧 Debug Posities:");
+  console.log("Speler:", gameState.playerPosition);
+  console.log("Put:", gameState.wellPosition);
+  console.log("Winkel:", gameState.shopPosition);
+  console.log("Kas:", gameState.greenhousePosition);
+  console.log("Kas gekocht:", gameState.greenhouse);
+
+  showMessage(
+    `🔧 Debug posities:\nSpeler: (${gameState.playerPosition.x},${gameState.playerPosition.y})\nPut: (${gameState.wellPosition.x},${gameState.wellPosition.y})\nWinkel: (${gameState.shopPosition.x},${gameState.shopPosition.y})\nKas: (${gameState.greenhousePosition.x},${gameState.greenhousePosition.y})`,
+    "info"
+  );
+}
+
+// Simple test function to verify kas position and show it
+function testShowKas() {
+  console.log("🔧 Test: Kas info");
+  console.log("Kas positie:", gameState.greenhousePosition);
+  console.log("Kas gekocht:", gameState.greenhouse);
+
+  // Force show the greenhouse for testing
+  gameState.greenhouse = true;
+  updateUI();
+
+  showMessage("🔧 Test: Kas geforceerd zichtbaar gemaakt!", "success");
 }

@@ -40,6 +40,11 @@ function sleep() {
             else if (gameState.season === "Herfst") growthRate = 1.0; // Normal in autumn
             else if (gameState.season === "Winter") growthRate = 0.5; // 50% slower in winter
 
+            // Apply greenhouse bonus if owned
+            if (gameState.greenhouse) {
+              growthRate *= 1.5; // 50% faster growth with greenhouse
+            }
+
             plot.growthDays += growthRate;
           }
 

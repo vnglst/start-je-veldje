@@ -82,6 +82,49 @@ function getWaterFromWell() {
   }
 }
 
+// Interact with greenhouse
+function interactWithGreenhouse() {
+  if (!gameState.greenhouse) {
+    showMessage("Je hebt nog geen kas! Koop er een in de winkel voor €1000. 🏪", "error");
+    return;
+  }
+
+  const greenhouseX = gameState.greenhousePosition.x;
+  const greenhouseY = gameState.greenhousePosition.y;
+  const playerX = gameState.playerPosition.x;
+  const playerY = gameState.playerPosition.y;
+
+  // Check if player is adjacent to the greenhouse
+  const deltaX = Math.abs(playerX - greenhouseX);
+  const deltaY = Math.abs(playerY - greenhouseY);
+
+  if (deltaX <= 1 && deltaY <= 1) {
+    showGreenhouseInfo();
+  } else {
+    showMessage("Je bent te ver van de kas! Loop er naartoe. 🏃‍♂️", "error");
+  }
+}
+
+// Show greenhouse information
+function showGreenhouseInfo() {
+  const totalPlants = gameState.farm.filter((plot) => plot.planted && !plot.grown).length;
+  const growingPlants = gameState.farm.filter((plot) => plot.planted && !plot.grown && plot.watered).length;
+
+  let infoMessage = "🏡 Je Kas\n\n";
+  infoMessage += "✨ Effect: +50% groeisnelheid voor alle planten!\n\n";
+  infoMessage += "📊 Huidige status:\n";
+  infoMessage += `• Totaal groeiende planten: ${totalPlants}\n`;
+  infoMessage += `• Planten met water vandaag: ${growingPlants}\n`;
+
+  if (totalPlants > 0) {
+    infoMessage += `• Geschatte tijd besparing: ~${Math.round(totalPlants * 0.5)} dagen per oogst!\n`;
+  }
+
+  infoMessage += "\n💡 Tip: Kas werkt automatisch voor alle planten op je boerderij!";
+
+  showMessage(infoMessage, "success");
+}
+
 // Keyboard event listener for player movement
 document.addEventListener("keydown", function (event) {
   switch (event.key) {
@@ -128,6 +171,14 @@ document.addEventListener("keydown", function (event) {
       const shopY = gameState.shopPosition.y;
       if (Math.abs(playerX - shopX) <= 1 && Math.abs(playerY - shopY) <= 1) {
         interactWithShop();
+        break;
+      }
+
+      // Check if near greenhouse
+      const greenhouseX = gameState.greenhousePosition.x;
+      const greenhouseY = gameState.greenhousePosition.y;
+      if (Math.abs(playerX - greenhouseX) <= 1 && Math.abs(playerY - greenhouseY) <= 1) {
+        interactWithGreenhouse();
         break;
       }
       break;

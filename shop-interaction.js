@@ -122,6 +122,32 @@ function updateShopModal() {
     `;
     shopGrid.appendChild(shopItem);
   });
+
+  // Add greenhouse if not already owned
+  if (!gameState.greenhouse) {
+    const canAffordGreenhouse = gameState.money >= 1000;
+    const disabledClass = canAffordGreenhouse ? "" : " disabled";
+
+    const greenhouseItem = document.createElement("div");
+    greenhouseItem.className = `shop-modal-item greenhouse-item${disabledClass}`;
+    greenhouseItem.innerHTML = `
+      <div class="item-icon">🏡</div>
+      <div class="item-details">
+        <div class="item-name">Kas</div>
+        <div class="item-price">€1000</div>
+        <div class="item-info-text">
+          Versnelt groei van ALLE planten!<br>
+          Eenmalige aankoop
+        </div>
+      </div>
+      <button class="buy-button ${disabledClass}" 
+              onclick="buyGreenhouse()"
+              ${!canAffordGreenhouse ? "disabled" : ""}>
+        ${!canAffordGreenhouse ? "Te duur" : "Koop"}
+      </button>
+    `;
+    shopGrid.appendChild(greenhouseItem);
+  }
 }
 
 // Buy item from modal shop
@@ -152,6 +178,29 @@ function buySeeds(cropType) {
     return true;
   } else {
     showMessage("Je hebt niet genoeg geld! 💸", "error");
+    return false;
+  }
+}
+
+// Buy greenhouse function
+function buyGreenhouse() {
+  const price = 1000;
+
+  if (gameState.greenhouse) {
+    showMessage("Je hebt al een kas! 🏡", "error");
+    return false;
+  }
+
+  if (gameState.money >= price) {
+    gameState.money -= price;
+    gameState.greenhouse = true;
+    showMessage("🎉 Kas gekocht! Alle planten groeien nu sneller! 🏡", "success");
+    updateUI();
+    saveGame();
+    updateShopModal(); // Refresh the modal to hide greenhouse
+    return true;
+  } else {
+    showMessage("Je hebt niet genoeg geld! Je hebt €1000 nodig. 💸", "error");
     return false;
   }
 }
