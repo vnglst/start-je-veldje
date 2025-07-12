@@ -17,6 +17,7 @@ function initializeFarm() {
       grown: false,
       watered: false,
       lastWateredDay: null,
+      daysWithoutWater: 0, // Track consecutive days without water
     };
   }
 }
@@ -51,6 +52,8 @@ function plantSeed(plotIndex) {
   plot.grown = false;
   plot.watered = false;
   plot.lastWateredDay = null;
+  plot.growthDays = 0; // Track actual growth days (only increases when watered)
+  plot.daysWithoutWater = 0;
 
   showMessage(`Je hebt ${crops[seedType].name} zaad geplant! Vergeet niet om water te geven. 🌱`, "success");
   updateUI();
@@ -74,6 +77,8 @@ function harvestCrop(plotIndex) {
   plot.grown = false;
   plot.watered = false;
   plot.lastWateredDay = null;
+  plot.growthDays = 0;
+  plot.daysWithoutWater = 0;
 
   const plotElement = document.getElementById(`plot-${plotIndex}`);
   plotElement.classList.add("harvest-animation");

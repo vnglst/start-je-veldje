@@ -69,33 +69,48 @@ function updateFarmDisplay() {
         plotElement.innerHTML = crops[plot.cropType].emoji;
         plotElement.onclick = () => harvestCrop(index);
       } else {
-        plotElement.className = "farm-plot planted";
-        plotElement.innerHTML = "🌱";
-
-        const daysGrown = gameState.day - plot.plantedDay;
-        const daysLeft = crops[plot.cropType].growthTime - daysGrown;
+        const actualGrowthDays = plot.growthDays || 0;
+        const daysLeft = crops[plot.cropType].growthTime - actualGrowthDays;
         const needsWater = !plot.watered || plot.lastWateredDay < gameState.day;
+        const daysWithoutWater = plot.daysWithoutWater || 0;
 
-        if (needsWater) {
-          plotElement.style.filter = "brightness(0.7)";
-          plotElement.style.border = "2px solid #CD853F";
+        plotElement.className = "farm-plot planted";
+
+        // Different visual states based on water status
+        if (daysWithoutWater >= 1) {
+          plotElement.classList.add("critical");
+          plotElement.innerHTML = "💀"; // Skull for plants about to die
+        } else if (needsWater && gameState.day > plot.plantedDay + 1) {
+          plotElement.classList.add("needs-water");
+          plotElement.innerHTML = "🥀"; // Wilted plant emoji
+        } else if (needsWater) {
+          plotElement.classList.add("needs-water");
+          plotElement.innerHTML = "🌱";
         } else {
+          plotElement.innerHTML = "🌱";
           plotElement.style.filter = "none";
           plotElement.style.border = "2px solid #654321";
         }
 
+        // Add growth timer
         if (daysLeft > 0) {
           const timer = document.createElement("div");
           timer.className = "growth-timer";
-          timer.textContent = daysLeft + "d";
-          if (needsWater) {
+
+          if (daysWithoutWater >= 1) {
+            timer.style.background = "#8B0000";
+            timer.style.color = "#fff";
+            timer.textContent = "💀";
+            timer.title = "KRITIEK! Plant gaat morgen dood zonder water!";
+          } else if (needsWater) {
             timer.style.background = "#FF6347";
             timer.textContent = "💧";
+            timer.title = "Heeft water nodig!";
+          } else {
+            timer.textContent = daysLeft + "d";
+            timer.title = `Nog ${daysLeft} dag(en) groei nodig (groeidagen: ${actualGrowthDays})`;
           }
           plotElement.appendChild(timer);
-        } else if (daysGrown >= crops[plot.cropType].growthTime && !needsWater) {
-          // Crop is ready to be grown (only if enough days have passed AND watered)
-          plot.grown = true;
         }
 
         plotElement.onclick = () => {
