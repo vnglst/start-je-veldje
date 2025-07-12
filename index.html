@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Start je Veldje</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="game-container">
+      <h1>🌱 Start je Veldje 🌾</h1>
+
+      <div class="game-stats">
+        <div class="stat">💰 Geld: €<span id="money">100</span></div>
+        <div class="stat">🌱 Zaden: <span id="seedCount">0</span></div>
+        <div class="stat">🍎 Fruit: <span id="fruitCount">0</span></div>
+        <div class="stat">💧 Water: <span id="water">10</span></div>
+        <div class="stat">📅 Dag: <span id="day">1</span></div>
+        <div class="stat">🌸 <span id="season">Lente</span></div>
+      </div>
+
+      <div class="game-area">
+        <div class="farm-area">
+          <h3 style="text-align: center; color: #8b4513; margin-bottom: 15px">🚜 Je Boerderij</h3>
+          <div class="farm-grid" id="farmGrid">
+            <!-- Farm plots worden hier gegenereerd -->
+          </div>
+          <p style="text-align: center; color: #8b4513; font-style: italic">
+            Klik op een veldje om zaden te planten! 🌱
+          </p>
+        </div>
+
+        <div class="sidebar">
+          <div class="shop-section">
+            <h3 class="section-title">🏪 Winkel</h3>
+            <div class="shop-item" onclick="buySeeds('carrot')">
+              <div class="item-info">
+                <span class="item-emoji">🥕</span>
+                <span class="item-name">Wortel Zaad</span>
+              </div>
+              <div class="item-price">€5</div>
+            </div>
+            <div class="shop-item" onclick="buySeeds('apple')">
+              <div class="item-info">
+                <span class="item-emoji">🍎</span>
+                <span class="item-name">Appel Zaad</span>
+              </div>
+              <div class="item-price">€8</div>
+            </div>
+            <div class="shop-item" onclick="buySeeds('corn')">
+              <div class="item-info">
+                <span class="item-emoji">🌽</span>
+                <span class="item-name">Maïs Zaad</span>
+              </div>
+              <div class="item-price">€12</div>
+            </div>
+            <div class="shop-item" onclick="buyWater()">
+              <div class="item-info">
+                <span class="item-emoji">💧</span>
+                <span class="item-name">Water (5x)</span>
+              </div>
+              <div class="item-price">€3</div>
+            </div>
+          </div>
+
+          <div class="inventory-section">
+            <h3 class="section-title">📦 Inventaris</h3>
+            <div id="inventoryList">
+              <!-- Inventory items worden hier getoond -->
+            </div>
+          </div>
+
+          <div class="tools-section">
+            <h3 class="section-title">🛠️ Gereedschap</h3>
+            <button
+              class="button"
+              onclick="toggleWateringMode()"
+              id="wateringButton"
+              style="width: 100%; margin-bottom: 10px; background: #00bfff"
+            >
+              🚿 Gieter Mode (Uit)
+            </button>
+            <p style="text-align: center; font-size: 0.9em; color: #666; font-style: italic">
+              Activeer gieter mode en klik op planten om ze water te geven!
+            </p>
+          </div>
+
+          <div class="sleep-section">
+            <button
+              class="button"
+              onclick="sleep()"
+              style="width: 100%; margin-top: 20px; background: #4169e1; font-size: 1.2em; padding: 15px"
+            >
+              😴 Ga Slapen (Volgende Dag)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="messageArea"></div>
+    </div>
+
+    <!-- JavaScript bestanden -->
+    <script src="gameState.js"></script>
+    <script src="ui.js"></script>
+    <script src="farm.js"></script>
+    <script src="shop.js"></script>
+    <script src="game.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
