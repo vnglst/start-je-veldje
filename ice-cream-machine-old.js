@@ -48,7 +48,7 @@ function craftIceCream(iceCreamType) {
   gameState.iceCream[iceCreamType]++;
 
   const profitInfo = calculateIceCreamProfit(iceCreamType);
-  showMessage(`Je hebt ${iceCream.name} gemaakt! ${profitInfo} 🍦✨ Verkoop het in de IJswinkel!`, "success");
+  showMessage(`Je hebt ${iceCream.name} gemaakt! ${profitInfo} 🍦✨`, "success");
 
   updateUI();
   saveGame();
@@ -123,20 +123,6 @@ function openIceCreamMachineModal() {
   // Show welcome message
   showMessage("IJsmachine geopend! 🏭 Maak ijs van je fruit. Verkoop het in de IJswinkel!", "success");
 }
-
-// Close ice cream machine modal
-function closeIceCreamMachineModal() {
-  const modal = document.querySelector(".ice-cream-machine-modal");
-  if (modal) {
-    modal.remove();
-  }
-  // Remove ESC key listener
-  document.removeEventListener("keydown", handleIceCreamMachineEscKey);
-
-  // Show goodbye message
-  showMessage("IJsmachine verlaten! Veel succes met je ijsproductie! 🏭", "success");
-}
-
 // Update ice cream machine modal content
 function updateIceCreamMachineModal() {
   updateMakeIceCreamTab();
@@ -187,6 +173,75 @@ function updateMakeIceCreamTab() {
       '<div style="text-align: center; color: #666; padding: 20px;">Geen recepten beschikbaar</div>';
   }
 }
+      <div class="recipe-details">
+        <div class="recipe-name">${iceCream.name}</div>
+        <div class="recipe-ingredients">Recept: ${recipeText}</div>
+        <div class="recipe-profit" style="color: #2e8b57; font-size: 0.9em;">
+          Verkoop voor €${iceCream.sellPrice} ${profitInfo}
+        </div>
+      </div>
+      <button class="make-button ${disabledClass}" 
+              onclick="makeIceCreamFromMachine('${iceCreamType}')"
+              ${!canMake ? "disabled" : ""}>
+        ${!canMake ? "Geen fruit" : "Maak"}
+      </button>
+    `;
+    recipesContainer.appendChild(recipeItem);
+  });
+
+  if (recipesContainer.children.length === 0) {
+    recipesContainer.innerHTML =
+      '<div style="text-align: center; color: #666; padding: 20px;">Geen recepten beschikbaar</div>';
+  }
+}
+
+// Update the sell ice cream tab
+function updateSellIceCreamTab() {
+  const inventoryContainer = document.getElementById("iceCreamInventoryForSale");
+  if (!inventoryContainer) return;
+
+  inventoryContainer.innerHTML = "";
+
+  // Show all ice cream in inventory
+  const hasIceCream = Object.entries(gameState.iceCream).some(([type, count]) => count > 0);
+
+  if (!hasIceCream) {
+    inventoryContainer.innerHTML =
+      '<div style="text-align: center; color: #666; padding: 20px;">Geen ijs om te verkopen. Maak eerst ijs!</div>';
+    return;
+  }
+
+  Object.entries(gameState.iceCream).forEach(([iceCreamType, count]) => {
+    if (count <= 0) return;
+
+    const iceCream = iceCreams[iceCreamType];
+    if (!iceCream) return;
+
+    const sellItem = document.createElement("div");
+    sellItem.className = "sell-ice-cream-item";
+    sellItem.innerHTML = `
+      <div class="sell-icon">${iceCream.emoji}</div>
+      <div class="sell-details">
+        <div class="sell-name">${iceCream.name}</div>
+        <div class="sell-count">Voorraad: ${count}</div>
+        <div class="sell-price">Verkoop: €${iceCream.sellPrice} per stuk</div>
+      </div>
+      <div class="sell-actions">
+        <button class="sell-one-button" onclick="sellIceCreamFromMachine('${iceCreamType}', 1)">
+          Verkoop 1x
+        </button>
+        ${
+          count > 1
+            ? `<button class="sell-all-button" onclick="sellIceCreamFromMachine('${iceCreamType}', ${count})">
+          Verkoop Alles (${count}x)
+        </button>`
+            : ""
+        }
+      </div>
+    `;
+    inventoryContainer.appendChild(sellItem);
+  });
+}
 
 // Calculate profit information for ice cream
 function calculateIceCreamProfit(iceCreamType) {
@@ -214,6 +269,29 @@ function makeIceCreamFromMachine(iceCreamType) {
   if (success !== false) {
     updateIceCreamMachineModal(); // Refresh the modal display
   }
+}
+
+// Sell ice cream from machine
+function sellIceCreamFromMachine(iceCreamType, amount) {
+  const iceCream = iceCreams[iceCreamType];
+  if (!iceCream) return;
+
+  if (gameState.iceCream[iceCreamType] < amount) {
+    showMessage("Je hebt niet genoeg ijs om te verkopen! 🍦", "error");
+    return;
+  }
+
+  const totalPrice = iceCream.sellPrice * amount;
+
+  gameState.iceCream[iceCreamType] -= amount;
+  gameState.money += totalPrice;
+
+  const itemText = amount === 1 ? iceCream.name : `${amount}x ${iceCream.name}`;
+  showMessage(`Je hebt ${itemText} verkocht voor €${totalPrice}! 💰`, "success");
+
+  updateUI();
+  saveGame();
+  updateIceCreamMachineModal(); // Refresh the modal display
 }
 
 // Handle ESC key for closing ice cream machine

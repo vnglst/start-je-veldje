@@ -178,15 +178,11 @@ function updateInventory() {
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-size: 0.8em;">
           <span>${item.emoji} ${item.name} (${item.count})</span>
           <div style="display: flex; gap: 5px;">
-            <button class="eat-btn" onclick="eatIceCream('${
-              item.type
-            }')" style="padding: 2px 6px; font-size: 0.7em; background: #ff69b4; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            <button class="eat-btn" onclick="eatIceCream('${item.type}')" style="padding: 2px 6px; font-size: 0.7em; background: #ff69b4; color: white; border: none; border-radius: 4px; cursor: pointer;">
               🍴 Eet
             </button>
-            <button class="sell-ice-btn" onclick="sellIceCreamFromInventory('${
-              item.type
-            }')" style="padding: 2px 6px; font-size: 0.7em; background: #4682b4; color: white; border: none; border-radius: 4px; cursor: pointer;">
-              €${iceCreams[item.type]?.sellPrice || 0}
+            <button class="sell-ice-btn" onclick="showMessage('Ga naar de IJswinkel 🍦 om je ijs te verkopen!', 'info')" style="padding: 2px 6px; font-size: 0.7em; background: #4682b4; color: white; border: none; border-radius: 4px; cursor: pointer;">
+              🍦 Winkel
             </button>
           </div>
         </div>
@@ -261,7 +257,7 @@ function renderRegularMap(gameMap) {
       else if (x === gameState.iceCreamShopPosition.x && y === gameState.iceCreamShopPosition.y) {
         tile.classList.add("ice-cream-shop");
         tile.innerHTML = "🍦";
-        tile.title = "IJswinkel - Klik om ijs te kopen";
+        tile.title = "IJswinkel - Klik om je ijs te verkopen";
         tile.onclick = () => interactWithIceCreamShop();
       }
       // Check if this is the ice cream machine position
