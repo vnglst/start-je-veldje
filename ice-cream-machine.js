@@ -1,5 +1,60 @@
 // Ice cream machine interaction functions
 
+// Check if player can craft specific ice cream
+function canCraftIceCream(iceCreamType) {
+  const iceCream = iceCreams[iceCreamType];
+  if (!iceCream || !iceCream.canCraft) return false;
+
+  // Check if player has all required ingredients
+  for (const [fruit, amount] of Object.entries(iceCream.recipe)) {
+    if (!gameState.fruits[fruit] || gameState.fruits[fruit] < amount) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// Craft ice cream from fruits
+function craftIceCream(iceCreamType) {
+  const iceCream = iceCreams[iceCreamType];
+  if (!iceCream || !iceCream.canCraft) {
+    showMessage("Dit ijs kan niet gemaakt worden! 🍦", "error");
+    return false;
+  }
+
+  // Check if player has all required ingredients
+  if (!canCraftIceCream(iceCreamType)) {
+    const missingIngredients = [];
+    Object.entries(iceCream.recipe).forEach(([fruit, amount]) => {
+      const have = gameState.fruits[fruit] || 0;
+      if (have < amount) {
+        const needed = amount - have;
+        missingIngredients.push(`${needed}x ${crops[fruit].emoji} ${crops[fruit].name}`);
+      }
+    });
+    showMessage(`Je mist ingrediënten: ${missingIngredients.join(", ")} 🥕🍎`, "error");
+    return false;
+  }
+
+  // Consume ingredients
+  Object.entries(iceCream.recipe).forEach(([fruit, amount]) => {
+    gameState.fruits[fruit] -= amount;
+  });
+
+  // Add ice cream to inventory
+  if (!gameState.iceCream[iceCreamType]) {
+    gameState.iceCream[iceCreamType] = 0;
+  }
+  gameState.iceCream[iceCreamType]++;
+
+  const profitInfo = calculateIceCreamProfit(iceCreamType);
+  showMessage(`Je hebt ${iceCream.name} gemaakt! ${profitInfo} 🍦✨`, "success");
+
+  updateUI();
+  saveGame();
+  return true;
+}
+
 // Check if player is near the ice cream machine
 function isPlayerNearIceCreamMachine() {
   const iceCreamMachineX = gameState.iceCreamMachinePosition.x;

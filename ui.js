@@ -119,7 +119,7 @@ function updateInventory() {
 
   // Show ice creams
   const iceCreamItems = [];
-  for (const [type, count] of Object.entries(gameState.iceCreams)) {
+  for (const [type, count] of Object.entries(gameState.iceCream)) {
     if (count > 0) {
       iceCreamItems.push({
         type,
