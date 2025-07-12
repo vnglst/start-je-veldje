@@ -232,7 +232,7 @@ function showPlantInfo(plotIndex) {
 
   const crop = crops[plot.cropType];
   const actualGrowthDays = plot.growthDays || 0;
-  const daysLeft = crop.growthTime - actualGrowthDays;
+  const daysLeft = Math.max(0, Math.ceil(crop.growthTime - actualGrowthDays)); // Round up and prevent negative days
   const needsWater = !plot.watered || plot.lastWateredDay < gameState.day;
   const daysWithoutWater = plot.daysWithoutWater || 0;
 
@@ -242,6 +242,9 @@ function showPlantInfo(plotIndex) {
   if (plot.grown) {
     statusMessage = `${crop.emoji} ${crop.name} is klaar voor de oogst! Klik om te oogsten.`;
     statusEmoji = "✅";
+  } else if (daysLeft === 0) {
+    statusMessage = `${crop.emoji} ${crop.name} is bijna klaar! Slaap om de plant te laten rijpen.`;
+    statusEmoji = "🌾";
   } else if (daysWithoutWater >= 1) {
     statusMessage = `${crop.emoji} ${crop.name} is kritiek! Nog ${daysLeft} dagen groei nodig, maar de plant gaat morgen dood zonder water!`;
     statusEmoji = "💀";
@@ -252,8 +255,9 @@ function showPlantInfo(plotIndex) {
     statusMessage = `${crop.emoji} ${crop.name} groeit goed! Nog ${daysLeft} dagen tot oogst.`;
     statusEmoji = "🌱";
   }
-
-  const infoText = `${statusEmoji} ${statusMessage}\n\n📊 Plantinfo:\n• Geplant op dag ${plot.plantedDay}\n• Groeidagen: ${actualGrowthDays}/${crop.growthTime}\n• Verkoopprijs: €${crop.fruitPrice}`;
+  const infoText = `${statusEmoji} ${statusMessage}\n\n📊 Plantinfo:\n• Geplant op dag ${
+    plot.plantedDay
+  }\n• Groeidagen: ${Math.round(actualGrowthDays * 10) / 10}/${crop.growthTime}\n• Verkoopprijs: €${crop.fruitPrice}`;
 
   showMessage(infoText, daysWithoutWater >= 1 ? "error" : needsWater ? "warning" : "info");
 }

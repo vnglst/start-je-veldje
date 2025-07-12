@@ -180,7 +180,7 @@ function updateFarmPlot(plotElement, index) {
       };
     } else {
       const actualGrowthDays = plot.growthDays || 0;
-      const daysLeft = crops[plot.cropType].growthTime - actualGrowthDays;
+      const daysLeft = Math.max(0, Math.ceil(crops[plot.cropType].growthTime - actualGrowthDays)); // Round up and prevent negative days
       const needsWater = !plot.watered || plot.lastWateredDay < gameState.day;
       const daysWithoutWater = plot.daysWithoutWater || 0;
 
@@ -202,7 +202,7 @@ function updateFarmPlot(plotElement, index) {
         plotElement.style.border = "2px solid #654321";
       }
 
-      // Add growth timer
+      // Add growth timer (only show if plant is still growing and has days left)
       if (daysLeft > 0) {
         const timer = document.createElement("div");
         timer.className = "growth-timer";
@@ -218,8 +218,17 @@ function updateFarmPlot(plotElement, index) {
           timer.title = "Heeft water nodig!";
         } else {
           timer.textContent = daysLeft + "d";
-          timer.title = `Nog ${daysLeft} dag(en) groei nodig (groeidagen: ${actualGrowthDays})`;
+          timer.title = `Nog ${daysLeft} dag(en) groei nodig (groeidagen: ${Math.round(actualGrowthDays * 10) / 10})`;
         }
+        plotElement.appendChild(timer);
+      } else if (daysLeft <= 0 && !plot.grown) {
+        // Plant should be ready but isn't marked as grown - show ready indicator
+        const timer = document.createElement("div");
+        timer.className = "growth-timer";
+        timer.style.background = "#4CAF50";
+        timer.style.color = "#fff";
+        timer.textContent = "✓";
+        timer.title = "Plant is klaar! Slaap om te laten groeien.";
         plotElement.appendChild(timer);
       }
 
