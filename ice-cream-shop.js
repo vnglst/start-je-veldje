@@ -77,9 +77,19 @@ function updateIceCreamShopModal() {
       '<div style="font-size: 2em; margin-bottom: 15px;">🏭</div>' +
       '<div style="font-weight: bold; margin-bottom: 10px;">Geen ijs om te verkopen!</div>' +
       "<div>Ga naar de IJsmachine om ijs te maken van je fruit.</div>" +
+      '<div style="margin-top: 10px; font-size: 0.9em; color: #888;">💡 Combineer verschillende vruchten voor waardevolle recepten!</div>' +
       "</div>";
     return;
   }
+
+  // Group ice cream by rarity for display
+  const groupedIceCream = {
+    basic: [],
+    rare: [],
+    epic: [],
+    legendary: [],
+    mythical: [],
+  };
 
   Object.entries(gameState.iceCream).forEach(([iceCreamType, count]) => {
     if (count <= 0) return;
@@ -87,35 +97,85 @@ function updateIceCreamShopModal() {
     const iceCream = iceCreams[iceCreamType];
     if (!iceCream) return;
 
-    const shopItem = document.createElement("div");
-    shopItem.className = "shop-item";
-    shopItem.innerHTML = `
-      <div class="shop-icon">${iceCream.emoji}</div>
-      <div class="shop-details">
-        <div class="shop-name">${iceCream.name}</div>
-        <div class="shop-description">Voorraad: ${count} stuks</div>
-        <div class="shop-price">€${iceCream.sellPrice} per stuk</div>
-        <div class="shop-total" style="color: #2e8b57; font-size: 0.9em;">
-          Totaal: €${iceCream.sellPrice * count}
-        </div>
-      </div>
-      <div class="shop-actions">
-        <button class="sell-one-button" onclick="sellIceCreamToShop('${iceCreamType}', 1)">
-          Verkoop 1x
-        </button>
-        ${
-          count > 1
-            ? `
-        <button class="sell-all-button" onclick="sellIceCreamToShop('${iceCreamType}', ${count})" 
-                style="margin-top: 5px; background: #2e8b57;">
-          Verkoop Alles
-        </button>
-        `
-            : ""
-        }
-      </div>
+    const rarity = iceCream.rarity || "basic";
+    groupedIceCream[rarity].push({ iceCreamType, iceCream, count });
+  });
+
+  // Rarity display configuration
+  const rarityConfig = {
+    basic: { name: "🥄 Basis IJs", color: "#666", bgColor: "#f9f9f9" },
+    rare: { name: "⭐ Zeldzaam IJs", color: "#4169E1", bgColor: "#f0f4ff" },
+    epic: { name: "💎 Episch IJs", color: "#8A2BE2", bgColor: "#f8f0ff" },
+    legendary: { name: "🏆 Legendarisch IJs", color: "#FF8C00", bgColor: "#fff8f0" },
+    mythical: { name: "✨ Mythisch IJs", color: "#DC143C", bgColor: "#fff0f0" },
+  };
+
+  // Display ice cream by rarity
+  Object.entries(groupedIceCream).forEach(([rarity, iceCreamList]) => {
+    if (iceCreamList.length === 0) return;
+
+    const config = rarityConfig[rarity];
+
+    // Add rarity header
+    const rarityHeader = document.createElement("div");
+    rarityHeader.className = "rarity-header";
+    rarityHeader.style.cssText = `
+      background: ${config.bgColor};
+      color: ${config.color};
+      padding: 10px;
+      margin: 10px 0 5px 0;
+      border-left: 4px solid ${config.color};
+      font-weight: bold;
+      border-radius: 4px;
     `;
-    shopContainer.appendChild(shopItem);
+    rarityHeader.textContent = config.name;
+    shopContainer.appendChild(rarityHeader);
+
+    // Add ice cream items in this rarity
+    iceCreamList.forEach(({ iceCreamType, iceCream, count }) => {
+      const shopItem = document.createElement("div");
+      shopItem.className = "shop-item";
+      shopItem.style.cssText = `
+        border-left: 3px solid ${config.color};
+        background: ${config.bgColor};
+      `;
+
+      shopItem.innerHTML = `
+        <div class="shop-icon" style="font-size: 1.5em;">${iceCream.emoji}</div>
+        <div class="shop-details">
+          <div class="shop-name" style="color: ${config.color}; font-weight: bold;">
+            ${iceCream.name}
+          </div>
+          <div class="shop-description">Voorraad: ${count} stuks</div>
+          <div class="shop-price">€${iceCream.sellPrice} per stuk</div>
+          <div class="shop-total" style="color: #2e8b57; font-size: 0.9em; font-weight: bold;">
+            Totaal: €${iceCream.sellPrice * count}
+          </div>
+          ${
+            iceCream.description
+              ? `<div style="font-size: 0.8em; color: #666; font-style: italic; margin-top: 5px;">${iceCream.description}</div>`
+              : ""
+          }
+        </div>
+        <div class="shop-actions">
+          <button class="sell-one-button" onclick="sellIceCreamToShop('${iceCreamType}', 1)"
+                  style="background: ${config.color};">
+            Verkoop 1x
+          </button>
+          ${
+            count > 1
+              ? `
+          <button class="sell-all-button" onclick="sellIceCreamToShop('${iceCreamType}', ${count})" 
+                  style="margin-top: 5px; background: ${config.color}; opacity: 0.8;">
+            Verkoop Alles
+          </button>
+          `
+              : ""
+          }
+        </div>
+      `;
+      shopContainer.appendChild(shopItem);
+    });
   });
 }
 

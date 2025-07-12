@@ -48,7 +48,30 @@ function craftIceCream(iceCreamType) {
   gameState.iceCream[iceCreamType]++;
 
   const profitInfo = calculateIceCreamProfit(iceCreamType);
-  showMessage(`Je hebt ${iceCream.name} gemaakt! ${profitInfo} 🍦✨ Verkoop het in de IJswinkel!`, "success");
+
+  // Special messages for rare ice cream
+  let rarityMessage = "";
+  const rarity = iceCream.rarity || "basic";
+
+  switch (rarity) {
+    case "rare":
+      rarityMessage = "⭐ Zeldzaam recept ontgrendeld! ";
+      break;
+    case "epic":
+      rarityMessage = "💎 Episch recept gemeesterd! ";
+      break;
+    case "legendary":
+      rarityMessage = "🏆 Legendarische creatie voltooid! ";
+      break;
+    case "mythical":
+      rarityMessage = "✨ MYTHISCHE MEESTERCREATIE! ";
+      break;
+  }
+
+  showMessage(
+    `${rarityMessage}Je hebt ${iceCream.name} gemaakt! ${profitInfo} 🍦✨ Verkoop het in de IJswinkel!`,
+    rarity === "mythical" || rarity === "legendary" ? "epic" : "success"
+  );
 
   updateUI();
   saveGame();
@@ -149,37 +172,98 @@ function updateMakeIceCreamTab() {
 
   recipesContainer.innerHTML = "";
 
+  // Group recipes by rarity
+  const groupedRecipes = {
+    basic: [],
+    rare: [],
+    epic: [],
+    legendary: [],
+    mythical: [],
+  };
+
   // Add craftable ice cream recipes
   Object.entries(iceCreams).forEach(([iceCreamType, iceCream]) => {
     if (!iceCream.canCraft) return; // Skip non-craftable items
 
-    const canMake = canCraftIceCream(iceCreamType);
-    const disabledClass = canMake ? "" : " disabled";
+    const rarity = iceCream.rarity || "basic";
+    groupedRecipes[rarity].push({ iceCreamType, iceCream });
+  });
 
-    const recipeText = Object.entries(iceCream.recipe)
-      .map(([fruit, amount]) => `${amount}x ${crops[fruit].emoji} ${crops[fruit].name}`)
-      .join(" + ");
+  // Rarity display configuration
+  const rarityConfig = {
+    basic: { name: "🥄 Basis Recepten", color: "#666", bgColor: "#f9f9f9" },
+    rare: { name: "⭐ Zeldzame Recepten", color: "#4169E1", bgColor: "#f0f4ff" },
+    epic: { name: "💎 Epische Recepten", color: "#8A2BE2", bgColor: "#f8f0ff" },
+    legendary: { name: "🏆 Legendarische Recepten", color: "#FF8C00", bgColor: "#fff8f0" },
+    mythical: { name: "✨ Mythische Recepten", color: "#DC143C", bgColor: "#fff0f0" },
+  };
 
-    const profitInfo = calculateIceCreamProfit(iceCreamType);
+  // Display recipes by rarity
+  Object.entries(groupedRecipes).forEach(([rarity, recipes]) => {
+    if (recipes.length === 0) return;
 
-    const recipeItem = document.createElement("div");
-    recipeItem.className = `recipe-item${disabledClass}`;
-    recipeItem.innerHTML = `
-      <div class="recipe-icon">${iceCream.emoji}</div>
-      <div class="recipe-details">
-        <div class="recipe-name">${iceCream.name}</div>
-        <div class="recipe-ingredients">Recept: ${recipeText}</div>
-        <div class="recipe-profit" style="color: #2e8b57; font-size: 0.9em;">
-          Maak voor IJswinkel: €${iceCream.sellPrice} ${profitInfo}
-        </div>
-      </div>
-      <button class="make-button ${disabledClass}" 
-              onclick="makeIceCreamFromMachine('${iceCreamType}')"
-              ${!canMake ? "disabled" : ""}>
-        ${!canMake ? "Geen fruit" : "Maak"}
-      </button>
+    const config = rarityConfig[rarity];
+
+    // Add rarity header
+    const rarityHeader = document.createElement("div");
+    rarityHeader.className = "rarity-header";
+    rarityHeader.style.cssText = `
+      background: ${config.bgColor};
+      color: ${config.color};
+      padding: 10px;
+      margin: 10px 0 5px 0;
+      border-left: 4px solid ${config.color};
+      font-weight: bold;
+      border-radius: 4px;
     `;
-    recipesContainer.appendChild(recipeItem);
+    rarityHeader.textContent = config.name;
+    recipesContainer.appendChild(rarityHeader);
+
+    // Add recipes in this rarity
+    recipes.forEach(({ iceCreamType, iceCream }) => {
+      const canMake = canCraftIceCream(iceCreamType);
+      const disabledClass = canMake ? "" : " disabled";
+
+      const recipeText = Object.entries(iceCream.recipe)
+        .map(([fruit, amount]) => `${amount}x ${crops[fruit].emoji} ${crops[fruit].name}`)
+        .join(" + ");
+
+      const profitInfo = calculateIceCreamProfit(iceCreamType);
+
+      const recipeItem = document.createElement("div");
+      recipeItem.className = `recipe-item${disabledClass}`;
+      recipeItem.style.cssText = `
+        border-left: 3px solid ${config.color};
+        background: ${canMake ? config.bgColor : "#f5f5f5"};
+      `;
+
+      recipeItem.innerHTML = `
+        <div class="recipe-icon" style="font-size: 1.5em;">${iceCream.emoji}</div>
+        <div class="recipe-details">
+          <div class="recipe-name" style="color: ${config.color}; font-weight: bold;">
+            ${iceCream.name}
+          </div>
+          <div class="recipe-ingredients" style="font-size: 0.9em;">
+            Recept: ${recipeText}
+          </div>
+          <div class="recipe-profit" style="color: #2e8b57; font-size: 0.9em;">
+            Verkoop voor: €${iceCream.sellPrice} ${profitInfo}
+          </div>
+          ${
+            iceCream.description
+              ? `<div class="recipe-description" style="font-size: 0.8em; color: #666; font-style: italic;">${iceCream.description}</div>`
+              : ""
+          }
+        </div>
+        <button class="make-button ${disabledClass}" 
+                onclick="makeIceCreamFromMachine('${iceCreamType}')"
+                ${!canMake ? "disabled" : ""}
+                style="background: ${canMake ? config.color : "#ccc"};">
+          ${!canMake ? "❌ Geen fruit" : "✨ Maak"}
+        </button>
+      `;
+      recipesContainer.appendChild(recipeItem);
+    });
   });
 
   if (recipesContainer.children.length === 0) {
