@@ -1,11 +1,18 @@
 // Shop and inventory functions
 function buySeeds(cropType) {
-  const price = crops[cropType].seedPrice;
+  const crop = crops[cropType];
+  const price = crop.seedPrice;
+
+  // Check if crop is available in current season
+  if (!crop.seasons.includes(gameState.season)) {
+    showMessage(`${crop.name} zaad is niet beschikbaar in ${gameState.season}! 🚫`, "error");
+    return;
+  }
 
   if (gameState.money >= price) {
     gameState.money -= price;
     gameState.seeds[cropType]++;
-    showMessage(`Je hebt ${crops[cropType].name} zaad gekocht! 🌱`, "success");
+    showMessage(`Je hebt ${crop.name} zaad gekocht! 🌱`, "success");
     updateUI();
   } else {
     showMessage("Je hebt niet genoeg geld! 💸", "error");

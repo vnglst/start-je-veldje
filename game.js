@@ -21,21 +21,50 @@ function sleep() {
       if (plot.planted && !plot.grown && plot.cropType) {
         const wasWateredYesterday = plot.watered && plot.lastWateredDay === gameState.day - 1;
 
-        if (wasWateredYesterday) {
-          // Plant was watered yesterday, reset drought counter and continue growing
+        // Check if crop can survive current season
+        const crop = crops[plot.cropType];
+        const canGrowInSeason = crop.seasons.includes(gameState.season);
+
+        if (wasWateredYesterday && canGrowInSeason) {
+          // Plant was watered yesterday and can grow in current season
           plot.daysWithoutWater = 0;
 
           // Initialize growthDays if it doesn't exist (for backwards compatibility)
           if (!plot.growthDays) {
             plot.growthDays = gameState.day - plot.plantedDay;
           } else {
-            plot.growthDays++;
+            // Apply seasonal growth rate modifier
+            let growthRate = 1;
+            if (gameState.season === "Lente") growthRate = 1.2; // 20% faster in spring
+            else if (gameState.season === "Zomer") growthRate = 1.1; // 10% faster in summer
+            else if (gameState.season === "Herfst") growthRate = 1.0; // Normal in autumn
+            else if (gameState.season === "Winter") growthRate = 0.5; // 50% slower in winter
+
+            plot.growthDays += growthRate;
           }
 
           // Check if plant is fully grown
-          if (plot.growthDays >= crops[plot.cropType].growthTime) {
+          if (plot.growthDays >= crop.growthTime) {
             plot.grown = true;
             newlyGrownCrops++;
+          }
+        } else if (!canGrowInSeason) {
+          // Plant cannot survive current season - it withers faster
+          plot.daysWithoutWater = (plot.daysWithoutWater || 0) + 2; // Double penalty for wrong season
+
+          if (plot.daysWithoutWater >= 2) {
+            // Plant dies from seasonal incompatibility
+            plot.planted = false;
+            plot.cropType = null;
+            plot.plantedDay = null;
+            plot.grown = false;
+            plot.watered = false;
+            plot.lastWateredDay = null;
+            plot.daysWithoutWater = 0;
+            plot.growthDays = 0;
+            deadPlants++;
+          } else {
+            witheredPlants++;
           }
         } else {
           // Plant was not watered yesterday
