@@ -2,15 +2,27 @@
 function initializeFarm() {
   // Initialize farm plots data (no DOM manipulation here since we use gameMap now)
   for (let i = 0; i < 24; i++) {
-    gameState.farm[i] = {
-      planted: false,
-      cropType: null,
-      plantedDay: null,
-      grown: false,
-      watered: false,
-      lastWateredDay: null,
-      daysWithoutWater: 0, // Track consecutive days without water
-    };
+    // Only initialize if the plot doesn't exist or is incomplete
+    if (!gameState.farm[i]) {
+      gameState.farm[i] = {
+        planted: false,
+        cropType: null,
+        plantedDay: null,
+        grown: false,
+        watered: false,
+        lastWateredDay: null,
+        daysWithoutWater: 0, // Track consecutive days without water
+        growthDays: 0, // Track actual growth days (only increases when watered)
+      };
+    } else {
+      // Ensure all properties exist for backwards compatibility
+      if (gameState.farm[i].daysWithoutWater === undefined) {
+        gameState.farm[i].daysWithoutWater = 0;
+      }
+      if (gameState.farm[i].growthDays === undefined) {
+        gameState.farm[i].growthDays = gameState.farm[i].plantedDay ? gameState.day - gameState.farm[i].plantedDay : 0;
+      }
+    }
   }
 }
 
