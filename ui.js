@@ -31,9 +31,10 @@ function updateUI() {
   }
 
   updateInventory();
-  updateFarmDisplay();
+  updateGameMap();
   updateShopDisplay();
   updateSeasonInfo();
+  updateGameStats();
 }
 
 // Update inventory display
@@ -75,77 +76,130 @@ function updateInventory() {
   }
 }
 
-// Update farm display
-function updateFarmDisplay() {
-  gameState.farm.forEach((plot, index) => {
-    const plotElement = document.getElementById(`plot-${index}`);
-    plotElement.innerHTML = "";
+// Update game map display
+function updateGameMap() {
+  const gameMap = document.getElementById("gameMap");
 
-    if (plot.planted && plot.cropType) {
-      if (plot.grown) {
-        plotElement.className = "farm-plot grown";
-        plotElement.innerHTML = crops[plot.cropType].emoji;
-        plotElement.onclick = () => harvestCrop(index);
+  // Clear and rebuild the entire map
+  gameMap.innerHTML = "";
+
+  // Create 8x6 grid (farm is 6x4, plus space for well and pathways)
+  for (let y = 0; y < 6; y++) {
+    for (let x = 0; x < 8; x++) {
+      const tile = document.createElement("div");
+      tile.className = "map-tile";
+      tile.id = `tile-${x}-${y}`;
+
+      // Check if this is a farm plot (center 6x4 area)
+      if (x >= 1 && x <= 6 && y >= 1 && y <= 4) {
+        const farmIndex = (y - 1) * 6 + (x - 1);
+        tile.classList.add("farm-plot");
+        tile.id = `plot-${farmIndex}`;
+
+        // Update farm plot content
+        updateFarmPlot(tile, farmIndex);
+      }
+      // Check if this is the well position
+      else if (x === gameState.wellPosition.x && y === gameState.wellPosition.y) {
+        tile.classList.add("well");
+        tile.innerHTML = "🏗️";
+        tile.title = "Put - Klik om water te halen";
+        tile.onclick = () => getWaterFromWell();
+      }
+      // Regular pathway tiles
+      else {
+        tile.innerHTML = "";
+      }
+
+      // Add player if on this tile
+      if (x === gameState.playerPosition.x && y === gameState.playerPosition.y) {
+        const player = document.createElement("div");
+        player.className = "player";
+        player.innerHTML = "🧑‍🌾";
+        tile.appendChild(player);
+      }
+
+      gameMap.appendChild(tile);
+    }
+  }
+}
+
+// Update individual farm plot
+function updateFarmPlot(plotElement, index) {
+  const plot = gameState.farm[index];
+  plotElement.innerHTML = "";
+
+  if (plot && plot.planted && plot.cropType) {
+    if (plot.grown) {
+      plotElement.classList.add("grown");
+      plotElement.innerHTML = crops[plot.cropType].emoji;
+      plotElement.onclick = () => harvestCrop(index);
+    } else {
+      const actualGrowthDays = plot.growthDays || 0;
+      const daysLeft = crops[plot.cropType].growthTime - actualGrowthDays;
+      const needsWater = !plot.watered || plot.lastWateredDay < gameState.day;
+      const daysWithoutWater = plot.daysWithoutWater || 0;
+
+      plotElement.classList.add("planted");
+
+      // Different visual states based on water status
+      if (daysWithoutWater >= 1) {
+        plotElement.classList.add("critical");
+        plotElement.innerHTML = "💀"; // Skull for plants about to die
+      } else if (needsWater && gameState.day > plot.plantedDay + 1) {
+        plotElement.classList.add("needs-water");
+        plotElement.innerHTML = "🥀"; // Wilted plant emoji
+      } else if (needsWater) {
+        plotElement.classList.add("needs-water");
+        plotElement.innerHTML = "🌱";
       } else {
-        const actualGrowthDays = plot.growthDays || 0;
-        const daysLeft = crops[plot.cropType].growthTime - actualGrowthDays;
-        const needsWater = !plot.watered || plot.lastWateredDay < gameState.day;
-        const daysWithoutWater = plot.daysWithoutWater || 0;
+        plotElement.innerHTML = "🌱";
+        plotElement.style.filter = "none";
+        plotElement.style.border = "2px solid #654321";
+      }
 
-        plotElement.className = "farm-plot planted";
+      // Add growth timer
+      if (daysLeft > 0) {
+        const timer = document.createElement("div");
+        timer.className = "growth-timer";
 
-        // Different visual states based on water status
         if (daysWithoutWater >= 1) {
-          plotElement.classList.add("critical");
-          plotElement.innerHTML = "💀"; // Skull for plants about to die
-        } else if (needsWater && gameState.day > plot.plantedDay + 1) {
-          plotElement.classList.add("needs-water");
-          plotElement.innerHTML = "🥀"; // Wilted plant emoji
+          timer.style.background = "#8B0000";
+          timer.style.color = "#fff";
+          timer.textContent = "💀";
+          timer.title = "KRITIEK! Plant gaat morgen dood zonder water!";
         } else if (needsWater) {
-          plotElement.classList.add("needs-water");
-          plotElement.innerHTML = "🌱";
+          timer.style.background = "#FF6347";
+          timer.textContent = "💧";
+          timer.title = "Heeft water nodig!";
         } else {
-          plotElement.innerHTML = "🌱";
-          plotElement.style.filter = "none";
-          plotElement.style.border = "2px solid #654321";
+          timer.textContent = daysLeft + "d";
+          timer.title = `Nog ${daysLeft} dag(en) groei nodig (groeidagen: ${actualGrowthDays})`;
         }
+        plotElement.appendChild(timer);
+      }
 
-        // Add growth timer
-        if (daysLeft > 0) {
-          const timer = document.createElement("div");
-          timer.className = "growth-timer";
-
-          if (daysWithoutWater >= 1) {
-            timer.style.background = "#8B0000";
-            timer.style.color = "#fff";
-            timer.textContent = "💀";
-            timer.title = "KRITIEK! Plant gaat morgen dood zonder water!";
-          } else if (needsWater) {
-            timer.style.background = "#FF6347";
-            timer.textContent = "💧";
-            timer.title = "Heeft water nodig!";
-          } else {
-            timer.textContent = daysLeft + "d";
-            timer.title = `Nog ${daysLeft} dag(en) groei nodig (groeidagen: ${actualGrowthDays})`;
-          }
-          plotElement.appendChild(timer);
-        }
-
-        plotElement.onclick = () => {
+      plotElement.onclick = () => {
+        if (isPlayerNearPlot(index)) {
           if (wateringMode) {
             waterPlant(index);
           } else {
             plantSeed(index);
           }
-        };
-      }
-    } else {
-      plotElement.className = "farm-plot";
-      plotElement.style.filter = "none";
-      plotElement.style.border = "2px solid #654321";
-      plotElement.onclick = () => plantSeed(index);
+        } else {
+          showMessage("Je bent te ver weg! Loop dichter naar het veldje.", "error");
+        }
+      };
     }
-  });
+  } else {
+    plotElement.onclick = () => {
+      if (isPlayerNearPlot(index)) {
+        plantSeed(index);
+      } else {
+        showMessage("Je bent te ver weg! Loop dichter naar het veldje.", "error");
+      }
+    };
+  }
 }
 
 // Update shop display based on current season
@@ -172,14 +226,10 @@ function updateShopDisplay() {
     `;
   });
 
-  // Add water (always available)
+  // Add note about the well instead of selling water
   shopHTML += `
-    <div class="shop-item" onclick="buyWater()">
-      <div class="item-info">
-        <span class="item-emoji">💧</span>
-        <span class="item-name">Water (5x)</span>
-      </div>
-      <div class="item-price">€3</div>
+    <div style="padding: 10px; background: #e6f3ff; border-radius: 8px; margin-top: 10px; text-align: center; color: #2e8b57; font-style: italic;">
+      💧 Voor water: loop naar de put! 🏗️
     </div>
   `;
 
@@ -220,6 +270,24 @@ function updateSeasonInfo() {
     <div style="color: #888; font-size: 0.8em;">
       Dag ${dayInSeason}/30 • ${daysLeft} dagen tot volgend seizoen
     </div>
+  `;
+}
+
+// Update game statistics display
+function updateGameStats() {
+  const gameStats = document.getElementById("gameStats");
+  const totalSeeds = Object.values(gameState.seeds).reduce((a, b) => a + b, 0);
+  const totalFruits = Object.values(gameState.fruits).reduce((a, b) => a + b, 0);
+  const plantsOnFarm = gameState.farm.filter((plot) => plot && plot.planted).length;
+  const grownCrops = gameState.farm.filter((plot) => plot && plot.grown).length;
+  const year = Math.floor((gameState.day - 1) / 120) + 1;
+  const totalPlots = 24; // 6x4 farm grid
+
+  gameStats.innerHTML = `
+    <div style="margin-bottom: 8px;">🗓️ Jaar ${year} • Dag ${gameState.day}</div>
+    <div style="margin-bottom: 8px;">🌱 ${plantsOnFarm}/${totalPlots} veldjes beplant</div>
+    <div style="margin-bottom: 8px;">🎯 ${grownCrops} gewassen klaar voor oogst</div>
+    <div style="margin-bottom: 8px;">📦 ${totalSeeds + totalFruits} items in inventaris</div>
   `;
 }
 

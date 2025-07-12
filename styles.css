@@ -109,52 +109,103 @@ h1 {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.farm-plot.planted {
+.map-tile.farm-plot.planted {
   background: #228b22;
 }
 
-.farm-plot.grown {
+.map-tile.farm-plot.grown {
   background: #32cd32;
 }
 
+/* Game map layout */
+.game-map {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+  max-width: 520px;
+  margin: 0 auto 20px auto;
+}
+
+.map-tile {
+  width: 60px;
+  height: 60px;
+  background: #90ee90;
+  border: 2px solid #228b22;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 24px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.map-tile.farm-plot {
+  background: #8b4513;
+  border: 2px solid #654321;
+  cursor: pointer;
+}
+
+.map-tile.well {
+  background: #4682b4;
+  border: 2px solid #2e6194;
+  cursor: pointer;
+}
+
+.map-tile.well:hover {
+  background: #5a9bd4;
+  transform: scale(1.05);
+}
+
+.player {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 20px;
+  z-index: 10;
+  pointer-events: none;
+}
+
 /* Seasonal farm plot effects */
-body.winter .farm-plot {
+body.winter .map-tile.farm-plot {
   background: #d6e8f5;
   border: 2px solid #a8c5e2;
   box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
-body.winter .farm-plot.planted {
+body.winter .map-tile.farm-plot.planted {
   background: #b8d4ea;
 }
 
-body.winter .farm-plot.grown {
+body.winter .map-tile.farm-plot.grown {
   background: #9cc7df;
 }
 
-body.lente .farm-plot.planted {
+body.lente .map-tile.farm-plot.planted {
   background: #32cd32;
   box-shadow: 0 0 10px rgba(50, 205, 50, 0.3);
 }
 
-body.zomer .farm-plot {
+body.zomer .map-tile.farm-plot {
   background: #deb887;
   border: 2px solid #cd853f;
 }
 
-body.herfst .farm-plot {
+body.herfst .map-tile.farm-plot {
   background: #a0522d;
   border: 2px solid #8b4513;
 }
 
 /* Withered plant styling */
-.farm-plot.withered {
+.map-tile.farm-plot.withered {
   background: #8b4513;
   border: 2px solid #a0522d;
   filter: brightness(0.5) saturate(0.7);
 }
 
-.farm-plot.needs-water {
+.map-tile.farm-plot.needs-water {
   filter: brightness(0.7);
   border: 2px solid #cd853f;
   animation: pulse-red 2s infinite;
@@ -171,7 +222,7 @@ body.herfst .farm-plot {
 }
 
 /* Critical withered plant styling (about to die) */
-.farm-plot.critical {
+.map-tile.farm-plot.critical {
   filter: brightness(0.4) saturate(0.3);
   border: 3px solid #8b0000;
   animation: pulse-critical 1s infinite;
