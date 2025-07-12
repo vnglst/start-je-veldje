@@ -35,6 +35,7 @@ let gameState = {
 
 // Game mode
 let wateringMode = false;
+let infoMode = false;
 
 // Crop data
 const crops = {
@@ -165,8 +166,9 @@ function startNewGame() {
       shopPosition: { x: 0, y: 5 },
     };
 
-    // Reset watering mode
+    // Reset watering mode and info mode
     wateringMode = false;
+    infoMode = false;
 
     // Initialize farm and update UI
     initializeFarm();

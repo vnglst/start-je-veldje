@@ -32,147 +32,105 @@
             Gebruik pijltjestoetsen om te bewegen! Ga naar de winkel 🏪 en put 🏗️.
           </p>
 
-          <div
-            style="
-              background: #fff8dc;
-              border: 2px solid #daa520;
-              border-radius: 8px;
-              padding: 10px;
-              margin-top: 10px;
-              font-size: 0.9em;
-            "
-          >
-            <h4 style="color: #b8860b; margin-bottom: 8px; text-align: center">📖 Hoe te spelen:</h4>
-            <ul style="color: #8b4513; line-height: 1.4; padding-left: 20px">
-              <li>🏪 Loop naar de winkel om zaden te kopen</li>
-              <li>🚶 Beweeg naar een leeg veldje</li>
-              <li>🌱 Klik om te planten</li>
-              <li>🚿 Gebruik gieter mode om water te geven</li>
-              <li>💧 Haal water bij de put 🏗️</li>
-              <li>🎯 Oogst rijpe gewassen</li>
-              <li>⌨️ Druk spatie bij gebouwen voor interactie</li>
-            </ul>
-              <li>💧 Haal water bij de put 🏗️</li>
-              <li>🎯 Oogst rijpe gewassen</li>
-            </ul>
+          <div class="help-section">
+            <details>
+              <summary
+                style="
+                  color: #b8860b;
+                  font-weight: bold;
+                  cursor: pointer;
+                  padding: 8px;
+                  background: #fff8dc;
+                  border-radius: 6px;
+                  margin-bottom: 5px;
+                "
+              >
+                📖 Hoe te spelen (klik om uit te klappen)
+              </summary>
+              <div
+                style="
+                  background: #fff8dc;
+                  border: 2px solid #daa520;
+                  border-radius: 8px;
+                  padding: 10px;
+                  font-size: 0.85em;
+                "
+              >
+                <ul style="color: #8b4513; line-height: 1.3; padding-left: 20px; margin: 0">
+                  <li>🏪 Loop naar de winkel om zaden te kopen</li>
+                  <li>🚶 Beweeg naar een leeg veldje</li>
+                  <li>🌱 Klik om te planten</li>
+                  <li>🚿 Gebruik gieter mode om water te geven</li>
+                  <li>💧 Haal water bij de put 🏗️</li>
+                  <li>🔍 Gebruik info mode voor plantdetails</li>
+                  <li>🎯 Oogst rijpe gewassen</li>
+                  <li>⌨️ Druk spatie bij gebouwen voor interactie</li>
+                </ul>
+              </div>
+            </details>
           </div>
         </div>
 
         <div class="sidebar">
-          <div class="shop-section">
-            <h3 class="section-title">🏪 Winkel</h3>
-            <div class="shop-item" onclick="buySeeds('carrot')">
-              <div class="item-info">
-                <span class="item-emoji">🥕</span>
-                <span class="item-name">Wortel Zaad</span>
+          <!-- Tab Navigation -->
+          <div class="tab-navigation">
+            <button class="tab-button active" onclick="showTab('inventory')">📦 Inventaris</button>
+            <button class="tab-button" onclick="showTab('tools')">🛠️ Tools</button>
+            <button class="tab-button" onclick="showTab('season')">📅 Seizoen</button>
+          </div>
+
+          <!-- Tab Content -->
+          <div class="tab-content">
+            <!-- Inventory Tab -->
+            <div id="tab-inventory" class="tab-panel active">
+              <div id="inventoryList">
+                <!-- Inventory items worden hier getoond -->
               </div>
-              <div class="item-price">€5</div>
             </div>
-            <div class="shop-item" onclick="buySeeds('apple')">
-              <div class="item-info">
-                <span class="item-emoji">🍎</span>
-                <span class="item-name">Appel Zaad</span>
+
+            <!-- Tools Tab -->
+            <div id="tab-tools" class="tab-panel">
+              <div class="tools-grid">
+                <button class="tool-button" onclick="toggleWateringMode()" id="wateringButton">🚿 Gieter</button>
+                <button class="tool-button" onclick="toggleInfoMode()" id="infoButton">🔍 Info</button>
+                <button class="tool-button" onclick="getWaterFromWell()">💧 Water</button>
+                <button class="tool-button" onclick="interactWithShop()">🏪 Winkel</button>
               </div>
-              <div class="item-price">€8</div>
+
+              <!-- Movement controls (compact) -->
+              <div class="movement-section">
+                <h4>🚶 Beweging</h4>
+                <div class="movement-grid">
+                  <div></div>
+                  <button class="move-btn" onclick="movePlayer('up')">⬆️</button>
+                  <div></div>
+                  <button class="move-btn" onclick="movePlayer('left')">⬅️</button>
+                  <div class="move-center">🧑‍🌾</div>
+                  <button class="move-btn" onclick="movePlayer('right')">➡️</button>
+                  <div></div>
+                  <button class="move-btn" onclick="movePlayer('down')">⬇️</button>
+                  <div></div>
+                </div>
+                <small>Of gebruik pijltjestoetsen / WASD</small>
+              </div>
             </div>
-            <div class="shop-item" onclick="buySeeds('corn')">
-              <div class="item-info">
-                <span class="item-emoji">🌽</span>
-                <span class="item-name">Maïs Zaad</span>
+
+            <!-- Season Tab -->
+            <div id="tab-season" class="tab-panel">
+              <div id="seasonInfo">
+                <!-- Season information will be displayed here -->
               </div>
-              <div class="item-price">€12</div>
-            </div>
-            <div class="shop-item" onclick="buyWater()">
-              <div class="item-info">
-                <span class="item-emoji">💧</span>
-                <span class="item-name">Water (5x)</span>
-              </div>
-              <div class="item-price">€3</div>
             </div>
           </div>
 
-          <div class="inventory-section">
-            <h3 class="section-title">📦 Inventaris</h3>
-            <div id="inventoryList">
-              <!-- Inventory items worden hier getoond -->
-            </div>
-          </div>
+          <!-- Action Buttons (Always Visible) -->
+          <div class="action-buttons">
+            <button class="action-btn sleep-btn" onclick="sleep()">� Ga Slapen</button>
 
-          <div class="tools-section">
-            <h3 class="section-title">🛠️ Gereedschap</h3>
-            <button
-              class="button"
-              onclick="toggleWateringMode()"
-              id="wateringButton"
-              style="width: 100%; margin-bottom: 10px; background: #00bfff"
-            >
-              🚿 Gieter Mode (Uit)
-            </button>
-            <p style="text-align: center; font-size: 0.9em; color: #666; font-style: italic">
-              Activeer gieter mode en klik op planten om ze water te geven!
-            </p>
-
-            <!-- Movement controls -->
-            <div style="text-align: center; margin-top: 15px">
-              <h4 style="color: #b8860b; margin-bottom: 10px">🚶 Beweging</h4>
-              <div
-                style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; max-width: 120px; margin: 0 auto"
-              >
-                <div></div>
-                <button class="button" onclick="movePlayer('up')" style="padding: 8px; font-size: 16px">⬆️</button>
-                <div></div>
-                <button class="button" onclick="movePlayer('left')" style="padding: 8px; font-size: 16px">⬅️</button>
-                <button class="button" onclick="getWaterFromWell()" style="padding: 8px; font-size: 12px">💧</button>
-                <button class="button" onclick="movePlayer('right')" style="padding: 8px; font-size: 16px">➡️</button>
-                <div></div>
-                <button class="button" onclick="movePlayer('down')" style="padding: 8px; font-size: 16px">⬇️</button>
-                <div></div>
-              </div>
-              <p style="font-size: 0.8em; color: #666; margin-top: 8px; font-style: italic">
-                Of gebruik pijltjestoetsen / WASD
-              </p>
-            </div>
-          </div>
-
-          <div class="sleep-section">
-            <button
-              class="button"
-              onclick="sleep()"
-              style="width: 100%; margin-top: 20px; background: #4169e1; font-size: 1.2em; padding: 15px"
-            >
-              😴 Ga Slapen (Volgende Dag)
-            </button>
-
-            <button
-              class="button"
-              onclick="startNewGame()"
-              style="width: 100%; margin-top: 10px; background: #ff6347; font-size: 1em; padding: 10px"
-            >
-              🔄 Nieuw Spel Starten
-            </button>
-
-            <div style="display: flex; gap: 5px; margin-top: 10px">
-              <button
-                class="button"
-                onclick="exportGameData()"
-                style="flex: 1; background: #32cd32; font-size: 0.9em; padding: 8px"
-              >
-                💾 Export
-              </button>
-              <button
-                class="button"
-                onclick="importGameData()"
-                style="flex: 1; background: #ffa500; font-size: 0.9em; padding: 8px"
-              >
-                📂 Import
-              </button>
-            </div>
-          </div>
-
-          <div class="season-info-section">
-            <h3 class="section-title">📅 Seizoen Info</h3>
-            <div id="seasonInfo" style="font-size: 0.9em; color: #666; text-align: center; line-height: 1.4">
-              <!-- Season information will be displayed here -->
+            <div class="utility-buttons">
+              <button class="util-btn" onclick="startNewGame()">🔄 Nieuw Spel</button>
+              <button class="util-btn" onclick="exportGameData()">� Export</button>
+              <button class="util-btn" onclick="importGameData()">📂 Import</button>
             </div>
           </div>
         </div>

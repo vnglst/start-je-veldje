@@ -140,6 +140,22 @@ function toggleWateringMode() {
   }
 }
 
+// Toggle info mode
+function toggleInfoMode() {
+  infoMode = !infoMode;
+  // Turn off watering mode when info mode is on
+  if (infoMode) {
+    wateringMode = false;
+  }
+  updateUI();
+
+  if (infoMode) {
+    showMessage("Info mode aan! Klik op planten om informatie te zien. 🔍", "success");
+  } else {
+    showMessage("Info mode uit! Normale plant interactie actief. 🌱", "success");
+  }
+}
+
 // Get the best available seed for current season
 function getBestAvailableSeed() {
   // Priority order: cheapest first for easier gameplay
@@ -203,4 +219,41 @@ function quickPlant(plotIndex) {
   showMessage(`Je hebt ${crops[seedType].name} zaad geplant! Vergeet niet om water te geven. 🌱`, "success");
   updateUI();
   saveGame();
+}
+
+// Show plant information when clicking on a planted crop
+function showPlantInfo(plotIndex) {
+  const plot = gameState.farm[plotIndex];
+
+  if (!plot.planted || !plot.cropType) {
+    showMessage("Er groeit geen plant op dit veldje.", "error");
+    return;
+  }
+
+  const crop = crops[plot.cropType];
+  const actualGrowthDays = plot.growthDays || 0;
+  const daysLeft = crop.growthTime - actualGrowthDays;
+  const needsWater = !plot.watered || plot.lastWateredDay < gameState.day;
+  const daysWithoutWater = plot.daysWithoutWater || 0;
+
+  let statusMessage = "";
+  let statusEmoji = "";
+
+  if (plot.grown) {
+    statusMessage = `${crop.emoji} ${crop.name} is klaar voor de oogst! Klik om te oogsten.`;
+    statusEmoji = "✅";
+  } else if (daysWithoutWater >= 1) {
+    statusMessage = `${crop.emoji} ${crop.name} is kritiek! Nog ${daysLeft} dagen groei nodig, maar de plant gaat morgen dood zonder water!`;
+    statusEmoji = "💀";
+  } else if (needsWater) {
+    statusMessage = `${crop.emoji} ${crop.name} heeft water nodig! Nog ${daysLeft} dagen groei nodig.`;
+    statusEmoji = "💧";
+  } else {
+    statusMessage = `${crop.emoji} ${crop.name} groeit goed! Nog ${daysLeft} dagen tot oogst.`;
+    statusEmoji = "🌱";
+  }
+
+  const infoText = `${statusEmoji} ${statusMessage}\n\n📊 Plantinfo:\n• Geplant op dag ${plot.plantedDay}\n• Groeidagen: ${actualGrowthDays}/${crop.growthTime}\n• Verkoopprijs: €${crop.fruitPrice}`;
+
+  showMessage(infoText, daysWithoutWater >= 1 ? "error" : needsWater ? "warning" : "info");
 }

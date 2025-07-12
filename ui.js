@@ -23,11 +23,18 @@ function updateUI() {
   const seasonStat = document.querySelector("#season").parentElement;
   seasonStat.innerHTML = `${seasonEmojis[gameState.season]} <span id="season">${gameState.season}</span>`;
 
-  // Update watering button
+  // Update tool buttons
   const wateringButton = document.getElementById("wateringButton");
   if (wateringButton) {
-    wateringButton.textContent = wateringMode ? "🚿 Gieter Mode (Aan)" : "🚿 Gieter Mode (Uit)";
-    wateringButton.style.background = wateringMode ? "#32CD32" : "#00BFFF";
+    wateringButton.textContent = wateringMode ? "🚿 Gieter ✓" : "🚿 Gieter";
+    wateringButton.classList.toggle("active", wateringMode);
+  }
+
+  // Update info button
+  const infoButton = document.getElementById("infoButton");
+  if (infoButton) {
+    infoButton.textContent = infoMode ? "🔍 Info ✓" : "🔍 Info";
+    infoButton.classList.toggle("active", infoMode);
   }
 
   updateInventory();
@@ -43,36 +50,59 @@ function updateInventory() {
   inventoryList.innerHTML = "";
 
   // Show seeds
+  const seedItems = [];
   for (const [type, count] of Object.entries(gameState.seeds)) {
     if (count > 0) {
-      const item = document.createElement("div");
-      item.className = "inventory-item";
-      item.innerHTML = `
-        <div class="item-info">
-          <span class="item-emoji">${crops[type].emoji}</span>
-          <span class="item-name">${crops[type].name} Zaad (${count})</span>
-        </div>
-      `;
-      inventoryList.appendChild(item);
+      seedItems.push(`${crops[type].emoji} ${crops[type].name} Zaad (${count})`);
     }
   }
 
   // Show fruits
+  const fruitItems = [];
   for (const [type, count] of Object.entries(gameState.fruits)) {
     if (count > 0) {
-      const item = document.createElement("div");
-      item.className = "inventory-item";
-      item.innerHTML = `
-        <div class="item-info">
-          <span class="item-emoji">${crops[type].emoji}</span>
-          <span class="item-name">${crops[type].name} (${count})</span>
-        </div>
-        <button class="button sell-button" onclick="sellFruit('${type}')">
-          Verkoop €${crops[type].fruitPrice}
-        </button>
-      `;
-      inventoryList.appendChild(item);
+      fruitItems.push({ type, count, name: crops[type].name, emoji: crops[type].emoji, price: crops[type].fruitPrice });
     }
+  }
+
+  // Create compact inventory display
+  if (seedItems.length > 0) {
+    const seedSection = document.createElement("div");
+    seedSection.className = "inventory-section";
+    seedSection.innerHTML = `
+      <h4 style="color: #2e8b57; margin-bottom: 8px; font-size: 0.9em;">🌱 Zaden</h4>
+      <div style="font-size: 0.8em; line-height: 1.3;">
+        ${seedItems.join("<br>")}
+      </div>
+    `;
+    inventoryList.appendChild(seedSection);
+  }
+
+  if (fruitItems.length > 0) {
+    const fruitSection = document.createElement("div");
+    fruitSection.className = "inventory-section";
+    fruitSection.style.marginTop = "15px";
+
+    let fruitHtml = `<h4 style="color: #2e8b57; margin-bottom: 8px; font-size: 0.9em;">🍎 Fruit</h4>`;
+
+    fruitItems.forEach((item) => {
+      fruitHtml += `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-size: 0.8em;">
+          <span>${item.emoji} ${item.name} (${item.count})</span>
+          <button class="sell-btn" onclick="sellFruit('${item.type}')" style="padding: 2px 6px; font-size: 0.7em; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            €${item.price}
+          </button>
+        </div>
+      `;
+    });
+
+    fruitSection.innerHTML = fruitHtml;
+    inventoryList.appendChild(fruitSection);
+  }
+
+  if (seedItems.length === 0 && fruitItems.length === 0) {
+    inventoryList.innerHTML =
+      '<div style="text-align: center; color: #666; font-style: italic; padding: 20px;">Geen items in inventaris</div>';
   }
 }
 
@@ -140,7 +170,14 @@ function updateFarmPlot(plotElement, index) {
     if (plot.grown) {
       plotElement.classList.add("grown");
       plotElement.innerHTML = crops[plot.cropType].emoji;
-      plotElement.onclick = () => harvestCrop(index);
+      plotElement.title = `${crops[plot.cropType].name} - Klaar voor oogst! Info mode voor details`;
+      plotElement.onclick = (event) => {
+        if (infoMode || event.shiftKey) {
+          showPlantInfo(index);
+        } else {
+          harvestCrop(index);
+        }
+      };
     } else {
       const actualGrowthDays = plot.growthDays || 0;
       const daysLeft = crops[plot.cropType].growthTime - actualGrowthDays;
@@ -186,7 +223,16 @@ function updateFarmPlot(plotElement, index) {
         plotElement.appendChild(timer);
       }
 
-      plotElement.onclick = () => {
+      // Add tooltip for plant info
+      plotElement.title = `${crops[plot.cropType].name} - Info mode voor plantinfo`;
+
+      plotElement.onclick = (event) => {
+        // Check if info mode is active or Shift key is held for plant info
+        if (infoMode || event.shiftKey) {
+          showPlantInfo(index);
+          return;
+        }
+
         if (isPlayerNearPlot(index)) {
           if (wateringMode) {
             waterPlant(index);
@@ -297,9 +343,36 @@ function showSeasonalCrops() {
 // Show message function
 function showMessage(text, type) {
   const messageArea = document.getElementById("messageArea");
-  messageArea.innerHTML = `<div class="message ${type}">${text}</div>`;
+  // Convert newlines to HTML breaks for multi-line messages
+  const formattedText = text.replace(/\n/g, "<br>");
+  messageArea.innerHTML = `<div class="message ${type}">${formattedText}</div>`;
 
+  // Longer timeout for info messages since they have more content
+  const timeout = type === "info" ? 6000 : 3000;
   setTimeout(() => {
     messageArea.innerHTML = "";
-  }, 3000);
+  }, timeout);
+}
+
+// Tab functionality for sidebar
+function showTab(tabName) {
+  // Hide all tab panels
+  const panels = document.querySelectorAll(".tab-panel");
+  panels.forEach((panel) => panel.classList.remove("active"));
+
+  // Hide all tab buttons
+  const buttons = document.querySelectorAll(".tab-button");
+  buttons.forEach((button) => button.classList.remove("active"));
+
+  // Show selected tab panel
+  const targetPanel = document.getElementById(`tab-${tabName}`);
+  if (targetPanel) {
+    targetPanel.classList.add("active");
+  }
+
+  // Activate selected tab button
+  const targetButton = event.target;
+  if (targetButton) {
+    targetButton.classList.add("active");
+  }
 }

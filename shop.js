@@ -1,4 +1,6 @@
 // Shop and inventory functions
+// Legacy shop functions (replaced by physical shop interaction)
+/*
 function buySeeds(cropType) {
   const crop = crops[cropType];
   const price = crop.seedPrice;
@@ -32,6 +34,7 @@ function buyWater() {
     showMessage("Je hebt niet genoeg geld! 💸", "error");
   }
 }
+*/
 
 // Sell fruit function
 function sellFruit(fruitType) {
