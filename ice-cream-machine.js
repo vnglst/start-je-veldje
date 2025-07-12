@@ -86,17 +86,17 @@ function openIceCreamMachineModal() {
 // Show specific tab in machine modal
 function showMachineTab(tabName) {
   // Hide all tabs
-  document.querySelectorAll('.machine-tab-content').forEach(tab => {
-    tab.classList.remove('active');
+  document.querySelectorAll(".machine-tab-content").forEach((tab) => {
+    tab.classList.remove("active");
   });
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.classList.remove('active');
+  document.querySelectorAll(".tab-btn").forEach((btn) => {
+    btn.classList.remove("active");
   });
 
   // Show selected tab
-  document.getElementById(`machine-${tabName}-tab`).classList.add('active');
-  event.target.classList.add('active');
-  
+  document.getElementById(`machine-${tabName}-tab`).classList.add("active");
+  event.target.classList.add("active");
+
   updateIceCreamMachineModal();
 }
 
@@ -160,7 +160,8 @@ function updateMakeIceCreamTab() {
   });
 
   if (recipesContainer.children.length === 0) {
-    recipesContainer.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">Geen recepten beschikbaar</div>';
+    recipesContainer.innerHTML =
+      '<div style="text-align: center; color: #666; padding: 20px;">Geen recepten beschikbaar</div>';
   }
 }
 
@@ -175,7 +176,8 @@ function updateSellIceCreamTab() {
   const hasIceCream = Object.entries(gameState.iceCream).some(([type, count]) => count > 0);
 
   if (!hasIceCream) {
-    inventoryContainer.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">Geen ijs om te verkopen. Maak eerst ijs!</div>';
+    inventoryContainer.innerHTML =
+      '<div style="text-align: center; color: #666; padding: 20px;">Geen ijs om te verkopen. Maak eerst ijs!</div>';
     return;
   }
 
@@ -198,9 +200,13 @@ function updateSellIceCreamTab() {
         <button class="sell-one-button" onclick="sellIceCreamFromMachine('${iceCreamType}', 1)">
           Verkoop 1x
         </button>
-        ${count > 1 ? `<button class="sell-all-button" onclick="sellIceCreamFromMachine('${iceCreamType}', ${count})">
+        ${
+          count > 1
+            ? `<button class="sell-all-button" onclick="sellIceCreamFromMachine('${iceCreamType}', ${count})">
           Verkoop Alles (${count}x)
-        </button>` : ''}
+        </button>`
+            : ""
+        }
       </div>
     `;
     inventoryContainer.appendChild(sellItem);
@@ -221,8 +227,9 @@ function calculateIceCreamProfit(iceCreamType) {
   });
 
   const profit = iceCream.sellPrice - fruitValue;
-  const profitText = profit > 0 ? `(+€${profit} winst!)` : profit < 0 ? `(-€${Math.abs(profit)} verlies)` : "(break-even)";
-  
+  const profitText =
+    profit > 0 ? `(+€${profit} winst!)` : profit < 0 ? `(-€${Math.abs(profit)} verlies)` : "(break-even)";
+
   return profitText;
 }
 
@@ -245,13 +252,13 @@ function sellIceCreamFromMachine(iceCreamType, amount) {
   }
 
   const totalPrice = iceCream.sellPrice * amount;
-  
+
   gameState.iceCream[iceCreamType] -= amount;
   gameState.money += totalPrice;
 
   const itemText = amount === 1 ? iceCream.name : `${amount}x ${iceCream.name}`;
   showMessage(`Je hebt ${itemText} verkocht voor €${totalPrice}! 💰`, "success");
-  
+
   updateUI();
   saveGame();
   updateIceCreamMachineModal(); // Refresh the modal display

@@ -121,7 +121,13 @@ function updateInventory() {
   const iceCreamItems = [];
   for (const [type, count] of Object.entries(gameState.iceCreams)) {
     if (count > 0) {
-      iceCreamItems.push({ type, count, name: iceCreams[type].name, emoji: iceCreams[type].emoji, sellPrice: iceCreams[type].sellPrice });
+      iceCreamItems.push({
+        type,
+        count,
+        name: iceCreams[type].name,
+        emoji: iceCreams[type].emoji,
+        sellPrice: iceCreams[type].sellPrice,
+      });
     }
   }
 
@@ -172,10 +178,14 @@ function updateInventory() {
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-size: 0.8em;">
           <span>${item.emoji} ${item.name} (${item.count})</span>
           <div style="display: flex; gap: 5px;">
-            <button class="eat-btn" onclick="eatIceCream('${item.type}')" style="padding: 2px 6px; font-size: 0.7em; background: #ff69b4; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            <button class="eat-btn" onclick="eatIceCream('${
+              item.type
+            }')" style="padding: 2px 6px; font-size: 0.7em; background: #ff69b4; color: white; border: none; border-radius: 4px; cursor: pointer;">
               🍴 Eet
             </button>
-            <button class="sell-ice-btn" onclick="sellIceCreamFromInventory('${item.type}')" style="padding: 2px 6px; font-size: 0.7em; background: #4682b4; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            <button class="sell-ice-btn" onclick="sellIceCreamFromInventory('${
+              item.type
+            }')" style="padding: 2px 6px; font-size: 0.7em; background: #4682b4; color: white; border: none; border-radius: 4px; cursor: pointer;">
               €${iceCreams[item.type]?.sellPrice || 0}
             </button>
           </div>
