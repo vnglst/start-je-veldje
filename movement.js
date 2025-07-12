@@ -239,7 +239,7 @@ document.addEventListener("keydown", function (event) {
 function giveStarterPack() {
   if (confirm("Wil je een starter pack krijgen? (€500 + diverse zaden + kas)")) {
     gameState.money += 500;
-    gameState.greenhouse = true; // Give greenhouse for free in cheat
+    gameState.greenhouse = false; // Give greenhouse for free in cheat
 
     // Give 2 of each seed type
     Object.keys(gameState.seeds).forEach((seedType) => {
