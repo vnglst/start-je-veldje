@@ -177,14 +177,9 @@ function updateInventory() {
       iceCreamHtml += `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-size: 0.8em;">
           <span>${item.emoji} ${item.name} (${item.count})</span>
-          <div style="display: flex; gap: 5px;">
-            <button class="eat-btn" onclick="eatIceCream('${item.type}')" style="padding: 2px 6px; font-size: 0.7em; background: #ff69b4; color: white; border: none; border-radius: 4px; cursor: pointer;">
-              🍴 Eet
-            </button>
-            <button class="sell-ice-btn" onclick="showMessage('Ga naar de IJswinkel 🍦 om je ijs te verkopen!', 'info')" style="padding: 2px 6px; font-size: 0.7em; background: #4682b4; color: white; border: none; border-radius: 4px; cursor: pointer;">
-              🍦 Winkel
-            </button>
-          </div>
+          <button class="sell-ice-btn" onclick="showMessage('Ga naar de IJswinkel 🍦 om je ijs te verkopen!', 'info')" style="padding: 2px 6px; font-size: 0.7em; background: #4682b4; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            🍦 Winkel
+          </button>
         </div>
       `;
     });
