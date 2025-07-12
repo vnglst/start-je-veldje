@@ -10,6 +10,7 @@
     <div class="game-container">
       <h1>🌱 Start je Veldje 🌾</h1>
 
+
       <div class="game-stats">
         <div class="stat">💰 Geld: €<span id="money">100</span></div>
         <div class="stat">🌱 Zaden: <span id="seedCount">0</span></div>
@@ -148,6 +149,9 @@
               <button class="util-btn" onclick="startNewGame()">🔄 Nieuw Spel</button>
               <button class="util-btn" onclick="exportGameData()">� Export</button>
               <button class="util-btn" onclick="importGameData()">📂 Import</button>
+              <button id="musicToggleBtn" onclick="toggleMusic()" style="background:#ffefc1; color:#8b4513; border:none; padding:10px 22px; border-radius:18px; font-size:1.1em; cursor:pointer; box-shadow:0 2px 8px #e0c68a80; margin-left:8px;">
+                🎵 Muziek aan
+              </button>
             </div>
           </div>
         </div>
@@ -157,6 +161,8 @@
     </div>
 
     <!-- JavaScript bestanden -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <script src="muziek.js"></script>
     <script src="gameState.js"></script>
     <script src="ui.js"></script>
     <script src="farm.js"></script>
@@ -167,5 +173,14 @@
     <script src="game.js"></script>
     <script src="movement.js"></script>
     <script src="main.js"></script>
+    <script>
+      // Zet juiste tekst op muziekknop bij laden
+      if (window.updateMusicButton) updateMusicButton();
+      else {
+        window.addEventListener('DOMContentLoaded', function() {
+          if (window.updateMusicButton) updateMusicButton();
+        });
+      }
+    </script>
   </body>
 </html>
