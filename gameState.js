@@ -267,6 +267,9 @@ function loadGame() {
 function startNewGame() {
   // Show confirmation dialog
   if (confirm("Weet je zeker dat je een nieuw spel wilt starten? Al je voortgang gaat verloren!")) {
+    // Clear all localStorage data for this game
+    localStorage.removeItem("startJeVeldje");
+
     // Reset game state to initial values
     gameState = {
       money: 100,
