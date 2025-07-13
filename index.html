@@ -6,9 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Start je Veldje</title>
     <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/startscreen.css" />
   </head>
   <body>
-    <div class="game-container">
+    <!-- Beginscherm overlay -->
+    <div id="startscreen" class="startscreen-overlay">
+      <h1 class="startscreen-title">🌱 Start je Veldje 🌾</h1>
+      <div class="startscreen-box">
+        <div class="startscreen-welcome">Welkom terug op je boerderij!</div>
+        <ul class="startscreen-stats">
+          <li>💰 Geld: <span id="begin-money">...</span></li>
+          <li>🌱 Zaden: <span id="begin-seeds">...</span></li>
+          <li>🍎 Fruit: <span id="begin-fruit">...</span></li>
+          <li>🍦 IJs: <span id="begin-ice">...</span></li>
+          <li>💧 Water: <span id="begin-water">...</span></li>
+          <li>📅 Dag: <span id="begin-day">...</span></li>
+          <li>🌸 Seizoen: <span id="begin-season">...</span></li>
+        </ul>
+        <button id="startSpelBtn" class="startscreen-btn">Starten</button>
+      </div>
+      <div class="startscreen-tip">Tip: Zet geluid aan voor de beste ervaring!</div>
+    </div>
+    <div class="game-container" id="gameContainer" class="startscreen-blur">
       <h1>🌱 Start je Veldje 🌾</h1>
 
       <div class="game-stats">
@@ -82,7 +101,9 @@
         <div class="sidebar">
           <!-- Tab Navigation -->
           <div class="tab-navigation">
-            <button class="tab-button active" onclick="speelTabWisselGeluid(); showTab('inventory')">📦 Inventaris</button>
+            <button class="tab-button active" onclick="speelTabWisselGeluid(); showTab('inventory')">
+              📦 Inventaris
+            </button>
             <button class="tab-button" onclick="speelTabWisselGeluid(); showTab('tools')">🛠️ Tools</button>
             <button class="tab-button" onclick="speelTabWisselGeluid(); showTab('season')">📅 Seizoen</button>
           </div>
@@ -99,12 +120,20 @@
             <!-- Tools Tab -->
             <div id="tab-tools" class="tab-panel">
               <div class="tools-grid">
-                <button class="tool-button" onclick="speelKnopKlikGeluid(); toggleWateringMode()" id="wateringButton">🚿 Gieter</button>
-                <button class="tool-button" onclick="speelKnopKlikGeluid(); toggleInfoMode()" id="infoButton">🔍 Info</button>
+                <button class="tool-button" onclick="speelKnopKlikGeluid(); toggleWateringMode()" id="wateringButton">
+                  🚿 Gieter
+                </button>
+                <button class="tool-button" onclick="speelKnopKlikGeluid(); toggleInfoMode()" id="infoButton">
+                  🔍 Info
+                </button>
                 <button class="tool-button" onclick="speelWaterGeluid(); getWaterFromWell()">💧 Water</button>
                 <button class="tool-button" onclick="speelGeldGeluid(); interactWithShop()">🏪 Winkel</button>
-                <button class="tool-button" onclick="speelGeldGeluid(); interactWithIceCreamShop()">🍦 IJswinkel</button>
-                <button class="tool-button" onclick="speelKnopKlikGeluid(); interactWithIceCreamMachine()">🏭 IJsmachine</button>
+                <button class="tool-button" onclick="speelGeldGeluid(); interactWithIceCreamShop()">
+                  🍦 IJswinkel
+                </button>
+                <button class="tool-button" onclick="speelKnopKlikGeluid(); interactWithIceCreamMachine()">
+                  🏭 IJsmachine
+                </button>
                 <button
                   class="tool-button greenhouse-button"
                   onclick="speelKnopKlikGeluid(); interactWithGreenhouse()"
@@ -143,10 +172,14 @@
 
           <!-- Action Buttons (Always Visible) -->
           <div class="action-buttons">
-            <button class="action-btn sleep-btn" onclick="speelKnopKlikGeluid('belangrijk'); sleep()">😴 Ga Slapen</button>
+            <button class="action-btn sleep-btn" onclick="speelKnopKlikGeluid('belangrijk'); sleep()">
+              😴 Ga Slapen
+            </button>
 
             <div class="utility-buttons">
-              <button class="util-btn settings-btn" onclick="speelKnopKlikGeluid(); openSettingsModal()">⚙️ Instellingen</button>
+              <button class="util-btn settings-btn" onclick="speelKnopKlikGeluid(); openSettingsModal()">
+                ⚙️ Instellingen
+              </button>
             </div>
           </div>
         </div>
@@ -176,12 +209,20 @@
                     <option value="main">Barok (Vivaldi)</option>
                     <option value="spring">Voorjaar (vrolijk)</option>
                   </select>
-                  <button class="settings-btn" id="musicToggleBtn" onclick="speelKnopKlikGeluid(); window.toggleMusic()">🎵 Muziek aan</button>
+                  <button
+                    class="settings-btn"
+                    id="musicToggleBtn"
+                    onclick="speelKnopKlikGeluid(); window.toggleMusic()"
+                  >
+                    🎵 Muziek aan
+                  </button>
                 </div>
               </div>
               <div class="settings-row">
                 <label>Geluidseffecten:</label>
-                <button class="settings-btn" id="soundToggleBtn" onclick="toggleGeluidseffecten(); updateSoundButton()">🔊 Geluid aan</button>
+                <button class="settings-btn" id="soundToggleBtn" onclick="toggleGeluidseffecten(); updateSoundButton()">
+                  🔊 Geluid aan
+                </button>
               </div>
             </div>
 
@@ -190,7 +231,9 @@
               <h3>🎮 Spel Beheer</h3>
               <div class="settings-row">
                 <label>Nieuw spel starten:</label>
-                <button class="settings-btn danger" onclick="speelKnopKlikGeluid('belangrijk'); startNewGame()">🔄 Nieuw Spel</button>
+                <button class="settings-btn danger" onclick="speelKnopKlikGeluid('belangrijk'); startNewGame()">
+                  🔄 Nieuw Spel
+                </button>
               </div>
               <div class="settings-row">
                 <label>Voortgang opslaan:</label>
@@ -230,6 +273,36 @@
     <script src="js/ui/ice-cream-machine.js"></script>
     <!-- Main game loop -->
     <script src="main.js"></script>
+    <script>
+      // Beginscherm functionaliteit
+      function toonBeginschermStats() {
+        // Probeer stats uit DOM te halen (of fallback)
+        document.getElementById('begin-money').textContent = document.getElementById('money')?.textContent || '0';
+        document.getElementById('begin-seeds').textContent = document.getElementById('seedCount')?.textContent || '0';
+        document.getElementById('begin-fruit').textContent = document.getElementById('fruitCount')?.textContent || '0';
+        document.getElementById('begin-ice').textContent = document.getElementById('iceCreamCount')?.textContent || '0';
+        document.getElementById('begin-water').textContent = document.getElementById('water')?.textContent || '0';
+        document.getElementById('begin-day').textContent = document.getElementById('day')?.textContent || '1';
+        document.getElementById('begin-season').textContent = document.getElementById('season')?.textContent || 'Lente';
+      }
+      function hideBeginschermEnStartSpel() {
+        document.getElementById('startscreen').style.display = 'none';
+        var gc = document.getElementById('gameContainer');
+        gc.classList.remove('startscreen-blur');
+        // Start muziek als die aan staat
+        if (window.musicEnabled !== false && typeof window.startMusic === 'function') {
+          window.startMusic();
+        } else if (window.toggleMusic && document.getElementById('musicToggleBtn')?.textContent?.includes('aan')) {
+          // Fallback: als knop zegt "aan", muziek starten
+          window.toggleMusic();
+        }
+      }
+      document.addEventListener('DOMContentLoaded', function() {
+        toonBeginschermStats();
+        document.getElementById('gameContainer').classList.add('startscreen-blur');
+        document.getElementById('startSpelBtn').addEventListener('click', hideBeginschermEnStartSpel);
+      });
+    </script>
     <script>
       // Zet juiste tekst op muziekknop en geluidknop bij laden
       if (window.updateMusicButton) updateMusicButton();
