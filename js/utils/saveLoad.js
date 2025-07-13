@@ -4,14 +4,14 @@
  * Slaat de huidige spelstatus op in localStorage
  */
 function saveGame() {
-  localStorage.setItem("farmGameSave", JSON.stringify(gameState));
+  localStorage.setItem("farmGameSave-v2", JSON.stringify(gameState));
 }
 
 /**
  * Laadt opgeslagen spelstatus uit localStorage
  */
 function loadGame() {
-  const savedGame = localStorage.getItem("farmGameSave");
+  const savedGame = localStorage.getItem("farmGameSave-v2");
   if (savedGame) {
     const loadedState = JSON.parse(savedGame);
 
