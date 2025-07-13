@@ -148,7 +148,16 @@
               <button class="util-btn" onclick="startNewGame()">🔄 Nieuw Spel</button>
               <button class="util-btn" onclick="exportGameData()">� Export</button>
               <button class="util-btn" onclick="importGameData()">📂 Import</button>
-              <button class="util-btn" id="musicToggleBtn" onclick="toggleMusic()">🎵 Muziek aan</button>
+              <select
+                id="musicSelect"
+                class="util-btn"
+                style="width: auto; display: inline-block; margin-right: 4px"
+                onchange="window.setSongType(this.value)"
+              >
+                <option value="main">Barok (Vivaldi)</option>
+                <option value="spring">Voorjaar (vrolijk)</option>
+              </select>
+              <button class="util-btn" id="musicToggleBtn" onclick="window.toggleMusic()">🎵 Muziek aan</button>
             </div>
           </div>
         </div>

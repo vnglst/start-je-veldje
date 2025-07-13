@@ -27,6 +27,7 @@ function initSynths() {
   drumSynth.volume.value = -20;
 }
 
+// Hoofdmelodie (Vivaldi/barok)
 const mainMelody = [
   // Vivaldi-achtig: arpeggio's en toonladdermotieven
   { note: "C4", duration: "16n" },
@@ -72,8 +73,8 @@ const mainMelody = [
   { note: "E4", duration: "8n" },
   // Afsluiting
   { note: "C4", duration: "2n" },
-  null,
 ];
+
 const mainBass = [
   // Barokke baslijn: grondtonen en kwinten
   "C2",
@@ -114,8 +115,8 @@ const mainBass = [
   null,
   null,
 ];
+
 const drumPattern = [
-  // Simpele barokke puls, af en toe een accent
   "C2",
   null,
   null,
@@ -150,42 +151,154 @@ const drumPattern = [
   null,
 ];
 
-function createSequences() {
-  stopMusic();
-  sequence = new Tone.Sequence(
-    (time, note) => {
-      if (note && synth) synth.triggerAttackRelease(note.note, note.duration, time);
-    },
-    mainMelody,
-    "4n"
-  );
-  bassSequence = new Tone.Sequence(
-    (time, note) => {
-      if (note && bassSynth) bassSynth.triggerAttackRelease(note, "8n", time);
-    },
-    mainBass,
-    "8n"
-  );
-  drumSequence = new Tone.Sequence(
-    (time, note) => {
-      if (note && drumSynth) drumSynth.triggerAttackRelease(note, "16n", time);
-    },
-    drumPattern,
-    "8n"
-  );
-}
+const springMelody = [
+  { note: "C5", duration: "8n" },
+  { note: "E5", duration: "8n" },
+  { note: "G5", duration: "8n" },
+  { note: "E5", duration: "8n" },
+  { note: "D5", duration: "8n" },
+  { note: "F5", duration: "8n" },
+  { note: "A5", duration: "8n" },
+  { note: "F5", duration: "8n" },
+  { note: "G5", duration: "4n" },
+  null,
+  { note: "E5", duration: "8n" },
+  { note: "C5", duration: "8n" },
+  { note: "D5", duration: "8n" },
+  { note: "F5", duration: "8n" },
+  { note: "G5", duration: "8n" },
+  { note: "E5", duration: "8n" },
+  { note: "C5", duration: "4n" },
+  null,
+  // Variatie
+  { note: "A4", duration: "8n" },
+  { note: "C5", duration: "8n" },
+  { note: "E5", duration: "8n" },
+  { note: "G5", duration: "8n" },
+  { note: "F5", duration: "8n" },
+  { note: "D5", duration: "8n" },
+  { note: "C5", duration: "4n" },
+  null,
+];
+const springBass = [
+  "C3",
+  null,
+  "G3",
+  null,
+  "A3",
+  null,
+  "F3",
+  null,
+  "C3",
+  null,
+  "G3",
+  null,
+  "A3",
+  null,
+  "F3",
+  null,
+  "D3",
+  null,
+  "G3",
+  null,
+  "C3",
+  null,
+  "F3",
+  null,
+  "C3",
+  null,
+  null,
+  null,
+];
+const springDrums = [
+  "C2",
+  null,
+  "C2",
+  null,
+  null,
+  "C2",
+  null,
+  null,
+  "C2",
+  null,
+  null,
+  "C2",
+  null,
+  null,
+  "C2",
+  null,
+  null,
+  "C2",
+  null,
+  null,
+  "C2",
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+];
 
-function updateTempo() {
-  if (Tone.Transport.state === "started") {
-    Tone.Transport.bpm.value = currentTempo;
+function createSequences(songType = "main") {
+  stopMusic();
+  if (songType === "spring") {
+    sequence = new Tone.Sequence(
+      (time, note) => {
+        if (note && synth) synth.triggerAttackRelease(note.note, note.duration, time);
+      },
+      springMelody,
+      "4n"
+    );
+    bassSequence = new Tone.Sequence(
+      (time, note) => {
+        if (note && bassSynth) bassSynth.triggerAttackRelease(note, "8n", time);
+      },
+      springBass,
+      "8n"
+    );
+    drumSequence = new Tone.Sequence(
+      (time, note) => {
+        if (note && drumSynth) drumSynth.triggerAttackRelease(note, "16n", time);
+      },
+      springDrums,
+      "8n"
+    );
+  } else {
+    sequence = new Tone.Sequence(
+      (time, note) => {
+        if (note && synth) synth.triggerAttackRelease(note.note, note.duration, time);
+      },
+      mainMelody,
+      "4n"
+    );
+    bassSequence = new Tone.Sequence(
+      (time, note) => {
+        if (note && bassSynth) bassSynth.triggerAttackRelease(note, "8n", time);
+      },
+      mainBass,
+      "8n"
+    );
+    drumSequence = new Tone.Sequence(
+      (time, note) => {
+        if (note && drumSynth) drumSynth.triggerAttackRelease(note, "16n", time);
+      },
+      drumPattern,
+      "8n"
+    );
   }
 }
 
-async function playMusic() {
+async function playMusic(songType = "main") {
   if (isPlaying) return;
   await Tone.start();
   if (!synth) initSynths();
-  createSequences();
+  createSequences(songType);
   Tone.Transport.bpm.value = currentTempo;
   sequence.start(0);
   bassSequence.start(0);
@@ -205,19 +318,44 @@ function stopMusic() {
   if (window.updateMusicButton) updateMusicButton();
 }
 
-// Voor knop UI
+// --- UI voor muziekkeuze ---
+window.selectedSongType = "main";
+
 window.toggleMusic = function () {
   if (isPlaying) {
     stopMusic();
   } else {
-    playMusic();
+    playMusic(window.selectedSongType);
   }
 };
+
+window.setSongType = function (type) {
+  window.selectedSongType = type;
+  if (isPlaying) {
+    stopMusic();
+    playMusic(type);
+  }
+  updateMusicDropdown();
+};
+
 window.updateMusicButton = function () {
   const btn = document.getElementById("musicToggleBtn");
   if (!btn) return;
   btn.textContent = isPlaying ? "🔈 Muziek uit" : "🎵 Muziek aan";
 };
+
+window.updateMusicDropdown = function () {
+  const dropdown = document.getElementById("musicSelect");
+  if (!dropdown) return;
+  dropdown.value = window.selectedSongType;
+};
+
+// Voeg deze HTML toe aan je UI, bijvoorbeeld boven de muziekknop:
+// <select id="musicSelect" onchange="window.setSongType(this.value)">
+//   <option value="main">Barok (Vivaldi)</option>
+//   <option value="spring">Voorjaar (vrolijk)</option>
+// </select>
+// <button id="musicToggleBtn" onclick="window.toggleMusic()">🎵 Muziek aan</button>
 
 // Optioneel: stop muziek bij verlaten pagina
 window.addEventListener("beforeunload", () => {
