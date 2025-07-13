@@ -289,37 +289,35 @@ function handleStatTap(emoji) {
 
 // Cheat function: Give starter pack with money and seeds
 function giveStarterPack() {
-  if (confirm("Wil je een starter pack krijgen? (€500 + diverse zaden & fruit + kas)")) {
-    gameState.money += 500;
-    gameState.greenhouse = true; // Give greenhouse for free in cheat
+  gameState.money += 500;
+  gameState.greenhouse = true; // Give greenhouse for free in cheat
 
-    // Give 2 of each seed type
-    Object.keys(gameState.seeds).forEach((seedType) => {
-      gameState.seeds[seedType] += 2;
-    });
+  // Give 2 of each seed type
+  Object.keys(gameState.seeds).forEach((seedType) => {
+    gameState.seeds[seedType] += 2;
+  });
 
-    // Give 3 of each fruit type
-    Object.keys(gameState.fruits).forEach((fruitType) => {
-      gameState.fruits[fruitType] += 3;
-    });
+  // Give 3 of each fruit type
+  Object.keys(gameState.fruits).forEach((fruitType) => {
+    gameState.fruits[fruitType] += 3;
+  });
 
-    // Give 3 of each ice cream type
-    Object.keys(gameState.iceCream).forEach((iceCreamType) => {
-      gameState.iceCream[iceCreamType] += 3;
-    });
+  // Give 3 of each ice cream type
+  Object.keys(gameState.iceCream).forEach((iceCreamType) => {
+    gameState.iceCream[iceCreamType] += 3;
+  });
 
-    // Give 3 of each lemonade type
-    Object.keys(gameState.lemonade).forEach((lemonadeType) => {
-      gameState.lemonade[lemonadeType] += 3;
-    });
+  // Give 3 of each lemonade type
+  Object.keys(gameState.lemonade).forEach((lemonadeType) => {
+    gameState.lemonade[lemonadeType] += 3;
+  });
 
-    updateUI();
-    saveGame();
-    showMessage(
-      "Starter pack gekregen! €500 + 2 van elk zaad + 3 van elk fruit + 3 van elk ijs + 3 van elke limonade + kas! 🎁",
-      "success"
-    );
-  }
+  updateUI();
+  saveGame();
+  showMessage(
+    "Starter pack gekregen! €500 + 2 van elk zaad + 3 van elk fruit + 3 van elk ijs + 3 van elke limonade + kas! 🎁",
+    "success"
+  );
 }
 
 // Maak handleStatTap globaal beschikbaar
