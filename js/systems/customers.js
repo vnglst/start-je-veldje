@@ -28,6 +28,19 @@ function spawnCustomer() {
   if (!gameState.inIceCreamShop) return;
   
   const customerType = customerTypes[Math.floor(Math.random() * customerTypes.length)];
+  
+  // Kies een willekeurig ijsje dat de klant wil, met hogere kans op favoriet
+  let wantedIceCream;
+  const availableIceCreams = Object.keys(iceCreams);
+  
+  if (Math.random() < 0.6) {
+    // 60% kans op favoriet ijsje
+    wantedIceCream = customerType.favoriteIceCream;
+  } else {
+    // 40% kans op willekeurig ander ijsje
+    wantedIceCream = availableIceCreams[Math.floor(Math.random() * availableIceCreams.length)];
+  }
+  
   const customer = {
     id: gameState.nextCustomerId++,
     type: customerType,
@@ -36,7 +49,8 @@ function spawnCustomer() {
     targetPosition: { x: 2, y: 2 }, // Loop naar midden rij positie
     patience: customerType.patience,
     maxPatience: customerType.patience,
-    wantedIceCream: customerType.favoriteIceCream,
+    wantedIceCream: wantedIceCream,
+    favoriteIceCream: customerType.favoriteIceCream, // Bewaar ook het originele favoriet
     moveTimer: 0,
     hasOrdered: false,
     tablePosition: null,
@@ -44,7 +58,7 @@ function spawnCustomer() {
   };
   
   gameState.customers.push(customer);
-  console.log(`Nieuwe klant ${customer.type.name} is binnengekomen!`);
+  console.log(`Nieuwe klant ${customer.type.name} is binnengekomen en wil ${iceCreams[wantedIceCream].name}!`);
 }
 
 // Update alle klanten
@@ -256,19 +270,25 @@ function serveCurrentCustomer(iceCreamType) {
     return false;
   }
   
+  // Check of klant dit ijsje wil
+  if (iceCreamType !== currentCustomer.wantedIceCream) {
+    showMessage(`${currentCustomer.type.name} wil geen ${iceCreams[iceCreamType].name}, maar ${iceCreams[currentCustomer.wantedIceCream].name}! 😕`, "error");
+    return false;
+  }
+  
   // Verkoop het ijsje
   gameState.iceCream[iceCreamType]--;
   const price = iceCreams[iceCreamType].sellPrice;
   gameState.money += price;
   
-  // Extra tip als het de favoriete smaak is
+  // Extra tip als het ook hun favoriete smaak is
   let tip = 0;
-  if (iceCreamType === currentCustomer.wantedIceCream) {
-    tip = Math.floor(price * 0.2); // 20% tip
+  if (iceCreamType === currentCustomer.favoriteIceCream) {
+    tip = Math.floor(price * 0.3); // 30% extra tip voor favoriet
     gameState.money += tip;
-    showMessage(`${currentCustomer.type.name} is blij met ${iceCreams[iceCreamType].name}! +€${price} +€${tip} tip! 😊`, "success");
+    showMessage(`${currentCustomer.type.name} is heel blij met hun favoriete ${iceCreams[iceCreamType].name}! +€${price} +€${tip} extra tip! 😍`, "success");
   } else {
-    showMessage(`${currentCustomer.type.name} koopt ${iceCreams[iceCreamType].name} voor €${price}! 💰`, "success");
+    showMessage(`${currentCustomer.type.name} koopt ${iceCreams[iceCreamType].name} voor €${price}! 😊`, "success");
   }
   
   // Zoek een vrij tafeltje
