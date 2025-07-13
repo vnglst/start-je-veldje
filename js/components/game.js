@@ -1,5 +1,10 @@
 // Game mechanics and day/night cycle
 function sleep() {
+  // Speel slaap geluid
+  if (window.speelSlaapGeluid) {
+    speelSlaapGeluid();
+  }
+  
   // Start sleep animation
   startSleepAnimation();
 

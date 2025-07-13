@@ -81,9 +81,9 @@
         <div class="sidebar">
           <!-- Tab Navigation -->
           <div class="tab-navigation">
-            <button class="tab-button active" onclick="showTab('inventory')">📦 Inventaris</button>
-            <button class="tab-button" onclick="showTab('tools')">🛠️ Tools</button>
-            <button class="tab-button" onclick="showTab('season')">📅 Seizoen</button>
+            <button class="tab-button active" onclick="speelTabWisselGeluid(); showTab('inventory')">📦 Inventaris</button>
+            <button class="tab-button" onclick="speelTabWisselGeluid(); showTab('tools')">🛠️ Tools</button>
+            <button class="tab-button" onclick="speelTabWisselGeluid(); showTab('season')">📅 Seizoen</button>
           </div>
 
           <!-- Tab Content -->
@@ -98,15 +98,15 @@
             <!-- Tools Tab -->
             <div id="tab-tools" class="tab-panel">
               <div class="tools-grid">
-                <button class="tool-button" onclick="toggleWateringMode()" id="wateringButton">🚿 Gieter</button>
-                <button class="tool-button" onclick="toggleInfoMode()" id="infoButton">🔍 Info</button>
-                <button class="tool-button" onclick="getWaterFromWell()">💧 Water</button>
-                <button class="tool-button" onclick="interactWithShop()">🏪 Winkel</button>
-                <button class="tool-button" onclick="interactWithIceCreamShop()">🍦 IJswinkel</button>
-                <button class="tool-button" onclick="interactWithIceCreamMachine()">🏭 IJsmachine</button>
+                <button class="tool-button" onclick="speelKnopKlikGeluid(); toggleWateringMode()" id="wateringButton">🚿 Gieter</button>
+                <button class="tool-button" onclick="speelKnopKlikGeluid(); toggleInfoMode()" id="infoButton">🔍 Info</button>
+                <button class="tool-button" onclick="speelWaterGeluid(); getWaterFromWell()">💧 Water</button>
+                <button class="tool-button" onclick="speelGeldGeluid(); interactWithShop()">🏪 Winkel</button>
+                <button class="tool-button" onclick="speelGeldGeluid(); interactWithIceCreamShop()">🍦 IJswinkel</button>
+                <button class="tool-button" onclick="speelKnopKlikGeluid(); interactWithIceCreamMachine()">🏭 IJsmachine</button>
                 <button
                   class="tool-button greenhouse-button"
-                  onclick="interactWithGreenhouse()"
+                  onclick="speelKnopKlikGeluid(); interactWithGreenhouse()"
                   id="greenhouseButton"
                   style="display: none"
                 >
@@ -119,13 +119,13 @@
                 <h4>🚶 Beweging</h4>
                 <div class="movement-grid">
                   <div></div>
-                  <button class="move-btn" onclick="movePlayer('up')">⬆️</button>
+                  <button class="move-btn" onclick="speelKnopKlikGeluid('laag'); movePlayer('up')">⬆️</button>
                   <div></div>
-                  <button class="move-btn" onclick="movePlayer('left')">⬅️</button>
+                  <button class="move-btn" onclick="speelKnopKlikGeluid('laag'); movePlayer('left')">⬅️</button>
                   <div class="move-center">🧑‍🌾</div>
-                  <button class="move-btn" onclick="movePlayer('right')">➡️</button>
+                  <button class="move-btn" onclick="speelKnopKlikGeluid('laag'); movePlayer('right')">➡️</button>
                   <div></div>
-                  <button class="move-btn" onclick="movePlayer('down')">⬇️</button>
+                  <button class="move-btn" onclick="speelKnopKlikGeluid('laag'); movePlayer('down')">⬇️</button>
                   <div></div>
                 </div>
                 <small>Of gebruik pijltjestoetsen / WASD</small>
@@ -142,28 +142,67 @@
 
           <!-- Action Buttons (Always Visible) -->
           <div class="action-buttons">
-            <button class="action-btn sleep-btn" onclick="sleep()">� Ga Slapen</button>
+            <button class="action-btn sleep-btn" onclick="speelKnopKlikGeluid('belangrijk'); sleep()">😴 Ga Slapen</button>
 
             <div class="utility-buttons">
-              <button class="util-btn" onclick="startNewGame()">🔄 Nieuw Spel</button>
-              <button class="util-btn" onclick="exportGameData()">� Export</button>
-              <button class="util-btn" onclick="importGameData()">📂 Import</button>
-              <select
-                id="musicSelect"
-                class="util-btn"
-                style="width: auto; display: inline-block; margin-right: 4px"
-                onchange="window.setSongType(this.value)"
-              >
-                <option value="main">Barok (Vivaldi)</option>
-                <option value="spring">Voorjaar (vrolijk)</option>
-              </select>
-              <button class="util-btn" id="musicToggleBtn" onclick="window.toggleMusic()">🎵 Muziek aan</button>
+              <button class="util-btn settings-btn" onclick="speelKnopKlikGeluid(); openSettingsModal()">⚙️ Instellingen</button>
             </div>
           </div>
         </div>
       </div>
 
       <div id="messageArea"></div>
+
+      <!-- Instellingen Modal -->
+      <div id="settingsModal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>⚙️ Instellingen</h2>
+            <span class="close" onclick="speelKnopKlikGeluid(); closeSettingsModal()">&times;</span>
+          </div>
+          <div class="modal-body">
+            <!-- Geluid Instellingen -->
+            <div class="settings-section">
+              <h3>🔊 Geluid</h3>
+              <div class="settings-row">
+                <label>Muziek:</label>
+                <div class="settings-controls">
+                  <select
+                    id="musicSelect"
+                    class="settings-select"
+                    onchange="speelMenuToggleGeluid(true); window.setSongType(this.value)"
+                  >
+                    <option value="main">Barok (Vivaldi)</option>
+                    <option value="spring">Voorjaar (vrolijk)</option>
+                  </select>
+                  <button class="settings-btn" id="musicToggleBtn" onclick="speelKnopKlikGeluid(); window.toggleMusic()">🎵 Muziek aan</button>
+                </div>
+              </div>
+              <div class="settings-row">
+                <label>Geluidseffecten:</label>
+                <button class="settings-btn" id="soundToggleBtn" onclick="toggleGeluidseffecten(); updateSoundButton()">🔊 Geluid aan</button>
+              </div>
+            </div>
+
+            <!-- Spel Beheer -->
+            <div class="settings-section">
+              <h3>🎮 Spel Beheer</h3>
+              <div class="settings-row">
+                <label>Nieuw spel starten:</label>
+                <button class="settings-btn danger" onclick="speelKnopKlikGeluid('belangrijk'); startNewGame()">🔄 Nieuw Spel</button>
+              </div>
+              <div class="settings-row">
+                <label>Voortgang opslaan:</label>
+                <button class="settings-btn" onclick="speelKnopKlikGeluid(); exportGameData()">💾 Export</button>
+              </div>
+              <div class="settings-row">
+                <label>Voortgang laden:</label>
+                <button class="settings-btn" onclick="speelKnopKlikGeluid(); importGameData()">📂 Import</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- JavaScript bestanden -->
@@ -175,6 +214,7 @@
     <script src="js/utils/saveLoad.js"></script>
     <!-- System modules -->
     <script src="js/systems/muziek.js"></script>
+    <script src="js/systems/geluidseffecten.js"></script>
     <script src="js/systems/gameState.js"></script>
     <script src="js/systems/ui.js"></script>
     <!-- Component modules -->
@@ -189,11 +229,13 @@
     <!-- Main game loop -->
     <script src="main.js"></script>
     <script>
-      // Zet juiste tekst op muziekknop bij laden
+      // Zet juiste tekst op muziekknop en geluidknop bij laden
       if (window.updateMusicButton) updateMusicButton();
+      if (window.updateSoundButton) updateSoundButton();
       else {
         window.addEventListener("DOMContentLoaded", function () {
           if (window.updateMusicButton) updateMusicButton();
+          if (window.updateSoundButton) updateSoundButton();
         });
       }
     </script>

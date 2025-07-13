@@ -113,6 +113,7 @@ function plantSeed(plotIndex) {
   plot.growthDays = 0;
   plot.daysWithoutWater = 0;
 
+  speelPlantGeluid(); // Geluidseffect voor planten
   const cropName = crops[seedType].name;
   const locationText = gameState.inGreenhouse ? "in de kas" : "op je boerderij";
   showMessage(`Je hebt ${cropName} zaad geplant ${locationText}! Vergeet niet om water te geven. 🌱`, "success");
@@ -152,6 +153,7 @@ function harvestCrop(plotIndex) {
     }, 600);
   }
 
+  speelOogstGeluid(); // Geluidseffect voor oogsten
   showMessage(`Je hebt ${crops[cropType].name} geoogst! 🎉`, "success");
   updateUI();
   saveGame();
@@ -182,6 +184,7 @@ function waterPlant(plotIndex) {
   plot.lastWateredDay = gameState.day;
   plot.daysWithoutWater = 0; // Reset drought counter
 
+  speelWaterGeluid(); // Geluidseffect voor water geven
   showMessage(`Je hebt de ${crops[plot.cropType].name} water gegeven! 💧`, "success");
   updateUI();
   saveGame();

@@ -134,5 +134,4 @@ const iceCreams = {
   },
 };
 
-// Export voor gebruik in andere modules
-export { iceCreams };
+// iceCreams is nu beschikbaar als globale variabele

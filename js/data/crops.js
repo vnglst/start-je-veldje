@@ -122,5 +122,4 @@ const crops = {
   },
 };
 
-// Export voor gebruik in andere modules
-export { crops };
+// crops is nu beschikbaar als globale variabele

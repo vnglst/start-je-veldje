@@ -61,44 +61,7 @@ function movePlayer(direction) {
     gameState.playerPosition.x = newX;
     gameState.playerPosition.y = newY;
 
-    // Location-specific messages
-    if (gameState.inGreenhouse) {
-      // In greenhouse - no special locations except exit
-      if (newX === 0 && newY === 0) {
-        showMessage("Je bent bij de uitgang! Druk op spatie om de kas te verlaten. 🚪", "success");
-      }
-    } else {
-      // Outside greenhouse - check for well, shop, etc.
-      const wellX = gameState.wellPosition.x;
-      const wellY = gameState.wellPosition.y;
-      if (Math.abs(newX - wellX) <= 1 && Math.abs(newY - wellY) <= 1) {
-        showMessage("Je bent bij de put! Druk op spatie of klik op de 💧 knop voor water.", "success");
-      }
-
-      const shopX = gameState.shopPosition.x;
-      const shopY = gameState.shopPosition.y;
-      if (Math.abs(newX - shopX) <= 1 && Math.abs(newY - shopY) <= 1) {
-        showMessage("Je bent bij de winkel! Druk op spatie of klik op de 🏪 voor winkelen.", "success");
-      }
-
-      const iceCreamShopX = gameState.iceCreamShopPosition.x;
-      const iceCreamShopY = gameState.iceCreamShopPosition.y;
-      if (Math.abs(newX - iceCreamShopX) <= 1 && Math.abs(newY - iceCreamShopY) <= 1) {
-        showMessage("Je bent bij de ijswinkel! Druk op spatie of klik op de 🍦 voor lekker ijs.", "success");
-      }
-
-      const iceCreamMachineX = gameState.iceCreamMachinePosition.x;
-      const iceCreamMachineY = gameState.iceCreamMachinePosition.y;
-      if (Math.abs(newX - iceCreamMachineX) <= 1 && Math.abs(newY - iceCreamMachineY) <= 1) {
-        showMessage("Je bent bij de ijsmachine! Druk op spatie of klik op de 🏭 om ijs te maken.", "success");
-      }
-
-      const greenhouseX = gameState.greenhousePosition.x;
-      const greenhouseY = gameState.greenhousePosition.y;
-      if (Math.abs(newX - greenhouseX) <= 1 && Math.abs(newY - greenhouseY) <= 1) {
-        showMessage("Je bent bij de kas! Druk op spatie om binnen te gaan. 🏡", "success");
-      }
-    }
+    // Geen irritante locatie berichten meer - spelers kunnen gewoon klikken of spatie gebruiken
 
     updateGameMap();
     saveGame();
@@ -118,6 +81,10 @@ function getWaterFromWell() {
 
   if (deltaX <= 1 && deltaY <= 1) {
     gameState.water += 5;
+    // Speel water geluid bij halen van water
+    if (window.speelWaterGeluid) {
+      speelWaterGeluid();
+    }
     showMessage("Je hebt water gehaald uit de put! +5 water 💧", "success");
     updateUI();
     saveGame();
@@ -143,6 +110,11 @@ function interactWithGreenhouse() {
   const deltaY = Math.abs(playerY - greenhouseY);
 
   if (deltaX <= 1 && deltaY <= 1) {
+    // Speel deur geluid bij kas in/uitgaan
+    if (window.speelDeurGeluid) {
+      speelDeurGeluid();
+    }
+    
     // Toggle between inside and outside greenhouse
     if (gameState.inGreenhouse) {
       // Exit greenhouse

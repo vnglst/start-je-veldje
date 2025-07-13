@@ -155,7 +155,7 @@ function updateInventory() {
       fruitHtml += `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-size: 0.8em;">
           <span>${item.emoji} ${item.name} (${item.count})</span>
-          <button class="sell-btn" onclick="sellFruit('${item.type}')" style="padding: 2px 6px; font-size: 0.7em; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
+          <button class="sell-btn" onclick="speelGeldGeluid(); sellFruit('${item.type}')" style="padding: 2px 6px; font-size: 0.7em; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
             €${item.price}
           </button>
         </div>
@@ -579,6 +579,21 @@ function showMessage(text, type) {
     return;
   }
 
+  // Speel geluidseffect gebaseerd op type bericht
+  if (window.speelSuccesGeluid && window.speelErrorGeluid && window.speelMeldingGeluid) {
+    switch(type) {
+      case 'success':
+        speelSuccesGeluid();
+        break;
+      case 'error':
+        speelErrorGeluid();
+        break;
+      case 'info':
+        speelMeldingGeluid();
+        break;
+    }
+  }
+
   // Convert newlines to HTML breaks for multi-line messages
   const formattedText = text.replace(/\n/g, "<br>");
   messageArea.innerHTML = `<div class="message ${type}">${formattedText}</div>`;
@@ -614,3 +629,50 @@ function showTab(tabName) {
     targetButton.classList.add("active");
   }
 }
+
+// ========================
+// INSTELLINGEN MODAL FUNCTIES
+// ========================
+
+// Open de instellingen modal
+function openSettingsModal() {
+  const modal = document.getElementById('settingsModal');
+  if (modal) {
+    modal.classList.add('show');
+    // Speel menu open geluid
+    if (window.speelMenuToggleGeluid) {
+      speelMenuToggleGeluid(true);
+    }
+  }
+}
+
+// Sluit de instellingen modal
+function closeSettingsModal() {
+  const modal = document.getElementById('settingsModal');
+  if (modal) {
+    modal.classList.remove('show');
+    // Speel menu sluit geluid
+    if (window.speelMenuToggleGeluid) {
+      speelMenuToggleGeluid(false);
+    }
+  }
+}
+
+// Event listener voor klikken buiten modal om te sluiten
+document.addEventListener('click', function(event) {
+  const modal = document.getElementById('settingsModal');
+  if (modal && event.target === modal) {
+    closeSettingsModal();
+  }
+});
+
+// Event listener voor ESC toets om modal te sluiten
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    closeSettingsModal();
+  }
+});
+
+// Maak modal functies globaal beschikbaar
+window.openSettingsModal = openSettingsModal;
+window.closeSettingsModal = closeSettingsModal;
