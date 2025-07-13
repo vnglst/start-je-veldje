@@ -117,7 +117,7 @@ function interactWithGreenhouse() {
     if (window.speelDeurGeluid) {
       speelDeurGeluid();
     }
-    
+
     // Toggle between inside and outside greenhouse
     if (gameState.inGreenhouse) {
       // Exit greenhouse
@@ -182,9 +182,11 @@ document.addEventListener("keydown", function (event) {
           interactWithIceCreamShop(); // This will exit the ijssalon
         } else {
           // Check if near balie (counter) - nieuwe balie positie
-          if ((playerX === 6 && playerY >= 1 && playerY <= 4) || 
-              (playerX === 7 && playerY >= 1 && playerY <= 4) ||
-              (playerX === 5 && playerY >= 1 && playerY <= 4)) {
+          if (
+            (playerX === 6 && playerY >= 1 && playerY <= 4) ||
+            (playerX === 7 && playerY >= 1 && playerY <= 4) ||
+            (playerX === 5 && playerY >= 1 && playerY <= 4)
+          ) {
             interactWithIceCreamShopCounter();
           }
         }
@@ -264,6 +266,11 @@ function giveStarterPack() {
     // Give 3 of each fruit type
     Object.keys(gameState.fruits).forEach((fruitType) => {
       gameState.fruits[fruitType] += 3;
+    });
+
+    // Give 3 of each ice cream type
+    Object.keys(gameState.iceCream).forEach((iceCreamType) => {
+      gameState.iceCream[iceCreamType] += 3;
     });
 
     updateUI();
