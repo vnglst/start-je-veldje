@@ -6,6 +6,9 @@ function updateUI() {
     if (gameState.inGreenhouse) {
       farmTitle.innerHTML = "🏡 Je Kas";
       farmTitle.style.color = "#2e8b57";
+    } else if (gameState.inIceCreamShop) {
+      farmTitle.innerHTML = "🍦 Je IJssalon";
+      farmTitle.style.color = "#ff69b4";
     } else {
       farmTitle.innerHTML = "🚜 Je Boerderij";
       farmTitle.style.color = "#8b4513";
@@ -21,6 +24,9 @@ function updateUI() {
 
   const fruitCountEl = document.getElementById("fruitCount");
   if (fruitCountEl) fruitCountEl.textContent = Object.values(gameState.fruits).reduce((a, b) => a + b, 0);
+
+  const iceCreamCountEl = document.getElementById("iceCreamCount");
+  if (iceCreamCountEl) iceCreamCountEl.textContent = Object.values(gameState.iceCream).reduce((a, b) => a + b, 0);
 
   const waterEl = document.getElementById("water");
   if (waterEl) waterEl.textContent = gameState.water;
@@ -208,10 +214,16 @@ function updateGameMap() {
   if (gameState.inGreenhouse) {
     // Render greenhouse interior (6x4 grid)
     gameMap.classList.add("greenhouse-interior");
+    gameMap.classList.remove("ice-cream-shop-interior");
     renderGreenhouseMap(gameMap);
+  } else if (gameState.inIceCreamShop) {
+    // Render ijssalon interior (8x6 grid)
+    gameMap.classList.add("ice-cream-shop-interior");
+    gameMap.classList.remove("greenhouse-interior");
+    renderIceCreamShopMap(gameMap);
   } else {
     // Render regular farm map (8x6 grid)
-    gameMap.classList.remove("greenhouse-interior");
+    gameMap.classList.remove("greenhouse-interior", "ice-cream-shop-interior");
     renderRegularMap(gameMap);
   }
 }
@@ -676,3 +688,72 @@ document.addEventListener('keydown', function(event) {
 // Maak modal functies globaal beschikbaar
 window.openSettingsModal = openSettingsModal;
 window.closeSettingsModal = closeSettingsModal;
+
+// Render ijssalon interior map
+function renderIceCreamShopMap(gameMap) {
+  // Create 8x6 grid for ijssalon interior
+  for (let y = 0; y < 6; y++) {
+    for (let x = 0; x < 8; x++) {
+      const tile = document.createElement("div");
+      tile.className = "map-tile ice-cream-shop-tile";
+      tile.id = `tile-${x}-${y}`;
+
+      // Ijssalon layout:
+      // (0,5) = Ingang/Uitgang
+      // (6-7, 1-3) = Balie (counter)
+      // (2-3, 2-3) = Tafeltje 1
+      // (5, 4-5) = Tafeltje 2
+      // (1-2, 4) = Tafeltje 3
+
+      if (x === 0 && y === 5) {
+        // Ingang/Uitgang
+        tile.classList.add("ice-cream-shop-exit");
+        tile.innerHTML = "🚪";
+        tile.title = "Uitgang - Klik om te verlaten";
+        tile.onclick = () => interactWithIceCreamShop();
+      } else if (x >= 6 && x <= 7 && y >= 1 && y <= 3) {
+        // Balie (counter)
+        tile.classList.add("ice-cream-shop-counter");
+        tile.innerHTML = "🍦";
+        tile.title = "Balie - Klik om ijs te verkopen";
+        tile.onclick = () => interactWithIceCreamShopCounter();
+      } else if ((x >= 2 && x <= 3 && y >= 2 && y <= 3) || 
+                 (x === 5 && y >= 4 && y <= 5) || 
+                 (x >= 1 && x <= 2 && y === 4)) {
+        // Tafeltjes
+        tile.classList.add("ice-cream-shop-table");
+        tile.innerHTML = "🪑";
+        tile.title = "Tafeltje voor gasten";
+      } else if (x === 0 && y === 0) {
+        // Hoek decoratie
+        tile.classList.add("ice-cream-shop-decoration");
+        tile.innerHTML = "🎨";
+        tile.title = "Decoratie";
+      } else if (x === 7 && y === 0) {
+        // Hoek decoratie
+        tile.classList.add("ice-cream-shop-decoration");
+        tile.innerHTML = "🖼️";
+        tile.title = "Schilderij";
+      } else if (x === 7 && y === 5) {
+        // Hoek decoratie
+        tile.classList.add("ice-cream-shop-decoration");
+        tile.innerHTML = "🌻";
+        tile.title = "Bloemen";
+      } else {
+        // Vloer tegels
+        tile.classList.add("ice-cream-shop-floor");
+        tile.innerHTML = "";
+      }
+
+      // Add player if on this tile
+      if (x === gameState.playerPosition.x && y === gameState.playerPosition.y) {
+        const player = document.createElement("div");
+        player.className = "player";
+        player.innerHTML = "🧑‍🌾";
+        tile.appendChild(player);
+      }
+
+      gameMap.appendChild(tile);
+    }
+  }
+}

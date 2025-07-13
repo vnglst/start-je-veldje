@@ -36,6 +36,9 @@ function movePlayer(direction) {
   if (gameState.inGreenhouse) {
     maxX = 7; // Greenhouse is same size as regular map (8x6)
     maxY = 5;
+  } else if (gameState.inIceCreamShop) {
+    maxX = 7; // Ijssalon is same size as regular map (8x6)
+    maxY = 5;
   } else {
     maxX = 7; // Regular map (8x6)
     maxY = 5;
@@ -172,6 +175,16 @@ document.addEventListener("keydown", function (event) {
         // In greenhouse - check for exit
         if (playerX === 0 && playerY === 0) {
           interactWithGreenhouse(); // This will exit the greenhouse
+        }
+      } else if (gameState.inIceCreamShop) {
+        // In ijssalon - check for exit or balie interaction
+        if (playerX === 0 && playerY === 5) {
+          interactWithIceCreamShop(); // This will exit the ijssalon
+        } else {
+          // Check if near balie (counter)
+          if (playerX >= 5 && playerX <= 7 && playerY >= 1 && playerY <= 3) {
+            interactWithIceCreamShopCounter();
+          }
         }
       } else {
         // Outside greenhouse - check for buildings

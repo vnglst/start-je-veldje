@@ -13,14 +13,45 @@ function isPlayerNearIceCreamShop() {
   return deltaX <= 1 && deltaY <= 1;
 }
 
-// Interact with ice cream shop (open shop modal)
+// Interact with ice cream shop (enter/exit or open shop modal)
 function interactWithIceCreamShop() {
+  // Als we in de ijssalon zijn, kunnen we altijd naar buiten
+  if (gameState.inIceCreamShop) {
+    // Verlaat ijssalon
+    gameState.inIceCreamShop = false;
+    gameState.playerPosition = { x: 7, y: 4 }; // Positie naast ijssalon uitgang
+    showMessage("Je verlaat de ijssalon en gaat terug naar je boerderij! 🚜", "success");
+    
+    // Speel deur geluid bij ijssalon uitgaan
+    if (window.speelDeurGeluid) {
+      speelDeurGeluid();
+    }
+    
+    updateGameMap();
+    updateUI();
+    saveGame();
+    return;
+  }
+
+  // Als we buiten zijn, check of we dichtbij genoeg zijn om binnen te gaan
   if (!isPlayerNearIceCreamShop()) {
     showMessage("Je bent te ver van de ijswinkel! Loop er naartoe. 🏃‍♂️", "error");
     return;
   }
 
-  openIceCreamShopModal();
+  // Ga ijssalon binnen
+  gameState.inIceCreamShop = true;
+  gameState.playerPosition = { x: 1, y: 5 }; // Positie binnen ijssalon (bij ingang)
+  showMessage("Welkom in je ijssalon! 🍦 Hier kun je je zelfgemaakte ijs verkopen!", "success");
+  
+  // Speel deur geluid bij ijssalon ingaan
+  if (window.speelDeurGeluid) {
+    speelDeurGeluid();
+  }
+  
+  updateGameMap();
+  updateUI();
+  saveGame();
 }
 
 // Open ice cream shop modal/dialog
@@ -215,4 +246,23 @@ function handleIceCreamShopEscKey(event) {
 // Add ESC key listener when ice cream shop opens
 function addIceCreamShopKeyListeners() {
   document.addEventListener("keydown", handleIceCreamShopEscKey);
+}
+
+// Interacteer met ijssalon balie (binnen de ijssalon)
+function interactWithIceCreamShopCounter() {
+  if (!gameState.inIceCreamShop) {
+    showMessage("Je bent niet in de ijssalon!", "error");
+    return;
+  }
+
+  // Check of speler bij de balie staat (rechterkant van de ijssalon)
+  const playerX = gameState.playerPosition.x;
+  const playerY = gameState.playerPosition.y;
+  
+  // Balie is op x=6-7, y=1-3
+  if (playerX >= 5 && playerX <= 7 && playerY >= 1 && playerY <= 3) {
+    openIceCreamShopModal();
+  } else {
+    showMessage("Loop naar de balie om ijs te verkopen! 🍦", "error");
+  }
 }

@@ -40,6 +40,7 @@ let gameState = {
   farm: [],
   greenhouseFarm: [], // Aparte boerderij voor in de kas
   inGreenhouse: false, // Of de speler momenteel in de kas is
+  inIceCreamShop: false, // Of de speler momenteel in de ijssalon is
   day: 1,
   season: "Lente",
   wateringCan: true,
