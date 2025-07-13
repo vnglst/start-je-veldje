@@ -51,7 +51,7 @@ function startNewGame() {
     gameState.day = 1;
     gameState.season = "Lente";
     gameState.water = 10;
-    gameState.greenhouse = false;
+    gameState.greenhouse = true;
     gameState.inGreenhouse = false;
     gameState.playerPosition = { x: 0, y: 0 };
 
@@ -82,8 +82,6 @@ function startNewGame() {
     saveGame();
     updateUI();
     initializeFarm();
-    initializeGreenhouseFarm();
-    updatePlayerPosition();
 
     showMessage("Nieuw spel gestart! Welkom terug op je boerderij! 🌱", "success");
   }

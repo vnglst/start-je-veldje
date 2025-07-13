@@ -175,16 +175,8 @@ function moveCustomerTowardsTarget(customer) {
 // Voeg klant toe aan wachtrij
 function addToQueue(customer) {
   gameState.customerQueue.push(customer);
-  const queuePosition = gameState.customerQueue.length - 1;
-  
-  if (queuePosition === 0) {
-    // Eerste klant gaat direct naar balie
-    moveCustomerToCounter(customer);
-  } else {
-    // Andere klanten wachten in rij
-    const queueX = Math.min(4, queuePosition - 1); // Start vanaf positie 1 in rij
-    customer.targetPosition = { x: queueX + 1, y: 2 };
-  }
+  // Laat updateQueuePositions de posities bepalen
+  updateQueuePositions();
 }
 
 // Verwijder klant uit wachtrij
@@ -204,17 +196,42 @@ function updateQueuePositions() {
       customer.position.x === 0 && customer.position.y === 5)
   );
   
-  // Zoek de eerste wachtende klant en stuur naar balie
-  let foundOrderingCustomer = false;
-  gameState.customerQueue.forEach((customer, index) => {
-    if (!foundOrderingCustomer && customer.state === CustomerState.WAITING) {
-      moveCustomerToCounter(customer);
-      foundOrderingCustomer = true;
+  // Fix: reset alle klanten behalve de eerste terug naar waiting state
+  let orderingCount = 0;
+  gameState.customerQueue.forEach((customer) => {
+    if (customer.state === CustomerState.ORDERING) {
+      if (orderingCount === 0) {
+        // Eerste ordering klant mag blijven
+        orderingCount++;
+      } else {
+        // Andere klanten terug naar waiting
+        customer.state = CustomerState.WAITING;
+      }
+    }
+  });
+  
+  // Tel hoeveel klanten er al aan de balie/in de rij staan
+  let waitingCount = 0;
+  orderingCount = 0;
+  
+  gameState.customerQueue.forEach((customer) => {
+    if (customer.state === CustomerState.ORDERING) {
+      orderingCount++;
     } else if (customer.state === CustomerState.WAITING) {
-      // Andere klanten wachten in rij
-      const queuePosition = index - (foundOrderingCustomer ? 1 : 0);
-      const queueX = Math.min(4, queuePosition);
-      customer.targetPosition = { x: queueX + 1, y: 2 };
+      if (waitingCount === 0 && orderingCount === 0) {
+        // Alleen als er nog niemand bij de balie staat
+        moveCustomerToCounter(customer);
+      } else if (waitingCount <= 8) {
+        // Rij posities: x=4,3,2,1 met elk max 2 klanten (y=2 en y=3)
+        const queueIndex = waitingCount - 1; // 0-7 voor 8 rij posities
+        const queueX = 4 - Math.floor(queueIndex / 2); // x=4,4,3,3,2,2,1,1
+        const queueY = (queueIndex % 2) + 2; // y=2,3,2,3,2,3,2,3
+        customer.targetPosition = { x: queueX, y: queueY };
+      } else {
+        // Te veel klanten - laat ze verder bij de ingang wachten
+        customer.targetPosition = { x: 0, y: 2 + (waitingCount % 3) }; // Verdeel over y=2,3,4
+      }
+      waitingCount++;
     }
   });
 }
