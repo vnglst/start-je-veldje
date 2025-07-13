@@ -4,6 +4,7 @@
 - Spreek ALTIJD Nederlands, tenzij de gebruiker expliciet om een andere taal vraagt
 - Gebruik Nederlandse technische termen waar mogelijk
 - Geef antwoorden in een vriendelijke, behulpzame Nederlandse toon
+- Schrijf ALLE code comments in het Nederlands zodat Tibo ze kan lezen en begrijpen
 
 ## Projectcontext
 Dit is een Nederlandse game/applicatie. Alle communicatie over dit project moet in het Nederlands gebeuren.
