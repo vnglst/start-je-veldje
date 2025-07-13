@@ -52,6 +52,12 @@ let gameState = {
   greenhousePosition: { x: 0, y: 0 }, // Greenhouse position at top left
   iceCreamShopPosition: { x: 7, y: 5 }, // IJswinkel positie rechts onder
   iceCreamMachinePosition: { x: 0, y: 1 }, // IJsmachine positie links midden
+  
+  // Klanten systeem
+  customers: [], // Array van klanten in de ijssalon
+  customerQueue: [], // Wachtrij van klanten bij de balie
+  nextCustomerId: 1, // ID voor nieuwe klanten
+  customerSpawnTimer: 0, // Timer voor nieuwe klanten
   // Ijs inventaris toevoegen
   iceCream: {
     vanilla: 0,

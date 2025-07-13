@@ -35,7 +35,11 @@ function interactWithIceCreamShop() {
 
   // Als we buiten zijn, check of we dichtbij genoeg zijn om binnen te gaan
   if (!isPlayerNearIceCreamShop()) {
-    showMessage("Je bent te ver van de ijswinkel! Loop er naartoe. 🏃‍♂️", "error");
+    const iceCreamShopX = gameState.iceCreamShopPosition.x;
+    const iceCreamShopY = gameState.iceCreamShopPosition.y;
+    const playerX = gameState.playerPosition.x;
+    const playerY = gameState.playerPosition.y;
+    showMessage(`Je bent te ver van de ijswinkel! Loop er naartoe. 🏃‍♂️ (Speler: ${playerX},${playerY} | IJswinkel: ${iceCreamShopX},${iceCreamShopY})`, "error");
     return;
   }
 
@@ -43,6 +47,14 @@ function interactWithIceCreamShop() {
   gameState.inIceCreamShop = true;
   gameState.playerPosition = { x: 1, y: 5 }; // Positie binnen ijssalon (bij ingang)
   showMessage("Welkom in je ijssalon! 🍦 Hier kun je je zelfgemaakte ijs verkopen!", "success");
+  
+  // Spawn eerste klant als de klanten lijst leeg is
+  if (gameState.customers.length === 0 && window.spawnCustomer) {
+    setTimeout(() => {
+      spawnCustomer();
+      showMessage("Je eerste klant komt binnen! 😊", "success");
+    }, 1000); // 1 seconde vertraging
+  }
   
   // Speel deur geluid bij ijssalon ingaan
   if (window.speelDeurGeluid) {
@@ -56,30 +68,68 @@ function interactWithIceCreamShop() {
 
 // Open ice cream shop modal/dialog
 function openIceCreamShopModal() {
+  // Check of er een klant is om te bedienen
+  const currentCustomer = window.getCurrentCustomer ? getCurrentCustomer() : null;
+  
   // Create modal overlay
   const modal = document.createElement("div");
   modal.className = "ice-cream-shop-modal";
-  modal.innerHTML = `
-    <div class="ice-cream-shop-modal-content">
-      <div class="ice-cream-shop-modal-header">
-        <div>
-          <h2>🍦 IJswinkel</h2>
-          <div style="font-size: 0.8em; opacity: 0.8; margin-top: 5px;">
-            Verkoop je zelfgemaakte ijs hier!
+  
+  let modalContent = '';
+  if (currentCustomer) {
+    // Bedienings interface
+    modalContent = `
+      <div class="ice-cream-shop-modal-content">
+        <div class="ice-cream-shop-modal-header">
+          <div>
+            <h2>🍦 Klant Bedienen</h2>
+            <div style="font-size: 0.9em; margin-top: 5px;">
+              ${currentCustomer.type.emoji} ${currentCustomer.type.name} wil graag:
+            </div>
+            <div style="font-size: 1.1em; font-weight: bold; color: #ff69b4; margin-top: 5px;">
+              ${iceCreams[currentCustomer.wantedIceCream]?.emoji || '🍦'} ${iceCreams[currentCustomer.wantedIceCream]?.name || 'IJs'}
+            </div>
+          </div>
+          <button class="close-button" onclick="closeIceCreamShopModal()">✖️</button>
+        </div>
+        <div class="ice-cream-shop-modal-body">
+          <div class="customer-patience" style="margin-bottom: 15px;">
+            <div style="font-size: 0.9em; margin-bottom: 5px;">Geduld: ${Math.ceil(currentCustomer.patience)}/${currentCustomer.maxPatience}</div>
+            <div class="patience-bar" style="width: 100%; height: 8px; background: #ddd; border-radius: 4px;">
+              <div style="width: ${(currentCustomer.patience / currentCustomer.maxPatience) * 100}%; height: 100%; background: ${currentCustomer.patience > 5 ? '#4CAF50' : currentCustomer.patience > 2 ? '#FFC107' : '#F44336'}; border-radius: 4px;"></div>
+            </div>
+          </div>
+          <div class="shop-items" id="iceCreamShopItems">
+            <!-- Ice cream items will be populated here -->
           </div>
         </div>
-        <button class="close-button" onclick="closeIceCreamShopModal()">✖️</button>
       </div>
-      <div class="ice-cream-shop-modal-body">
-        <div class="shop-items" id="iceCreamShopItems">
-          <!-- Ice cream items will be populated here -->
+    `;
+  } else {
+    // Normale verkoop interface (geen klant)
+    modalContent = `
+      <div class="ice-cream-shop-modal-content">
+        <div class="ice-cream-shop-modal-header">
+          <div>
+            <h2>🍦 IJswinkel</h2>
+            <div style="font-size: 0.8em; opacity: 0.8; margin-top: 5px;">
+              Geen klant aan de balie. Verkoop je zelfgemaakte ijs hier!
+            </div>
+          </div>
+          <button class="close-button" onclick="closeIceCreamShopModal()">✖️</button>
+        </div>
+        <div class="ice-cream-shop-modal-body">
+          <div class="shop-items" id="iceCreamShopItems">
+            <!-- Ice cream items will be populated here -->
+          </div>
         </div>
       </div>
-    </div>
-  `;
-
+    `;
+  }
+  
+  modal.innerHTML = modalContent;
   document.body.appendChild(modal);
-  updateIceCreamShopModal();
+  updateIceCreamShopModal(currentCustomer);
   addIceCreamShopKeyListeners();
 }
 
@@ -93,7 +143,7 @@ function closeIceCreamShopModal() {
 }
 
 // Update ice cream shop modal content
-function updateIceCreamShopModal() {
+function updateIceCreamShopModal(currentCustomer = null) {
   const shopContainer = document.getElementById("iceCreamShopItems");
   if (!shopContainer) return;
 
@@ -189,20 +239,15 @@ function updateIceCreamShopModal() {
           }
         </div>
         <div class="shop-actions">
-          <button class="sell-one-button" onclick="sellIceCreamToShop('${iceCreamType}', 1)"
-                  style="background: ${config.color};">
-            Verkoop 1x
-          </button>
-          ${
-            count > 1
-              ? `
-          <button class="sell-all-button" onclick="sellIceCreamToShop('${iceCreamType}', ${count})" 
-                  style="margin-top: 5px; background: ${config.color}; opacity: 0.8;">
-            Verkoop Alles
-          </button>
-          `
-              : ""
-          }
+          ${currentCustomer 
+            ? `<button class="serve-customer-button" onclick="serveCustomerIceCream('${iceCreamType}')"
+                      style="background: ${iceCreamType === currentCustomer.wantedIceCream ? '#4CAF50' : config.color}; ${iceCreamType === currentCustomer.wantedIceCream ? 'border: 2px solid #2E7D32; box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);' : ''}">
+                ${iceCreamType === currentCustomer.wantedIceCream ? '⭐ Gewenst!' : 'Bedien Klant'}
+              </button>`
+            : `<div style="text-align: center; color: #666; font-style: italic; padding: 10px; border: 2px dashed #ccc; border-radius: 8px;">
+                🍦 Alleen verkoop aan klanten!<br>
+                <small>Wacht tot er een klant bij de balie staat</small>
+              </div>`}
         </div>
       `;
       shopContainer.appendChild(shopItem);
@@ -248,6 +293,23 @@ function addIceCreamShopKeyListeners() {
   document.addEventListener("keydown", handleIceCreamShopEscKey);
 }
 
+// Bedien klant met specifiek ijsje
+function serveCustomerIceCream(iceCreamType) {
+  if (window.serveCurrentCustomer && serveCurrentCustomer(iceCreamType)) {
+    // Klant succesvol bediend, sluit modal
+    closeIceCreamShopModal();
+    // Speel succes geluid
+    if (window.speelGeluidseffect) {
+      speelGeluidseffect('kassa');
+    }
+  }
+}
+
+// Maak functies globaal beschikbaar
+window.serveCustomerIceCream = serveCustomerIceCream;
+window.interactWithIceCreamShop = interactWithIceCreamShop;
+window.interactWithIceCreamShopCounter = interactWithIceCreamShopCounter;
+
 // Interacteer met ijssalon balie (binnen de ijssalon)
 function interactWithIceCreamShopCounter() {
   if (!gameState.inIceCreamShop) {
@@ -255,12 +317,14 @@ function interactWithIceCreamShopCounter() {
     return;
   }
 
-  // Check of speler bij de balie staat (rechterkant van de ijssalon)
+  // Check of speler bij de balie staat (nieuwe positie)
   const playerX = gameState.playerPosition.x;
   const playerY = gameState.playerPosition.y;
   
-  // Balie is op x=6-7, y=1-3
-  if (playerX >= 5 && playerX <= 7 && playerY >= 1 && playerY <= 3) {
+  // Nieuwe balie positie: x=6, y=1-4 (balie) of x=7, y=1-4 (achter de balie) of x=5, y=1-4 (voor de balie)
+  if ((playerX === 6 && playerY >= 1 && playerY <= 4) || 
+      (playerX === 7 && playerY >= 1 && playerY <= 4) ||
+      (playerX === 5 && playerY >= 1 && playerY <= 4)) {
     openIceCreamShopModal();
   } else {
     showMessage("Loop naar de balie om ijs te verkopen! 🍦", "error");

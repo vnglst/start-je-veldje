@@ -181,8 +181,10 @@ document.addEventListener("keydown", function (event) {
         if (playerX === 0 && playerY === 5) {
           interactWithIceCreamShop(); // This will exit the ijssalon
         } else {
-          // Check if near balie (counter)
-          if (playerX >= 5 && playerX <= 7 && playerY >= 1 && playerY <= 3) {
+          // Check if near balie (counter) - nieuwe balie positie
+          if ((playerX === 6 && playerY >= 1 && playerY <= 4) || 
+              (playerX === 7 && playerY >= 1 && playerY <= 4) ||
+              (playerX === 5 && playerY >= 1 && playerY <= 4)) {
             interactWithIceCreamShopCounter();
           }
         }

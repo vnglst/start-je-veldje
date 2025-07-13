@@ -90,6 +90,8 @@ function updateUI() {
     infoButton.classList.toggle("active", infoMode);
   }
 
+  // Klanten worden nu automatisch geupdate door de timer in main.js
+
   updateInventory();
   updateGameMap();
   // updateShopDisplay(); // Disabled - element doesn't exist
@@ -689,6 +691,47 @@ document.addEventListener('keydown', function(event) {
 window.openSettingsModal = openSettingsModal;
 window.closeSettingsModal = closeSettingsModal;
 
+// Render klanten in de ijssalon
+function renderCustomers(gameMap) {
+  if (!gameState.customers) return;
+  
+  gameState.customers.forEach(customer => {
+    const tile = document.getElementById(`tile-${customer.position.x}-${customer.position.y}`);
+    if (tile) {
+      // Voeg klant toe aan tile
+      const customerDiv = document.createElement("div");
+      customerDiv.className = "customer";
+      customerDiv.innerHTML = customer.type.emoji;
+      
+      // Verschillende titel gebaseerd op state
+      let title = `${customer.type.name}`;
+      switch (customer.state) {
+        case "entering":
+          title += " komt binnen";
+          break;
+        case "waiting":
+          title += ` wacht in de rij (${Math.ceil(customer.patience)} geduld)`;
+          break;
+        case "ordering":
+          title += ` wil ${iceCreams[customer.wantedIceCream]?.name || 'ijs'} bestellen`;
+          break;
+        case "moving_to_table":
+          title += " loopt naar tafeltje";
+          break;
+        case "eating":
+          title += " geniet van het ijs";
+          break;
+        case "leaving":
+          title += " gaat weg";
+          break;
+      }
+      
+      customerDiv.title = title;
+      tile.appendChild(customerDiv);
+    }
+  });
+}
+
 // Render ijssalon interior map
 function renderIceCreamShopMap(gameMap) {
   // Create 8x6 grid for ijssalon interior
@@ -700,10 +743,10 @@ function renderIceCreamShopMap(gameMap) {
 
       // Ijssalon layout:
       // (0,5) = Ingang/Uitgang
-      // (6-7, 1-3) = Balie (counter)
-      // (2-3, 2-3) = Tafeltje 1
-      // (5, 4-5) = Tafeltje 2
-      // (1-2, 4) = Tafeltje 3
+      // (6-7, 1-4) = Balie gebied met rand
+      // (6, 1-4) = Balie rand (leeg ruimte)
+      // (7, 2-3) = Eigenlijke balie (counter)
+      // Meer tafels verspreid door de salon
 
       if (x === 0 && y === 5) {
         // Ingang/Uitgang
@@ -711,49 +754,119 @@ function renderIceCreamShopMap(gameMap) {
         tile.innerHTML = "🚪";
         tile.title = "Uitgang - Klik om te verlaten";
         tile.onclick = () => interactWithIceCreamShop();
-      } else if (x >= 6 && x <= 7 && y >= 1 && y <= 3) {
-        // Balie (counter)
+      } else if (x === 5 && y >= 1 && y <= 4) {
+        // Balie rand - lege ruimte rondom de balie (nu naar voren)
+        tile.classList.add("ice-cream-shop-counter-area");
+        tile.innerHTML = "";
+        tile.title = "Ruimte voor de balie";
+      } else if (x === 6 && y >= 2 && y <= 3) {
+        // Eigenlijke balie (counter) - nu naar voren verplaatst
         tile.classList.add("ice-cream-shop-counter");
-        tile.innerHTML = "🍦";
-        tile.title = "Balie - Klik om ijs te verkopen";
+        
+        // Verschillende emoji's voor de 2 delen van de balie
+        if (x === 6 && y === 2) {
+          tile.innerHTML = "🍦"; // Hoofdbalie boven
+          tile.title = "Balie (Hoofdkassa) - Klik om ijs te verkopen";
+        } else if (x === 6 && y === 3) {
+          tile.innerHTML = "💰"; // Kassa onder
+          tile.title = "Balie (Kassa) - Klik om ijs te verkopen";
+        }
+        
         tile.onclick = () => interactWithIceCreamShopCounter();
-      } else if ((x >= 2 && x <= 3 && y >= 2 && y <= 3) || 
-                 (x === 5 && y >= 4 && y <= 5) || 
-                 (x >= 1 && x <= 2 && y === 4)) {
-        // Tafeltjes
+      } else if (x === 6 && (y === 1 || y === 4)) {
+        // Balie uitbreidingen (boven en onder) - ook naar voren
+        tile.classList.add("ice-cream-shop-counter-extension");
+        if (y === 1) {
+          tile.innerHTML = "🧊"; // IJsmachine boven
+          tile.title = "Balie uitbreiding (IJsmachine)";
+        } else {
+          tile.innerHTML = "🥄"; // Gereedschap onder
+          tile.title = "Balie uitbreiding (Gereedschap)";
+        }
+      } else if (x === 7 && y >= 1 && y <= 4) {
+        // Ruimte achter de balie waar je kunt staan
+        tile.classList.add("ice-cream-shop-work-area");
+        tile.innerHTML = "";
+        tile.title = "Werkruimte achter de balie";
+      } else if ((x === 1 && y === 1) || 
+                 (x === 5 && y === 1) || 
+                 (x === 1 && y === 3)) {
+        // Elegante tafelindeling - aangepast voor de lopende rij
         tile.classList.add("ice-cream-shop-table");
-        tile.innerHTML = "🪑";
-        tile.title = "Tafeltje voor gasten";
+        
+        if (x === 1 && y === 1) {
+          // Klein tafeltje links-boven
+          tile.innerHTML = "🍽️"; // Elegante tafel
+          tile.title = "Tafeltje voor één persoon";
+        } else if (x === 5 && y === 1) {
+          // Tafeltje rechts-boven
+          tile.innerHTML = "☕"; // Drankjes tafel
+          tile.title = "Rustig drankjes tafeltje";
+        } else if (x === 1 && y === 3) {
+          // Klein tafeltje links-midden
+          tile.innerHTML = "🧁"; // Dessert tafel
+          tile.title = "Dessert hoekje";
+        }
       } else if (x === 0 && y === 0) {
-        // Hoek decoratie
+        // Hoek decoratie links-boven
         tile.classList.add("ice-cream-shop-decoration");
         tile.innerHTML = "🎨";
-        tile.title = "Decoratie";
-      } else if (x === 7 && y === 0) {
-        // Hoek decoratie
+        tile.title = "Kunst aan de muur";
+      } else if (x === 3 && y === 0) {
+        // Decoratie midden-boven
+        tile.classList.add("ice-cream-shop-decoration");
+        tile.innerHTML = "💐";
+        tile.title = "Elegante bloemen";
+      } else if (x === 5 && y === 0) {
+        // Decoratie rechts-boven
         tile.classList.add("ice-cream-shop-decoration");
         tile.innerHTML = "🖼️";
-        tile.title = "Schilderij";
-      } else if (x === 7 && y === 5) {
-        // Hoek decoratie
+        tile.title = "IJssalon schilderij";
+      } else if (x === 0 && y === 2) {
+        // Decoratie links-midden
         tile.classList.add("ice-cream-shop-decoration");
-        tile.innerHTML = "🌻";
-        tile.title = "Bloemen";
+        tile.innerHTML = "🪴";
+        tile.title = "Mooie plant";
+      } else if (x === 5 && y === 1) {
+        // Decoratie tussen tafels en balie
+        tile.classList.add("ice-cream-shop-decoration");
+        tile.innerHTML = "🕯️";
+        tile.title = "Sfeerverlichting";
+      } else if (x === 2 && y === 4) {
+        // Decoratie bij ingang
+        tile.classList.add("ice-cream-shop-decoration");
+        tile.innerHTML = "🌺";
+        tile.title = "Welkom bloemen";
+      } else if (x === 7 && y === 5) {
+        // Hoek decoratie rechts-onder
+        tile.classList.add("ice-cream-shop-decoration");
+        tile.innerHTML = "🌟";
+        tile.title = "Glitter decoratie";
       } else {
         // Vloer tegels
         tile.classList.add("ice-cream-shop-floor");
         tile.innerHTML = "";
       }
 
-      // Add player if on this tile
-      if (x === gameState.playerPosition.x && y === gameState.playerPosition.y) {
-        const player = document.createElement("div");
-        player.className = "player";
-        player.innerHTML = "🧑‍🌾";
-        tile.appendChild(player);
-      }
-
       gameMap.appendChild(tile);
+    }
+  }
+  
+  // Render klanten dynamisch
+  renderCustomers(gameMap);
+  
+  // Add player if on this tile (na klanten zodat speler bovenop staat)
+  for (let y = 0; y < 6; y++) {
+    for (let x = 0; x < 8; x++) {
+      if (x === gameState.playerPosition.x && y === gameState.playerPosition.y) {
+        const tile = document.getElementById(`tile-${x}-${y}`);
+        if (tile) {
+          const player = document.createElement("div");
+          player.className = "player";
+          player.innerHTML = "🧑‍🌾";
+          tile.appendChild(player);
+        }
+      }
     }
   }
 }

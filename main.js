@@ -117,8 +117,24 @@ function startAutoSave() {
   }, 5000);
 }
 
+// Game time system - runs continuously
+function startGameTime() {
+  setInterval(() => {
+    // Update klanten in ijssalon elke 100ms
+    if (gameState.inIceCreamShop && window.updateCustomers) {
+      updateCustomers();
+    }
+    
+    // Update UI elke seconde voor real-time feedback
+    if (Date.now() % 1000 < 100) {
+      updateUI();
+    }
+  }, 100); // Elke 100 milliseconden
+}
+
 // Start the game when page loads
 window.onload = function () {
   initializeGame();
   startAutoSave();
+  startGameTime(); // Start de tijd loop
 };
