@@ -1,25 +1,156 @@
 /* Game stats */
 .game-stats {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(120px, 15vw, 180px), 1fr));
+  gap: clamp(8px, 2vw, 15px);
   margin-bottom: 30px;
-  padding: 15px;
-  background: #f0f8ff;
-  border-radius: 10px;
-  border: 2px solid #4682b4;
-  gap: 8px;
+  padding: clamp(12px, 3vw, 20px);
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 50%, #ddeeff 100%);
+  border-radius: 15px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  box-shadow: 0 8px 32px rgba(70, 130, 180, 0.2);
+  position: relative;
+}
+
+.game-stats::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(45deg, #4682b4, #87ceeb, #4682b4);
+  border-radius: 18px;
+  z-index: -1;
 }
 
 .stat {
   text-align: center;
-  font-size: 1.1em;
+  font-size: clamp(0.9em, 2.5vw, 1.2em);
   font-weight: bold;
   color: #2e8b57;
-  padding: 4px 8px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 6px;
+  padding: clamp(8px, 2vw, 12px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 248, 255, 0.9) 100%);
+  border-radius: 12px;
   min-width: fit-content;
+  border: 2px solid rgba(70, 130, 180, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.6s ease;
+}
+
+.stat:hover::before {
+  left: 100%;
+}
+
+.stat:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 4px 15px rgba(70, 130, 180, 0.3);
+  border-color: #4682b4;
+}
+
+/* Speciale kleuren voor verschillende stats */
+.stat:nth-child(1) { /* Geld */
+  color: #d4af37;
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+.stat:nth-child(1):hover {
+  border-color: #d4af37;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.stat:nth-child(2) { /* Zaden */
+  color: #228b22;
+  border-color: rgba(34, 139, 34, 0.4);
+}
+
+.stat:nth-child(2):hover {
+  border-color: #228b22;
+  box-shadow: 0 4px 15px rgba(34, 139, 34, 0.3);
+}
+
+.stat:nth-child(3) { /* Fruit */
+  color: #ff6347;
+  border-color: rgba(255, 99, 71, 0.4);
+}
+
+.stat:nth-child(3):hover {
+  border-color: #ff6347;
+  box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3);
+}
+
+.stat:nth-child(4) { /* IJs */
+  color: #ff69b4;
+  border-color: rgba(255, 105, 180, 0.4);
+}
+
+.stat:nth-child(4):hover {
+  border-color: #ff69b4;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+}
+
+.stat:nth-child(5) { /* Water */
+  color: #1e90ff;
+  border-color: rgba(30, 144, 255, 0.4);
+}
+
+.stat:nth-child(5):hover {
+  border-color: #1e90ff;
+  box-shadow: 0 4px 15px rgba(30, 144, 255, 0.3);
+}
+
+.stat:nth-child(6) { /* Dag */
+  color: #9932cc;
+  border-color: rgba(153, 50, 204, 0.4);
+}
+
+.stat:nth-child(6):hover {
+  border-color: #9932cc;
+  box-shadow: 0 4px 15px rgba(153, 50, 204, 0.3);
+}
+
+.stat:nth-child(7) { /* Seizoen */
+  color: #32cd32;
+  border-color: rgba(50, 205, 50, 0.4);
+}
+
+.stat:nth-child(7):hover {
+  border-color: #32cd32;
+  box-shadow: 0 4px 15px rgba(50, 205, 50, 0.3);
+}
+
+.stat:nth-child(8) { /* Kas */
+  color: #ff8c00;
+  border-color: rgba(255, 140, 0, 0.4);
+  background: linear-gradient(135deg, rgba(255, 248, 220, 0.95) 0%, rgba(255, 235, 205, 0.9) 100%);
+  animation: greenhouse-glow 2s ease-in-out infinite alternate;
+}
+
+.stat:nth-child(8):hover {
+  border-color: #ff8c00;
+  box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+}
+
+@keyframes greenhouse-glow {
+  0% {
+    box-shadow: 0 2px 8px rgba(255, 140, 0, 0.2);
+  }
+  100% {
+    box-shadow: 0 2px 8px rgba(255, 140, 0, 0.4);
+  }
 }
 
 /* Game area layout */
@@ -37,14 +168,9 @@
     gap: 12px;
   }
   .game-stats {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 6px;
-    padding: 10px;
-  }
-  .stat {
-    font-size: 1em;
-    padding: 3px 6px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 8px;
+    padding: 12px;
   }
 }
 
@@ -54,16 +180,14 @@
     gap: 10px;
   }
   .game-stats {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 4px;
-    padding: 7px;
-    margin-bottom: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 6px;
+    padding: 10px;
+    margin-bottom: 15px;
   }
   .stat {
-    font-size: 0.85em;
-    padding: 2px 4px;
-    min-width: 60px;
+    padding: clamp(6px, 1.5vw, 10px);
+    border-radius: 8px;
   }
 }
 
@@ -73,12 +197,17 @@
     gap: 5px;
   }
   .game-stats {
-    padding: 4px;
-    gap: 2px;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 4px;
+    padding: 8px;
+    margin-bottom: 12px;
   }
   .stat {
-    font-size: 0.7em;
-    padding: 1px 2px;
-    min-width: 40px;
+    padding: clamp(4px, 1vw, 8px);
+    border-radius: 6px;
+    border-width: 1px;
+  }
+  .stat:hover {
+    transform: translateY(-1px) scale(1.01);
   }
 }

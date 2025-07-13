@@ -33,10 +33,10 @@
   background: rgba(255,255,255,0.95);
   border: 2px solid #daa520;
   border-radius: 15px;
-  padding: 22px 28px 14px 28px;
+  padding: 22px 28px 18px 28px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  min-width: 260px;
-  max-width: 90vw;
+  min-width: 320px;
+  max-width: 600px;
   margin-bottom: 10px;
   display: flex;
   flex-direction: column;
@@ -52,18 +52,86 @@
 }
 
 .startscreen-stats {
-  color: #8b4513;
-  line-height: 1.6;
-  font-size: 1.05em;
-  padding-left: 18px;
-  margin: 0 0 12px 0;
-  text-align: left;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  margin: 0 0 16px 0;
+  padding: 0;
   width: 100%;
-  font-family: inherit;
+  list-style: none;
 }
+
 .startscreen-stats li {
-  margin-bottom: 2px;
-  text-shadow: 0 1px 0 #fff8dc;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(240, 248, 255, 0.6) 100%);
+  border: 2px solid rgba(70, 130, 180, 0.3);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin: 0;
+  text-align: center;
+  font-size: 0.95em;
+  font-weight: bold;
+  color: #2e8b57;
+  text-shadow: none;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.startscreen-stats li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.4s ease;
+}
+
+.startscreen-stats li:hover::before {
+  left: 100%;
+}
+
+.startscreen-stats li:hover {
+  transform: translateY(-1px) scale(1.02);
+  border-color: #4682b4;
+  box-shadow: 0 2px 8px rgba(70, 130, 180, 0.2);
+}
+
+/* Verschillende kleuren voor elke stat in startscherm */
+.startscreen-stats li:nth-child(1) { /* Geld */
+  color: #d4af37;
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+.startscreen-stats li:nth-child(2) { /* Zaden */
+  color: #228b22;
+  border-color: rgba(34, 139, 34, 0.4);
+}
+
+.startscreen-stats li:nth-child(3) { /* Fruit */
+  color: #ff6347;
+  border-color: rgba(255, 99, 71, 0.4);
+}
+
+.startscreen-stats li:nth-child(4) { /* IJs */
+  color: #ff69b4;
+  border-color: rgba(255, 105, 180, 0.4);
+}
+
+.startscreen-stats li:nth-child(5) { /* Water */
+  color: #1e90ff;
+  border-color: rgba(30, 144, 255, 0.4);
+}
+
+.startscreen-stats li:nth-child(6) { /* Dag */
+  color: #9932cc;
+  border-color: rgba(153, 50, 204, 0.4);
+}
+
+.startscreen-stats li:nth-child(7) { /* Seizoen */
+  color: #32cd32;
+  border-color: rgba(50, 205, 50, 0.4);
 }
 
 .startscreen-btn {
