@@ -13,15 +13,57 @@
   animation: modalFadeIn 0.3s ease-out;
 }
 
+/* Responsive modal voor ijssalon */
+/* Responsive modal voor ijssalon */
 .ice-cream-shop-modal-content {
   background: #ffe4e1; /* Light pink background */
   border: 3px solid #ff69b4; /* Hot pink border */
   border-radius: 15px;
   max-width: 600px;
+  width: 100vw;
   max-height: 80vh;
   overflow-y: auto;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   animation: modalSlideIn 0.3s ease-out;
+  box-sizing: border-box;
+}
+
+@media (max-width: 700px) {
+  .ice-cream-shop-modal-content {
+    max-width: 95vw;
+    width: 95vw;
+    padding: 8px;
+    margin: 0 auto;
+  }
+  .ice-cream-shop-modal-header {
+    padding: 10px 8px;
+  }
+  .ice-cream-shop-modal-body {
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ice-cream-shop-modal-content {
+    max-width: 92vw;
+    width: 92vw;
+    padding: 6px;
+  }
+  .ice-cream-shop-modal-header {
+    padding: 8px 6px;
+  }
+  .ice-cream-shop-modal-body {
+    padding: 6px;
+  }
+  .shop-item {
+    padding: 10px;
+  }
+  .shop-icon {
+    font-size: 2em;
+    margin-right: 10px;
+    min-width: 50px;
+  }
+}
 }
 
 .ice-cream-shop-modal-header {
@@ -96,9 +138,7 @@
 .shop-happiness {
   font-size: 0.9em;
   margin-bottom: 5px;
-}
-
-.shop-price {
+/* ...existing code... */
   font-weight: bold;
   color: #2e8b57;
   font-size: 1.1em;

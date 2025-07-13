@@ -1,56 +1,58 @@
 /* Game map layout */
+/* Game map layout */
+.game-map-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100vw;
+  max-width: 100vw;
+}
+/* Game map layout */
 .game-map {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: clamp(1px, 1vw, 6px);
   margin-bottom: 20px;
-  max-width: 520px;
-  margin: 0 auto 20px auto;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
+/* Houd de blokken altijd vierkant met aspect-ratio en laat ze alle ruimte innemen */
+/* Houd de blokken altijd vierkant met aspect-ratio en laat ze alle ruimte innemen */
 .map-tile {
-  width: 60px;
-  height: 60px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  min-width: 0;
+  min-height: 0;
   background: #90ee90;
-  border: 2px solid #228b22;
-  border-radius: 8px;
+  border: clamp(1px, 0.3vw, 2px) solid #228b22;
+  border-radius: clamp(2px, 0.5vw, 6px);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 24px;
+  font-size: clamp(6px, 2.5vw, 20px);
   transition: all 0.3s ease;
   position: relative;
+  overflow: hidden;
 }
 
-/* Responsive design voor mobiel */
-@media (max-width: 768px) {
-  .game-map {
-    max-width: 100%;
-    gap: 4px;
-  }
-  
-  .map-tile {
-    width: 45px;
-    height: 45px;
-    font-size: 18px;
-    border-width: 1px;
-    border-radius: 6px;
-  }
-}
-
-@media (max-width: 480px) {
-  .map-tile {
-    width: 38px;
-    height: 38px;
-    font-size: 16px;
-  }
+/* Game map wrapper is nu gewoon een container */
+.game-map-wrapper {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
 }
 
 .map-tile.farm-plot {
   background: #8b4513;
   border: 2px solid #654321;
   cursor: pointer;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  box-sizing: border-box;
 }
 
 .map-tile.well {

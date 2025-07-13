@@ -31,21 +31,54 @@
 }
 
 /* Responsive design voor mobiel */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
+  .game-area {
+    grid-template-columns: 1fr 220px;
+    gap: 12px;
+  }
   .game-stats {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
     padding: 10px;
-    margin-bottom: 20px;
   }
-  
   .stat {
-    font-size: 0.9em;
+    font-size: 1em;
     padding: 3px 6px;
-    flex: 1;
-    min-width: 70px;
   }
-  
+}
+
+@media (max-width: 768px) {
   .game-area {
     grid-template-columns: 1fr;
-    gap: 15px;
+    gap: 10px;
+  }
+  .game-stats {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    padding: 7px;
+    margin-bottom: 10px;
+  }
+  .stat {
+    font-size: 0.85em;
+    padding: 2px 4px;
+    min-width: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-area {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+  .game-stats {
+    padding: 4px;
+    gap: 2px;
+  }
+  .stat {
+    font-size: 0.7em;
+    padding: 1px 2px;
+    min-width: 40px;
   }
 }

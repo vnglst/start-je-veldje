@@ -60,15 +60,49 @@
 }
 
 /* Greenhouse interior styling */
+/* Responsive kas-interieur */
+/* Responsive kas-interieur */
 .greenhouse-interior {
   background: linear-gradient(135deg, #e6ffe6 0%, #ccffcc 100%);
   border: 3px solid #90ee90;
   border-radius: 15px;
   box-shadow: 0 0 20px rgba(50, 205, 50, 0.3);
   animation: greenhouse-glow 3s infinite;
+  max-width: 600px;
+  width: 100vw;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-.greenhouse-tile {
+@media (max-width: 700px) {
+  .greenhouse-interior {
+    max-width: 95vw;
+    width: 95vw;
+    padding: 8px;
+    margin: 0 auto;
+  }
+  .greenhouse-interior .game-map {
+    max-width: 100%;
+    padding: 4px;
+    gap: 3px;
+    min-height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .greenhouse-interior {
+    max-width: 92vw;
+    width: 92vw;
+    padding: 6px;
+  }
+  .greenhouse-interior .game-map {
+    gap: 2px;
+    padding: 2px;
+    min-height: 100px;
+  }
+}
+/* ...existing code... */
   background: #f0fff0;
   border: 2px solid #98fb98;
 }
@@ -120,6 +154,8 @@
 }
 
 /* Greenhouse map grid styling */
+/* Grid in kas mag nooit breder zijn dan de kas zelf */
+/* Grid in kas mag nooit breder zijn dan de kas zelf */
 .greenhouse-interior .game-map {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
@@ -127,6 +163,9 @@
   gap: 8px;
   padding: 15px;
   min-height: 360px;
+  max-width: 600px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Location indicator */

@@ -7,10 +7,47 @@
 }
 
 /* Responsive design voor mobiel */
+@media (max-width: 1024px) {
+  .sidebar {
+    padding: 12px;
+    border-width: 2px;
+    border-radius: 8px;
+  }
+}
+
 @media (max-width: 768px) {
   .sidebar {
-    padding: 15px;
+    padding: 8px;
     border-width: 2px;
+    border-radius: 6px;
+  }
+  .section-title {
+    font-size: 1.1em;
+    padding-bottom: 6px;
+  }
+  .shop-item,
+  .inventory-item {
+    font-size: 0.85em;
+    padding: 6px;
+    border-radius: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    padding: 3px;
+    border-width: 1px;
+    border-radius: 4px;
+  }
+  .section-title {
+    font-size: 1em;
+    padding-bottom: 3px;
+  }
+  .shop-item,
+  .inventory-item {
+    font-size: 0.7em;
+    padding: 3px;
+    border-radius: 3px;
   }
 }
 
