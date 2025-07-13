@@ -55,7 +55,7 @@ let gameState = {
   iceCreamShopPosition: { x: 7, y: 5 }, // IJswinkel positie rechts onder
   iceCreamMachinePosition: { x: 0, y: 1 }, // IJsmachine positie links midden
   lemonadeMachinePosition: { x: 0, y: 2 }, // Limonade machine positie links onder ijsmachine
-  
+
   // Klanten systeem
   customers: [], // Array van klanten in de ijssalon
   customerQueue: [], // Wachtrij van klanten bij de balie
@@ -63,7 +63,6 @@ let gameState = {
   customerSpawnTimer: 0, // Timer voor nieuwe klanten
   // Ijs inventaris toevoegen
   iceCream: {
-    vanilla: 0,
     strawberry: 0,
     apple: 0,
     carrot: 0,
@@ -98,5 +97,5 @@ let infoMode = false;
 
 // Data modules zijn verplaatst naar:
 // - IJs data: js/data/iceCreams.js
-// - Gewas data: js/data/crops.js  
+// - Gewas data: js/data/crops.js
 // - Save/Load functies: js/utils/saveLoad.js

@@ -21,7 +21,6 @@ function loadGame() {
     // Zorg ervoor dat nieuwe properties default waarden hebben
     if (!gameState.iceCream) {
       gameState.iceCream = {
-        vanilla: 0,
         strawberry: 0,
         apple: 0,
         carrot: 0,
@@ -168,7 +167,6 @@ function importGameData() {
           // Zorg ervoor dat nieuwe properties bestaan
           if (!gameState.iceCream) {
             gameState.iceCream = {
-              vanilla: 0,
               strawberry: 0,
               apple: 0,
               carrot: 0,

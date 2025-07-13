@@ -18,7 +18,7 @@ function initializeGame() {
     if (!gameState.iceCreamShopPosition) {
       gameState.iceCreamShopPosition = { x: 7, y: 5 };
     }
-    
+
     // Forceer ijswinkel naar nieuwe positie (tijdelijke fix)
     if (gameState.iceCreamShopPosition.x === 7 && gameState.iceCreamShopPosition.y === 0) {
       gameState.iceCreamShopPosition = { x: 7, y: 5 };
@@ -34,7 +34,6 @@ function initializeGame() {
     // Ensure ice cream inventory exists for older saves (zonder regenboog, mint, chocolade)
     if (!gameState.iceCream) {
       gameState.iceCream = {
-        vanilla: 0,
         strawberry: 0,
         apple: 0,
         carrot: 0,
@@ -125,9 +124,13 @@ function initializeGame() {
       "success"
     );
   }
-  
+
   // Forceer ijswinkel positie naar rechts onder (voor alle games)
-  if (gameState.iceCreamShopPosition && gameState.iceCreamShopPosition.x === 7 && gameState.iceCreamShopPosition.y === 0) {
+  if (
+    gameState.iceCreamShopPosition &&
+    gameState.iceCreamShopPosition.x === 7 &&
+    gameState.iceCreamShopPosition.y === 0
+  ) {
     gameState.iceCreamShopPosition = { x: 7, y: 5 };
     console.log("IJswinkel verplaatst naar rechts onder: ", gameState.iceCreamShopPosition);
     saveGame(); // Sla de nieuwe positie op
@@ -147,11 +150,11 @@ function startTimeSystem() {
   setInterval(() => {
     // 5 minuten per 10 seconden = 1 minuut per 2 seconden
     gameState.minute += 5;
-    
+
     if (gameState.minute >= 60) {
       gameState.minute = 0;
       gameState.hour++;
-      
+
       // Een dag duurt van 6:00 tot 24:00 (18 uur)
       if (gameState.hour >= 24) {
         // Automatisch slapen om 24:00 (middernacht)
@@ -163,7 +166,7 @@ function startTimeSystem() {
         }, 1000);
       }
     }
-    
+
     updateUI();
   }, 10000); // Elke 10 seconden = 5 minuten in-game
 }
@@ -173,7 +176,7 @@ function startGameTime() {
     if (gameState.inIceCreamShop && window.updateCustomers) {
       updateCustomers();
     }
-    
+
     // Update UI elke seconde voor real-time feedback
     if (Date.now() % 1000 < 100) {
       updateUI();
