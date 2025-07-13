@@ -1,10 +1,48 @@
 /* Messages */
 .message {
-  text-align: center;
-  padding: 10px;
-  margin-top: 20px;
-  border-radius: 8px;
-  font-weight: bold;
+  position: fixed;
+  right: 32px;
+  bottom: 32px;
+  min-width: 260px;
+  max-width: 380px;
+  z-index: 9999;
+  text-align: left;
+  padding: 18px 28px;
+  border-radius: 14px;
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.28), 0 1.5px 0 0 #fff8;
+  border: 2.5px solid #fff8;
+  opacity: 0;
+  transform: translateY(40px) scale(0.98);
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: messageBounceIn 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes messageBounceIn {
+  0% {
+    opacity: 0;
+    transform: translateY(60px) scale(0.95);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1.04);
+  }
+  80% {
+    transform: translateY(4px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.message.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .success {

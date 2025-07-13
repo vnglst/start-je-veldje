@@ -27,7 +27,7 @@ function updateUI() {
 
   const iceCreamCountEl = document.getElementById("iceCreamCount");
   if (iceCreamCountEl) iceCreamCountEl.textContent = Object.values(gameState.iceCream).reduce((a, b) => a + b, 0);
-  
+
   const lemonadeCountEl = document.getElementById("lemonadeCount");
   if (lemonadeCountEl) lemonadeCountEl.textContent = Object.values(gameState.lemonade).reduce((a, b) => a + b, 0);
 
@@ -40,7 +40,7 @@ function updateUI() {
   // Update tijd
   const timeEl = document.getElementById("time");
   if (timeEl) {
-    const timeString = `${gameState.hour.toString().padStart(2, '0')}:${gameState.minute.toString().padStart(2, '0')}`;
+    const timeString = `${gameState.hour.toString().padStart(2, "0")}:${gameState.minute.toString().padStart(2, "0")}`;
     timeEl.textContent = timeString;
   }
 
@@ -115,27 +115,27 @@ function updateUI() {
 // Dag/nacht cyclus systeem
 function updateDayNightCycle() {
   const body = document.body;
-  
+
   // Verwijder alle tijd-gebaseerde klassen
-  body.classList.remove('time-morning', 'time-day', 'time-evening', 'time-night', 'time-late-night');
-  
+  body.classList.remove("time-morning", "time-day", "time-evening", "time-night", "time-late-night");
+
   const hour = gameState.hour;
-  
+
   if (hour >= 6 && hour < 9) {
     // Ochtend (6:00-9:00) - Zachte oranje gloed
-    body.classList.add('time-morning');
+    body.classList.add("time-morning");
   } else if (hour >= 9 && hour < 17) {
     // Dag (9:00-17:00) - Helder licht
-    body.classList.add('time-day');
+    body.classList.add("time-day");
   } else if (hour >= 17 && hour < 20) {
     // Avond (17:00-20:00) - Warme oranje gloed
-    body.classList.add('time-evening');
+    body.classList.add("time-evening");
   } else if (hour >= 20 && hour < 24) {
     // Nacht (20:00-24:00) - Donkerblauw
-    body.classList.add('time-night');
+    body.classList.add("time-night");
   } else {
     // Late nacht (0:00-6:00) - Zeer donker
-    body.classList.add('time-late-night');
+    body.classList.add("time-late-night");
   }
 }
 
@@ -642,29 +642,44 @@ function showMessage(text, type) {
 
   // Speel geluidseffect gebaseerd op type bericht
   if (window.speelSuccesGeluid && window.speelErrorGeluid && window.speelMeldingGeluid) {
-    switch(type) {
-      case 'success':
+    switch (type) {
+      case "success":
         speelSuccesGeluid();
         break;
-      case 'error':
+      case "error":
         speelErrorGeluid();
         break;
-      case 'info':
+      case "info":
         speelMeldingGeluid();
         break;
     }
   }
 
-  // Convert newlines to HTML breaks for multi-line messages
+  // Convert newlines to HTML breaks voor multi-line berichten
   const formattedText = text.replace(/\n/g, "<br>");
-  messageArea.innerHTML = `<div class="message ${type}">${formattedText}</div>`;
-
-  // Longer timeout for info messages since they have more content
-  const timeout = type === "info" ? 6000 : 3000;
+  // Verwijder oude message als die er nog is
+  const oudeMsg = messageArea.querySelector(".message");
+  if (oudeMsg) {
+    oudeMsg.classList.remove("visible");
+    setTimeout(() => {
+      if (oudeMsg.parentNode) oudeMsg.parentNode.removeChild(oudeMsg);
+    }, 400);
+  }
+  // Maak nieuwe message
+  const msgDiv = document.createElement("div");
+  msgDiv.className = `message ${type}`;
+  msgDiv.innerHTML = formattedText;
+  messageArea.appendChild(msgDiv);
+  // Force reflow voor animatie
+  void msgDiv.offsetWidth;
+  msgDiv.classList.add("visible");
+  // Timeout voor verdwijnen
+  const timeout = type === "info" ? 9000 : 5000;
   setTimeout(() => {
-    if (messageArea) {
-      messageArea.innerHTML = "";
-    }
+    msgDiv.classList.remove("visible");
+    setTimeout(() => {
+      if (msgDiv.parentNode) msgDiv.parentNode.removeChild(msgDiv);
+    }, 400);
   }, timeout);
 }
 
@@ -697,9 +712,9 @@ function showTab(tabName) {
 
 // Open de instellingen modal
 function openSettingsModal() {
-  const modal = document.getElementById('settingsModal');
+  const modal = document.getElementById("settingsModal");
   if (modal) {
-    modal.classList.add('show');
+    modal.classList.add("show");
     // Speel menu open geluid
     if (window.speelMenuToggleGeluid) {
       speelMenuToggleGeluid(true);
@@ -709,9 +724,9 @@ function openSettingsModal() {
 
 // Sluit de instellingen modal
 function closeSettingsModal() {
-  const modal = document.getElementById('settingsModal');
+  const modal = document.getElementById("settingsModal");
   if (modal) {
-    modal.classList.remove('show');
+    modal.classList.remove("show");
     // Speel menu sluit geluid
     if (window.speelMenuToggleGeluid) {
       speelMenuToggleGeluid(false);
@@ -720,16 +735,16 @@ function closeSettingsModal() {
 }
 
 // Event listener voor klikken buiten modal om te sluiten
-document.addEventListener('click', function(event) {
-  const modal = document.getElementById('settingsModal');
+document.addEventListener("click", function (event) {
+  const modal = document.getElementById("settingsModal");
   if (modal && event.target === modal) {
     closeSettingsModal();
   }
 });
 
 // Event listener voor ESC toets om modal te sluiten
-document.addEventListener('keydown', function(event) {
-  if (event.key === 'Escape') {
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Escape") {
     closeSettingsModal();
   }
 });
@@ -741,15 +756,15 @@ window.closeSettingsModal = closeSettingsModal;
 // Render klanten in de ijssalon
 function renderCustomers(gameMap) {
   if (!gameState.customers) return;
-  
-  gameState.customers.forEach(customer => {
+
+  gameState.customers.forEach((customer) => {
     const tile = document.getElementById(`tile-${customer.position.x}-${customer.position.y}`);
     if (tile) {
       // Voeg klant toe aan tile
       const customerDiv = document.createElement("div");
       customerDiv.className = "customer";
       customerDiv.innerHTML = customer.type.emoji;
-      
+
       // Verschillende titel gebaseerd op state
       let title = `${customer.type.name}`;
       switch (customer.state) {
@@ -760,7 +775,7 @@ function renderCustomers(gameMap) {
           title += ` wacht in de rij (${Math.ceil(customer.patience)} geduld)`;
           break;
         case "ordering":
-          title += ` wil ${iceCreams[customer.wantedIceCream]?.name || 'ijs'} bestellen`;
+          title += ` wil ${iceCreams[customer.wantedIceCream]?.name || "ijs"} bestellen`;
           break;
         case "moving_to_table":
           title += " loopt naar tafeltje";
@@ -772,7 +787,7 @@ function renderCustomers(gameMap) {
           title += " gaat weg";
           break;
       }
-      
+
       customerDiv.title = title;
       tile.appendChild(customerDiv);
     }
@@ -809,7 +824,7 @@ function renderIceCreamShopMap(gameMap) {
       } else if (x === 6 && y >= 2 && y <= 3) {
         // Eigenlijke balie (counter) - nu naar voren verplaatst
         tile.classList.add("ice-cream-shop-counter");
-        
+
         // Verschillende emoji's voor de 2 delen van de balie
         if (x === 6 && y === 2) {
           tile.innerHTML = "🍦"; // Hoofdbalie boven
@@ -818,7 +833,7 @@ function renderIceCreamShopMap(gameMap) {
           tile.innerHTML = "💰"; // Kassa onder
           tile.title = "Balie (Kassa) - Klik om ijs te verkopen";
         }
-        
+
         tile.onclick = () => interactWithIceCreamShopCounter();
       } else if (x === 6 && (y === 1 || y === 4)) {
         // Balie uitbreidingen (boven en onder) - ook naar voren
@@ -835,12 +850,10 @@ function renderIceCreamShopMap(gameMap) {
         tile.classList.add("ice-cream-shop-work-area");
         tile.innerHTML = "";
         tile.title = "Werkruimte achter de balie";
-      } else if ((x === 1 && y === 1) || 
-                 (x === 5 && y === 1) || 
-                 (x === 1 && y === 3)) {
+      } else if ((x === 1 && y === 1) || (x === 5 && y === 1) || (x === 1 && y === 3)) {
         // Elegante tafelindeling - aangepast voor de lopende rij
         tile.classList.add("ice-cream-shop-table");
-        
+
         if (x === 1 && y === 1) {
           // Klein tafeltje links-boven
           tile.innerHTML = "🍽️"; // Elegante tafel
@@ -898,10 +911,10 @@ function renderIceCreamShopMap(gameMap) {
       gameMap.appendChild(tile);
     }
   }
-  
+
   // Render klanten dynamisch
   renderCustomers(gameMap);
-  
+
   // Add player if on this tile (na klanten zodat speler bovenop staat)
   for (let y = 0; y < 6; y++) {
     for (let x = 0; x < 8; x++) {
