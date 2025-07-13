@@ -1,18 +1,5 @@
 // Shop interaction functions
 
-// Check if player is near the shop
-function isPlayerNearShop() {
-  const shopX = gameState.shopPosition.x;
-  const shopY = gameState.shopPosition.y;
-  const playerX = gameState.playerPosition.x;
-  const playerY = gameState.playerPosition.y;
-
-  const deltaX = Math.abs(playerX - shopX);
-  const deltaY = Math.abs(playerY - shopY);
-
-  return deltaX <= 1 && deltaY <= 1;
-}
-
 // Check of de winkel open is (9:00-18:00)
 function isShopOpen() {
   return gameState.hour >= 9 && gameState.hour < 18;
@@ -20,14 +7,18 @@ function isShopOpen() {
 
 // Interact with shop (open shop modal)
 function interactWithShop() {
-  if (!isPlayerNearShop()) {
-    showMessage("Je bent te ver van de winkel! Loop er naartoe. 🏃‍♂️", "error");
+  const shopX = gameState.shopPosition.x;
+  const shopY = gameState.shopPosition.y;
+  const playerX = gameState.playerPosition.x;
+  const playerY = gameState.playerPosition.y;
+  if (!(playerX === shopX && playerY === shopY)) {
+    showMessage("Je moet precies op de winkel staan om naar binnen te gaan! �", "error");
     return;
   }
 
   // Check of de winkel open is
   if (!isShopOpen()) {
-    const currentTime = `${gameState.hour.toString().padStart(2, '0')}:${gameState.minute.toString().padStart(2, '0')}`;
+    const currentTime = `${gameState.hour.toString().padStart(2, "0")}:${gameState.minute.toString().padStart(2, "0")}`;
     showMessage(`De winkel is nog gesloten! 🏪 Openingstijden: 9:00-18:00 (Nu: ${currentTime})`, "error");
     return;
   }

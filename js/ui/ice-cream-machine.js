@@ -78,23 +78,14 @@ function craftIceCream(iceCreamType) {
   return true;
 }
 
-// Check if player is near the ice cream machine
-function isPlayerNearIceCreamMachine() {
+// Interact with ice cream machine (open machine modal)
+function interactWithIceCreamMachine() {
   const iceCreamMachineX = gameState.iceCreamMachinePosition.x;
   const iceCreamMachineY = gameState.iceCreamMachinePosition.y;
   const playerX = gameState.playerPosition.x;
   const playerY = gameState.playerPosition.y;
-
-  const deltaX = Math.abs(playerX - iceCreamMachineX);
-  const deltaY = Math.abs(playerY - iceCreamMachineY);
-
-  return deltaX <= 1 && deltaY <= 1;
-}
-
-// Interact with ice cream machine (open machine modal)
-function interactWithIceCreamMachine() {
-  if (!isPlayerNearIceCreamMachine()) {
-    showMessage("Je bent te ver van de ijsmachine! Loop er naartoe. 🏃‍♂️", "error");
+  if (!(playerX === iceCreamMachineX && playerY === iceCreamMachineY)) {
+    showMessage("Je moet precies op de ijsmachine staan om deze te gebruiken!", "error");
     return;
   }
 

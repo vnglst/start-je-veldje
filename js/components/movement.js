@@ -3,7 +3,7 @@
 // Geheime mobiele cheat activatie - dubbeltap systeem
 let cheatTapCount = 0;
 let cheatTapTimer = null;
-const CHEAT_EMOJI = '💰'; // Tap 5x snel op geld emoji
+const CHEAT_EMOJI = "💰"; // Tap 5x snel op geld emoji
 const REQUIRED_TAPS = 5;
 
 // Check if player is near a farm plot (adjacent or on the plot)
@@ -84,11 +84,8 @@ function getWaterFromWell() {
   const playerX = gameState.playerPosition.x;
   const playerY = gameState.playerPosition.y;
 
-  // Check if player is adjacent to the well
-  const deltaX = Math.abs(playerX - wellX);
-  const deltaY = Math.abs(playerY - wellY);
-
-  if (deltaX <= 1 && deltaY <= 1) {
+  // Check of speler exact op de put staat
+  if (playerX === wellX && playerY === wellY) {
     gameState.water += 5;
     // Speel water geluid bij halen van water
     if (window.speelWaterGeluid) {
@@ -114,11 +111,8 @@ function interactWithGreenhouse() {
   const playerX = gameState.playerPosition.x;
   const playerY = gameState.playerPosition.y;
 
-  // Check if player is adjacent to the greenhouse
-  const deltaX = Math.abs(playerX - greenhouseX);
-  const deltaY = Math.abs(playerY - greenhouseY);
-
-  if (deltaX <= 1 && deltaY <= 1) {
+  // Check of speler exact op de kas staat
+  if (playerX === greenhouseX && playerY === greenhouseY) {
     // Speel deur geluid bij kas in/uitgaan
     if (window.speelDeurGeluid) {
       speelDeurGeluid();
@@ -264,16 +258,16 @@ function handleStatTap(emoji) {
   if (emoji !== CHEAT_EMOJI) {
     return;
   }
-  
+
   // Reset timer bij elke tap
   if (cheatTapTimer) {
     clearTimeout(cheatTapTimer);
   }
-  
+
   // Verhoog tap count
   cheatTapCount++;
-  console.log('Cheat tap count:', cheatTapCount);
-  
+  console.log("Cheat tap count:", cheatTapCount);
+
   // Check of genoeg taps
   if (cheatTapCount >= REQUIRED_TAPS) {
     // Cheat geactiveerd!
@@ -284,7 +278,7 @@ function handleStatTap(emoji) {
     }, 1000);
     return;
   }
-  
+
   // Reset na 2 seconden inactiviteit
   cheatTapTimer = setTimeout(() => {
     cheatTapCount = 0;
@@ -319,7 +313,10 @@ function giveStarterPack() {
 
     updateUI();
     saveGame();
-    showMessage("Starter pack gekregen! €500 + 2 van elk zaad + 3 van elk fruit + 3 van elk ijs + 3 van elke limonade + kas! 🎁", "success");
+    showMessage(
+      "Starter pack gekregen! €500 + 2 van elk zaad + 3 van elk fruit + 3 van elk ijs + 3 van elke limonade + kas! 🎁",
+      "success"
+    );
   }
 }
 
