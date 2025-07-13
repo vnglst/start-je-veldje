@@ -49,7 +49,7 @@ function craftLemonade(lemonadeType) {
 
   const profitInfo = calculateLemonadeProfit(lemonadeType);
   showMessage(`🥤 Je hebt ${lemonade.name} gemaakt! Winst: €${profitInfo.profit} 💰`, "success");
-  
+
   updateUI();
   return true;
 }
@@ -71,7 +71,7 @@ function calculateLemonadeProfit(lemonadeType) {
   return {
     cost: ingredientCost,
     sellPrice: lemonade.sellPrice,
-    profit: lemonade.sellPrice - ingredientCost
+    profit: lemonade.sellPrice - ingredientCost,
   };
 }
 
@@ -82,7 +82,7 @@ function interactWithLemonadeMachine() {
   const lemonadeMachineY = gameState.lemonadeMachinePosition.y;
 
   if (gameState.playerPosition.x !== lemonadeMachineX || gameState.playerPosition.y !== lemonadeMachineY) {
-    showMessage("Je moet bij de limonade machine staan! 🥤", "error");
+    showMessage("Je moet precies op de limonademachine staan om deze te gebruiken! 🥤", "error");
     return;
   }
 
@@ -237,36 +237,38 @@ function updateLemonadeMachineModal() {
       const recipeDiv = document.createElement("div");
       const canCraft = canCraftLemonade(lemonadeType);
       const profitInfo = calculateLemonadeProfit(lemonadeType);
-      
+
       // Create recipe ingredients text
-      const ingredientsList = Object.entries(lemonade.recipe).map(([fruit, amount]) => {
-        const crop = crops[fruit];
-        const have = gameState.fruits[fruit] || 0;
-        const hasEnough = have >= amount;
-        return `${crop.emoji} ${amount}x ${crop.name} ${hasEnough ? '✅' : `❌ (heb ${have})`}`;
-      }).join('<br>');
+      const ingredientsList = Object.entries(lemonade.recipe)
+        .map(([fruit, amount]) => {
+          const crop = crops[fruit];
+          const have = gameState.fruits[fruit] || 0;
+          const hasEnough = have >= amount;
+          return `${crop.emoji} ${amount}x ${crop.name} ${hasEnough ? "✅" : `❌ (heb ${have})`}`;
+        })
+        .join("<br>");
 
       recipeDiv.style.cssText = `
         display: flex;
         align-items: center;
         padding: 15px;
         margin: 8px 0;
-        background: ${canCraft ? 'rgba(255, 255, 255, 0.9)' : 'rgba(200, 200, 200, 0.5)'};
-        border: 2px solid ${canCraft ? config.color : '#ccc'};
+        background: ${canCraft ? "rgba(255, 255, 255, 0.9)" : "rgba(200, 200, 200, 0.5)"};
+        border: 2px solid ${canCraft ? config.color : "#ccc"};
         border-radius: 10px;
-        ${canCraft ? 'cursor: pointer;' : 'cursor: not-allowed;'}
+        ${canCraft ? "cursor: pointer;" : "cursor: not-allowed;"}
         transition: all 0.3s ease;
-        opacity: ${canCraft ? '1' : '0.6'};
+        opacity: ${canCraft ? "1" : "0.6"};
       `;
 
       if (canCraft) {
-        recipeDiv.addEventListener('mouseenter', () => {
-          recipeDiv.style.transform = 'translateY(-2px)';
+        recipeDiv.addEventListener("mouseenter", () => {
+          recipeDiv.style.transform = "translateY(-2px)";
           recipeDiv.style.boxShadow = `0 4px 12px ${config.color}30`;
         });
-        recipeDiv.addEventListener('mouseleave', () => {
-          recipeDiv.style.transform = 'translateY(0)';
-          recipeDiv.style.boxShadow = 'none';
+        recipeDiv.addEventListener("mouseleave", () => {
+          recipeDiv.style.transform = "translateY(0)";
+          recipeDiv.style.boxShadow = "none";
         });
       }
 
@@ -292,14 +294,14 @@ function updateLemonadeMachineModal() {
         </div>
         <div style="margin-left: 15px;">
           <button onclick="craftLemonade('${lemonadeType}')" 
-                  ${canCraft ? '' : 'disabled'} 
+                  ${canCraft ? "" : "disabled"} 
                   style="
-                    background: ${canCraft ? config.color : '#ccc'};
+                    background: ${canCraft ? config.color : "#ccc"};
                     color: white;
                     border: none;
                     padding: 12px 20px;
                     border-radius: 8px;
-                    cursor: ${canCraft ? 'pointer' : 'not-allowed'};
+                    cursor: ${canCraft ? "pointer" : "not-allowed"};
                     font-weight: bold;
                     font-size: 1em;
                     transition: background 0.3s ease;
@@ -312,8 +314,8 @@ function updateLemonadeMachineModal() {
       `;
 
       if (canCraft) {
-        recipeDiv.addEventListener('click', (e) => {
-          if (e.target.tagName !== 'BUTTON') {
+        recipeDiv.addEventListener("click", (e) => {
+          if (e.target.tagName !== "BUTTON") {
             craftLemonade(lemonadeType);
           }
         });
@@ -323,7 +325,7 @@ function updateLemonadeMachineModal() {
     });
   });
 
-  if (Object.values(groupedLemonades).every(arr => arr.length === 0)) {
+  if (Object.values(groupedLemonades).every((arr) => arr.length === 0)) {
     recipesContainer.innerHTML = `
       <div style="text-align: center; color: #666; padding: 40px; line-height: 1.6;">
         <div style="font-size: 3em; margin-bottom: 15px;">🌱</div>

@@ -177,11 +177,11 @@ document.addEventListener("keydown", function (event) {
           interactWithGreenhouse(); // This will exit the greenhouse
         }
       } else if (gameState.inIceCreamShop) {
-        // In ijssalon - check for exit or balie interaction
+        // In ijssalon - check for exit of balie interaction
         if (playerX === 0 && playerY === 5) {
           interactWithIceCreamShop(); // This will exit the ijssalon
         } else {
-          // Check if near balie (counter) - nieuwe balie positie
+          // Check of speler bij de balie staat (nieuwe balie positie)
           if (
             (playerX === 6 && playerY >= 1 && playerY <= 4) ||
             (playerX === 7 && playerY >= 1 && playerY <= 4) ||
@@ -191,43 +191,45 @@ document.addEventListener("keydown", function (event) {
           }
         }
       } else {
-        // Outside greenhouse - check for buildings
-        // Check if near well
+        // Buiten gebouwen: alleen exact op het gebouw/machine uitvoeren
         const wellX = gameState.wellPosition.x;
         const wellY = gameState.wellPosition.y;
-        if (Math.abs(playerX - wellX) <= 1 && Math.abs(playerY - wellY) <= 1) {
+        if (playerX === wellX && playerY === wellY) {
           getWaterFromWell();
           break;
         }
 
-        // Check if near shop
         const shopX = gameState.shopPosition.x;
         const shopY = gameState.shopPosition.y;
-        if (Math.abs(playerX - shopX) <= 1 && Math.abs(playerY - shopY) <= 1) {
+        if (playerX === shopX && playerY === shopY) {
           interactWithShop();
           break;
         }
 
-        // Check if near ice cream shop
         const iceCreamShopX = gameState.iceCreamShopPosition.x;
         const iceCreamShopY = gameState.iceCreamShopPosition.y;
-        if (Math.abs(playerX - iceCreamShopX) <= 1 && Math.abs(playerY - iceCreamShopY) <= 1) {
+        if (playerX === iceCreamShopX && playerY === iceCreamShopY) {
           interactWithIceCreamShop();
           break;
         }
 
-        // Check if near ice cream machine
         const iceCreamMachineX = gameState.iceCreamMachinePosition.x;
         const iceCreamMachineY = gameState.iceCreamMachinePosition.y;
-        if (Math.abs(playerX - iceCreamMachineX) <= 1 && Math.abs(playerY - iceCreamMachineY) <= 1) {
+        if (playerX === iceCreamMachineX && playerY === iceCreamMachineY) {
           interactWithIceCreamMachine();
           break;
         }
 
-        // Check if near greenhouse
+        const lemonadeMachineX = gameState.lemonadeMachinePosition.x;
+        const lemonadeMachineY = gameState.lemonadeMachinePosition.y;
+        if (playerX === lemonadeMachineX && playerY === lemonadeMachineY) {
+          interactWithLemonadeMachine();
+          break;
+        }
+
         const greenhouseX = gameState.greenhousePosition.x;
         const greenhouseY = gameState.greenhousePosition.y;
-        if (Math.abs(playerX - greenhouseX) <= 1 && Math.abs(playerY - greenhouseY) <= 1) {
+        if (playerX === greenhouseX && playerY === greenhouseY) {
           interactWithGreenhouse();
           break;
         }
