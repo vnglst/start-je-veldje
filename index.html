@@ -277,30 +277,30 @@
       // Beginscherm functionaliteit
       function toonBeginschermStats() {
         // Probeer stats uit DOM te halen (of fallback)
-        document.getElementById('begin-money').textContent = document.getElementById('money')?.textContent || '0';
-        document.getElementById('begin-seeds').textContent = document.getElementById('seedCount')?.textContent || '0';
-        document.getElementById('begin-fruit').textContent = document.getElementById('fruitCount')?.textContent || '0';
-        document.getElementById('begin-ice').textContent = document.getElementById('iceCreamCount')?.textContent || '0';
-        document.getElementById('begin-water').textContent = document.getElementById('water')?.textContent || '0';
-        document.getElementById('begin-day').textContent = document.getElementById('day')?.textContent || '1';
-        document.getElementById('begin-season').textContent = document.getElementById('season')?.textContent || 'Lente';
+        document.getElementById("begin-money").textContent = document.getElementById("money")?.textContent || "0";
+        document.getElementById("begin-seeds").textContent = document.getElementById("seedCount")?.textContent || "0";
+        document.getElementById("begin-fruit").textContent = document.getElementById("fruitCount")?.textContent || "0";
+        document.getElementById("begin-ice").textContent = document.getElementById("iceCreamCount")?.textContent || "0";
+        document.getElementById("begin-water").textContent = document.getElementById("water")?.textContent || "0";
+        document.getElementById("begin-day").textContent = document.getElementById("day")?.textContent || "1";
+        document.getElementById("begin-season").textContent = document.getElementById("season")?.textContent || "Lente";
       }
       function hideBeginschermEnStartSpel() {
-        document.getElementById('startscreen').style.display = 'none';
-        var gc = document.getElementById('gameContainer');
-        gc.classList.remove('startscreen-blur');
+        document.getElementById("startscreen").style.display = "none";
+        var gc = document.getElementById("gameContainer");
+        gc.classList.remove("startscreen-blur");
         // Start muziek als die aan staat
-        if (window.musicEnabled !== false && typeof window.startMusic === 'function') {
+        if (window.musicEnabled !== false && typeof window.startMusic === "function") {
           window.startMusic();
-        } else if (window.toggleMusic && document.getElementById('musicToggleBtn')?.textContent?.includes('aan')) {
+        } else if (window.toggleMusic && document.getElementById("musicToggleBtn")?.textContent?.includes("aan")) {
           // Fallback: als knop zegt "aan", muziek starten
           window.toggleMusic();
         }
       }
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener("DOMContentLoaded", function () {
         toonBeginschermStats();
-        document.getElementById('gameContainer').classList.add('startscreen-blur');
-        document.getElementById('startSpelBtn').addEventListener('click', hideBeginschermEnStartSpel);
+        document.getElementById("gameContainer").classList.add("startscreen-blur");
+        document.getElementById("startSpelBtn").addEventListener("click", hideBeginschermEnStartSpel);
       });
     </script>
     <script>
