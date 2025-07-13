@@ -1,0 +1,302 @@
+/* Ijssalon interieur styling */
+.ice-cream-shop-interior {
+  background: linear-gradient(135deg, #ff69b4 0%, #ffd700 50%, #ff6347 100%);
+  border: 3px solid #ff69b4;
+  border-radius: 15px;
+  box-shadow: 0 0 25px rgba(255, 105, 180, 0.5);
+  animation: ice-cream-glow 3s infinite;
+}
+
+@keyframes ice-cream-glow {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(255, 105, 180, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(255, 105, 180, 0.8);
+  }
+}
+
+/* Basis ijssalon tegels */
+.ice-cream-shop-tile {
+  background: #ffe4e6;
+  border: 2px solid #ffb6c1;
+  color: #8b4513;
+}
+
+/* Vloer tegels - elegante marmeren look */
+.ice-cream-shop-floor {
+  background: linear-gradient(135deg, #fff0f5 0%, #ffe4e6 25%, #ffd0dc 50%, #ffe4e6 75%, #fff0f5 100%);
+  border: 1px solid #ffcccb;
+  box-shadow: inset 0 1px 3px rgba(255, 182, 193, 0.1);
+  position: relative;
+}
+
+/* Subtiele glitter effect op vloer */
+.ice-cream-shop-floor::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 70%, rgba(255, 215, 0, 0.1) 1px, transparent 1px),
+              radial-gradient(circle at 70% 20%, rgba(255, 105, 180, 0.1) 1px, transparent 1px),
+              radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+  background-size: 15px 15px, 25px 25px, 20px 20px;
+  pointer-events: none;
+}
+
+/* Ingang/Uitgang - vrolijke gele kleur */
+.ice-cream-shop-exit {
+  background: linear-gradient(135deg, #ffd700, #ffeb3b);
+  border: 3px solid #ffa000;
+  animation: entrance-pulse 2s infinite;
+  cursor: pointer;
+}
+
+@keyframes entrance-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.ice-cream-shop-exit:hover {
+  background: linear-gradient(135deg, #ffeb3b, #fff59d);
+  transform: scale(1.1);
+}
+
+/* Balie (counter) - super mooie luxe balie! */
+.ice-cream-shop-counter {
+  background: linear-gradient(135deg, #ff1493 0%, #ff69b4 25%, #ffc0cb 50%, #ff69b4 75%, #ff1493 100%);
+  border: 3px solid #8b008b;
+  box-shadow: 
+    0 4px 15px rgba(255, 20, 147, 0.5),
+    inset 0 2px 5px rgba(255, 255, 255, 0.3),
+    0 0 20px rgba(255, 105, 180, 0.3);
+  cursor: pointer;
+  animation: luxury-counter-glow 2s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+  font-size: 1.8em;
+  border-radius: 8px;
+}
+
+/* Luxe glitter effect voor de balie */
+.ice-cream-shop-counter::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%, 
+    rgba(255, 255, 255, 0.3) 50%, 
+    transparent 70%
+  );
+  animation: counter-shine 3s infinite;
+  pointer-events: none;
+}
+
+@keyframes luxury-counter-glow {
+  0%, 100% {
+    box-shadow: 
+      0 4px 15px rgba(255, 20, 147, 0.5),
+      inset 0 2px 5px rgba(255, 255, 255, 0.3),
+      0 0 20px rgba(255, 105, 180, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 
+      0 6px 25px rgba(255, 20, 147, 0.8),
+      inset 0 3px 8px rgba(255, 255, 255, 0.5),
+      0 0 30px rgba(255, 105, 180, 0.6),
+      0 0 40px rgba(255, 20, 147, 0.2);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes counter-shine {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+.ice-cream-shop-counter:hover {
+  background: linear-gradient(135deg, #ff69b4 0%, #ff1493 25%, #ffd700 50%, #ff1493 75%, #ff69b4 100%);
+  transform: scale(1.08);
+  animation: hover-rainbow 0.5s ease-in-out infinite alternate;
+  border-color: #ffd700;
+}
+
+@keyframes hover-rainbow {
+  0% {
+    filter: hue-rotate(0deg) brightness(1.1);
+  }
+  100% {
+    filter: hue-rotate(10deg) brightness(1.2);
+  }
+}
+
+/* Tafeltjes - luxe restaurant stijl */
+.ice-cream-shop-table {
+  background: linear-gradient(135deg, #ff6347 0%, #ffa500 50%, #ffd700 100%);
+  border: 2px solid #8b4513;
+  border-radius: 12px;
+  box-shadow: 
+    0 3px 12px rgba(255, 99, 71, 0.4),
+    inset 0 1px 3px rgba(255, 255, 255, 0.2);
+  cursor: default;
+  animation: table-warm-glow 3s ease-in-out infinite;
+  font-size: 1.4em;
+  position: relative;
+}
+
+@keyframes table-warm-glow {
+  0%, 100% {
+    box-shadow: 
+      0 3px 12px rgba(255, 99, 71, 0.4),
+      inset 0 1px 3px rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 4px 16px rgba(255, 165, 0, 0.5),
+      inset 0 2px 4px rgba(255, 255, 255, 0.3),
+      0 0 15px rgba(255, 215, 0, 0.3);
+  }
+}
+
+.ice-cream-shop-table:hover {
+  background: linear-gradient(135deg, #ffa500 0%, #ffd700 50%, #ffeb3b 100%);
+  transform: scale(1.05) rotate(2deg);
+  animation: table-dance 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes table-dance {
+  0% {
+    transform: scale(1.05) rotate(2deg);
+  }
+  100% {
+    transform: scale(1.08) rotate(-1deg);
+  }
+}
+
+/* Decoraties - elegante kunst en decoratie */
+.ice-cream-shop-decoration {
+  background: linear-gradient(135deg, #fff0f5 0%, #ffe4e6 50%, #ffd0dc 100%);
+  border: 2px solid #ff69b4;
+  border-radius: 12px;
+  box-shadow: 
+    0 2px 10px rgba(255, 105, 180, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  animation: decoration-elegant-float 5s ease-in-out infinite;
+  font-size: 1.8em;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Elegant zwevend effect */
+@keyframes decoration-elegant-float {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    box-shadow: 
+      0 2px 10px rgba(255, 105, 180, 0.3),
+      inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 
+      0 4px 15px rgba(255, 105, 180, 0.4),
+      inset 0 2px 4px rgba(255, 255, 255, 0.6),
+      0 0 8px rgba(255, 215, 0, 0.2);
+  }
+}
+
+/* Ijssalon map grid styling */
+.ice-cream-shop-interior .game-map {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: 8px;
+  padding: 15px;
+  min-height: 360px;
+}
+
+/* Titel styling voor ijssalon */
+.ice-cream-shop-interior .farm-area h3 {
+  color: #ff69b4;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #ffe4e6, #ffcccb);
+  padding: 10px;
+  border-radius: 10px;
+  border: 2px solid #ff69b4;
+}
+
+.ice-cream-shop-interior .farm-area h3::before {
+  content: "🍦 ";
+}
+
+/* Mensen/klanten in de ijssalon */
+.ice-cream-shop-customer {
+  background: linear-gradient(135deg, #fff8f0, #ffe4e6);
+  border: 2px solid #ffb6c1;
+  border-radius: 50%;
+  box-shadow: 
+    0 2px 8px rgba(255, 182, 193, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  animation: customer-bounce 3s ease-in-out infinite;
+  font-size: 2em;
+  position: relative;
+  cursor: default;
+}
+
+/* Dynamische klanten (vanuit JavaScript) */
+.customer {
+  position: relative;
+  z-index: 5;
+  font-size: 1.2em;
+  animation: customer-idle 2s ease-in-out infinite alternate;
+  transition: all 0.3s ease;
+}
+
+.customer:hover {
+  transform: scale(1.1);
+  z-index: 10;
+}
+
+@keyframes customer-idle {
+  0% {
+    transform: translateY(0px);
+  }
+  100% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes customer-bounce {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    box-shadow: 
+      0 2px 8px rgba(255, 182, 193, 0.3),
+      inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  }
+  25% {
+    transform: translateY(-2px) scale(1.02);
+  }
+  50% {
+    transform: translateY(-1px) scale(1.01);
+    box-shadow: 
+      0 4px 12px rgba(255, 182, 193, 0.4),
+      inset 0 2px 3px rgba(255, 255, 255, 0.5);
+  }
+  75% {
+    transform: translateY(-2px) scale(1.02);
+  }
+}

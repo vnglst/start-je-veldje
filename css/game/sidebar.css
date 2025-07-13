@@ -1,0 +1,96 @@
+/* Sidebar styling */
+.sidebar {
+  background: #fff8dc;
+  border-radius: 10px;
+  padding: 20px;
+  border: 3px solid #daa520;
+}
+
+.shop-section,
+.inventory-section,
+.tools-section,
+.sleep-section {
+  margin-bottom: 30px;
+}
+
+.section-title {
+  font-size: 1.5em;
+  color: #b8860b;
+  margin-bottom: 15px;
+  text-align: center;
+  border-bottom: 2px solid #daa520;
+  padding-bottom: 10px;
+}
+
+/* Shop en inventory items */
+.shop-item,
+.inventory-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: white;
+  border-radius: 8px;
+  border: 2px solid #e6e6fa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.shop-item:hover,
+.inventory-item:hover {
+  background: #f0f8ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.shop-item.disabled {
+  cursor: not-allowed;
+  background: #f5f5f5;
+}
+
+.shop-item.disabled:hover {
+  background: #f5f5f5;
+  transform: none;
+  box-shadow: none;
+}
+
+.item-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.item-emoji {
+  font-size: 24px;
+}
+
+.item-name {
+  font-weight: bold;
+  color: #2e8b57;
+}
+
+.item-price {
+  font-weight: bold;
+  color: #daa520;
+}
+
+/* Inventory Section Styles */
+.inventory-section {
+  margin-bottom: 10px;
+}
+
+.sell-btn:hover {
+  background: #45a049 !important;
+  transform: scale(1.05);
+}
+
+/* Compact inventory styling */
+#inventoryList {
+  font-size: 0.9em;
+}
+
+.inventory-section h4 {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 4px;
+}

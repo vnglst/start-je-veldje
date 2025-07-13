@@ -1,0 +1,49 @@
+/* Reset en basis styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  background: linear-gradient(135deg, #87ceeb 0%, #98fb98 100%);
+  min-height: 100vh;
+  padding: 20px;
+  transition: background 1s ease-in-out;
+}
+
+/* Seasonal themes */
+body.lente {
+  background: linear-gradient(135deg, #87ceeb 0%, #98fb98 100%);
+}
+
+body.zomer {
+  background: linear-gradient(135deg, #ffd700 0%, #ffa500 50%, #98fb98 100%);
+}
+
+body.herfst {
+  background: linear-gradient(135deg, #cd853f 0%, #daa520 50%, #8b4513 100%);
+}
+
+body.winter {
+  background: linear-gradient(135deg, #b0c4de 0%, #e6e6fa 50%, #f0f8ff 100%);
+}
+
+/* Game container */
+.game-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+  text-align: center;
+  color: #2e8b57;
+  margin-bottom: 20px;
+  font-size: 2.5em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,61 @@
+/* Game map layout */
+.game-map {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+  max-width: 520px;
+  margin: 0 auto 20px auto;
+}
+
+.map-tile {
+  width: 60px;
+  height: 60px;
+  background: #90ee90;
+  border: 2px solid #228b22;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 24px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.map-tile.farm-plot {
+  background: #8b4513;
+  border: 2px solid #654321;
+  cursor: pointer;
+}
+
+.map-tile.well {
+  background: #4682b4;
+  border: 2px solid #2e6194;
+  cursor: pointer;
+}
+
+.map-tile.well:hover {
+  background: #5a9bd4;
+  transform: scale(1.05);
+}
+
+.map-tile.shop {
+  background: #ff6347;
+  border: 2px solid #dc143c;
+  cursor: pointer;
+}
+
+.map-tile.shop:hover {
+  background: #ff7f69;
+  transform: scale(1.05);
+}
+
+.player {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 20px;
+  z-index: 10;
+  pointer-events: none;
+}

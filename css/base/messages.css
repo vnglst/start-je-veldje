@@ -1,0 +1,45 @@
+/* Messages */
+.message {
+  text-align: center;
+  padding: 10px;
+  margin-top: 20px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.success {
+  background: #90ee90;
+  color: #006400;
+}
+
+.error {
+  background: #ffb6c1;
+  color: #8b0000;
+}
+
+.info {
+  background: #add8e6;
+  color: #003366;
+}
+
+.warning {
+  background: #fff2cc;
+  color: #cc8800;
+}
+
+.epic {
+  background: linear-gradient(45deg, #ffd700, #ffeb3b, #ffd700);
+  color: #b8860b;
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+  animation: epicGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes epicGlow {
+  from {
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+  }
+  to {
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+  }
+}

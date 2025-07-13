@@ -1,0 +1,23 @@
+/* Start je Veldje - Hoofd CSS bestand */
+/* Dit bestand importeert alle CSS modules */
+
+/* Base styles */
+@import 'base/reset.css';
+@import 'base/buttons.css';
+@import 'base/messages.css';
+@import 'base/animations.css';
+
+/* Game styles */
+@import 'game/stats.css';
+@import 'game/map.css';
+@import 'game/farm.css';
+@import 'game/sidebar.css';
+@import 'game/sleep.css';
+
+/* Component styles */
+@import 'components/modal.css';
+@import 'components/tabs.css';
+@import 'components/greenhouse.css';
+@import 'components/ice-cream-machine.css';
+@import 'components/ice-cream-shop.css';
+@import 'components/ice-cream-shop-interior.css';

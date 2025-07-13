@@ -1,0 +1,85 @@
+/* Buttons */
+.button {
+  background: #32cd32;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  background: #228b22;
+  transform: scale(1.05);
+}
+
+.button:disabled {
+  background: #808080;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.sell-button {
+  background: #ff6347;
+}
+
+.sell-button:hover {
+  background: #dc143c;
+}
+
+.buy-button {
+  background: #32cd32;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.buy-button:hover:not(.disabled) {
+  background: #228b22;
+  transform: scale(1.05);
+}
+
+.buy-button.disabled {
+  background: #808080;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  color: white;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.close-shop-button {
+  background: #ff6347;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.close-shop-button:hover {
+  background: #dc143c;
+  transform: scale(1.05);
+}

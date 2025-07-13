@@ -1,0 +1,183 @@
+/* Ice cream machine modal styling */
+.ice-cream-machine-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+.ice-cream-machine-modal-content {
+  background: #f0f8ff; /* Light blue background */
+  border: 3px solid #4682b4; /* Steel blue border */
+  border-radius: 15px;
+  max-width: 700px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+.ice-cream-machine-modal-header {
+  background: #4682b4; /* Steel blue header */
+  color: white;
+  padding: 15px 20px;
+  border-radius: 12px 12px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ice-cream-machine-modal-header h2 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.ice-cream-machine-modal-body {
+  padding: 20px;
+}
+
+.machine-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #87ceeb;
+  padding-bottom: 10px;
+}
+
+.tab-btn {
+  background: #87ceeb;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background 0.2s;
+}
+
+.tab-btn.active {
+  background: #4682b4;
+}
+
+.tab-btn:hover {
+  background: #4682b4;
+}
+
+.machine-tab-content {
+  display: none;
+  min-height: 300px;
+}
+
+.machine-tab-content.active {
+  display: block;
+}
+
+.recipe-item,
+.sell-ice-cream-item {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  gap: 15px;
+  align-items: center;
+  background: white;
+  border: 2px solid #87ceeb;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 10px;
+  transition: all 0.2s ease;
+}
+
+.recipe-item:hover:not(.disabled),
+.sell-ice-cream-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(70, 130, 180, 0.2);
+  border-color: #4682b4;
+}
+
+.recipe-item.disabled {
+  opacity: 0.6;
+  background: #f5f5f5;
+  border-color: #ccc;
+}
+
+.recipe-icon,
+.sell-icon {
+  font-size: 2em;
+  text-align: center;
+}
+
+.recipe-name,
+.sell-name {
+  font-weight: bold;
+  color: #2e8b57;
+  margin-bottom: 5px;
+}
+
+.recipe-ingredients,
+.recipe-profit,
+.sell-count,
+.sell-price {
+  font-size: 0.9em;
+  color: #666;
+  margin-bottom: 3px;
+}
+
+.make-button,
+.sell-one-button,
+.sell-all-button {
+  background: #4682b4;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin: 2px;
+  transition: background 0.2s;
+}
+
+.make-button:hover,
+.sell-one-button:hover,
+.sell-all-button:hover {
+  background: #2e5c8a;
+}
+
+.make-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.sell-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.machine-footer {
+  border-top: 2px solid #87ceeb;
+  padding: 15px 20px;
+  text-align: center;
+  background: #f0f8ff;
+  border-radius: 0 0 12px 12px;
+}
+
+.close-machine-button {
+  background: #4682b4 !important;
+  color: white !important;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background 0.2s;
+}
+
+.close-machine-button:hover {
+  background: #2e5c8a !important;
+}
