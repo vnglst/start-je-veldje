@@ -16,7 +16,13 @@ function initializeGame() {
       gameState.greenhousePosition = { x: 0, y: 0 };
     }
     if (!gameState.iceCreamShopPosition) {
-      gameState.iceCreamShopPosition = { x: 7, y: 0 };
+      gameState.iceCreamShopPosition = { x: 7, y: 5 };
+    }
+    
+    // Forceer ijswinkel naar nieuwe positie (tijdelijke fix)
+    if (gameState.iceCreamShopPosition.x === 7 && gameState.iceCreamShopPosition.y === 0) {
+      gameState.iceCreamShopPosition = { x: 7, y: 5 };
+      console.log("IJswinkel verplaatst naar rechts onder: ", gameState.iceCreamShopPosition);
     }
     if (!gameState.iceCreamMachinePosition) {
       gameState.iceCreamMachinePosition = { x: 0, y: 1 };
@@ -93,6 +99,14 @@ function initializeGame() {
       "Welkom bij Start je Veldje! 🌱 Gebruik pijltjestoetsen om te bewegen en ga naar de put voor water! Druk Ctrl+N voor een nieuw spel.",
       "success"
     );
+  }
+  
+  // Forceer ijswinkel positie naar rechts onder (voor alle games)
+  if (gameState.iceCreamShopPosition && gameState.iceCreamShopPosition.x === 7 && gameState.iceCreamShopPosition.y === 0) {
+    gameState.iceCreamShopPosition = { x: 7, y: 5 };
+    console.log("IJswinkel verplaatst naar rechts onder: ", gameState.iceCreamShopPosition);
+    saveGame(); // Sla de nieuwe positie op
+    updateGameMap(); // Update de map direct
   }
 }
 
