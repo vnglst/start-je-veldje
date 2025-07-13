@@ -13,6 +13,11 @@ function isPlayerNearIceCreamShop() {
   return deltaX <= 1 && deltaY <= 1;
 }
 
+// Check of de ijssalon open is (10:00-18:00)
+function isIceCreamShopOpen() {
+  return gameState.hour >= 10 && gameState.hour < 18;
+}
+
 // Interact with ice cream shop (enter/exit or open shop modal)
 function interactWithIceCreamShop() {
   // Als we in de ijssalon zijn, kunnen we altijd naar buiten
@@ -40,6 +45,13 @@ function interactWithIceCreamShop() {
     const playerX = gameState.playerPosition.x;
     const playerY = gameState.playerPosition.y;
     showMessage(`Je bent te ver van de ijswinkel! Loop er naartoe. 🏃‍♂️ (Speler: ${playerX},${playerY} | IJswinkel: ${iceCreamShopX},${iceCreamShopY})`, "error");
+    return;
+  }
+
+  // Check of de ijssalon open is
+  if (!isIceCreamShopOpen()) {
+    const currentTime = `${gameState.hour.toString().padStart(2, '0')}:${gameState.minute.toString().padStart(2, '0')}`;
+    showMessage(`De ijssalon is nog gesloten! ⏰ Openingstijden: 10:00-18:00 (Nu: ${currentTime})`, "error");
     return;
   }
 
@@ -157,7 +169,7 @@ function updateIceCreamShopModal(currentCustomer = null) {
 
   shopContainer.innerHTML = "";
 
-  // Show all ice cream and lemonade in inventory for selling
+  // Show ice cream and lemonade separately
   const hasIceCream = Object.entries(gameState.iceCream).some(([type, count]) => count > 0);
   const hasLemonade = Object.entries(gameState.lemonade).some(([type, count]) => count > 0);
 
@@ -172,147 +184,113 @@ function updateIceCreamShopModal(currentCustomer = null) {
     return;
   }
 
-  // Group ice cream and lemonade by rarity for display
-  const groupedProducts = {
-    basic: [],
-    rare: [],
-    epic: [],
-    legendary: [],
-    mythical: [],
-  };
+  // Create two separate columns for ice cream and lemonade
+  let shopHTML = '<div class="product-sections" style="display: flex; gap: 20px;">';
 
-  // Add ice cream products
-  Object.entries(gameState.iceCream).forEach(([iceCreamType, count]) => {
-    if (count <= 0) return;
+  // Ice cream section (left side)
+  if (hasIceCream) {
+    shopHTML += '<div class="product-section ice-cream-section" style="flex: 1; border: 2px solid #ff69b4; border-radius: 10px; padding: 15px; background: linear-gradient(135deg, #fff0f8 0%, #ffe6f3 100%);">';
+    shopHTML += '<h3 style="text-align: center; color: #ff69b4; margin-bottom: 15px; font-size: 1.3em;">🍦 IJS VERKOPEN</h3>';
+    
+    // Sort ice cream by rarity (basic to mythical)
+    const sortedIceCreams = Object.entries(gameState.iceCream)
+      .filter(([type, count]) => count > 0)
+      .map(([type, count]) => ({ type, count, product: iceCreams[type] }))
+      .filter(item => item.product)
+      .sort((a, b) => {
+        const rarityOrder = { basic: 0, rare: 1, epic: 2, legendary: 3, mythical: 4 };
+        return rarityOrder[a.product.rarity || 'basic'] - rarityOrder[b.product.rarity || 'basic'];
+      });
 
-    const iceCream = iceCreams[iceCreamType];
-    if (!iceCream) return;
-
-    const rarity = iceCream.rarity || "basic";
-    groupedProducts[rarity].push({ 
-      type: iceCreamType, 
-      product: iceCream, 
-      count: count, 
-      category: 'iceCream',
-      categoryDisplay: '🍦 IJs'
+    // Add ice cream items in sorted order
+    sortedIceCreams.forEach(({ type, count, product }) => {
+      const isWanted = currentCustomer && currentCustomer.wantedIceCream === type;
+      shopHTML += createProductCard(type, product, count, 'iceCream', isWanted, currentCustomer);
     });
-  });
-
-  // Add lemonade products
-  Object.entries(gameState.lemonade).forEach(([lemonadeType, count]) => {
-    if (count <= 0) return;
-
-    const lemonade = lemonades[lemonadeType];
-    if (!lemonade) return;
-
-    const rarity = lemonade.rarity || "basic";
-    groupedProducts[rarity].push({ 
-      type: lemonadeType, 
-      product: lemonade, 
-      count: count, 
-      category: 'lemonade',
-      categoryDisplay: '🥤 Limonade'
-    });
-  });
-
-  // Rarity display configuration
-  const rarityConfig = {
-    basic: { name: "🥄 Basis Producten", color: "#666", bgColor: "#f9f9f9" },
-    rare: { name: "⭐ Speciale Mix", color: "#4169E1", bgColor: "#f0f4ff" },
-    epic: { name: "💎 Premium Producten", color: "#8A2BE2", bgColor: "#f8f0ff" },
-    legendary: { name: "🏆 Legendarische Drankjes", color: "#FF8C00", bgColor: "#fff8f0" },
-    mythical: { name: "✨ Mythische Elixers", color: "#DC143C", bgColor: "#fff0f0" },
-  };
-
-  // Display products by rarity
-  Object.entries(groupedProducts).forEach(([rarity, productList]) => {
-    if (productList.length === 0) return;
-
-    const config = rarityConfig[rarity];
-
-    // Add rarity header
-    const rarityHeader = document.createElement("div");
-    rarityHeader.className = "rarity-header";
-    rarityHeader.style.cssText = `
-      background: ${config.bgColor};
-      color: ${config.color};
-      padding: 10px;
-      margin: 10px 0 5px 0;
-      border-left: 4px solid ${config.color};
-      font-weight: bold;
-      border-radius: 4px;
-    `;
-    rarityHeader.textContent = config.name;
-    shopContainer.appendChild(rarityHeader);
-
-    // Add products in this rarity
-    productList.forEach(({ type, product, count, category, categoryDisplay }) => {
-      const shopItem = document.createElement("div");
-      shopItem.className = "shop-item";
-      shopItem.style.cssText = `
-        border-left: 3px solid ${config.color};
-        background: ${config.bgColor};
-      `;
-
-      shopItem.innerHTML = `
-        <div class="shop-icon" style="font-size: 1.5em;">${product.emoji}</div>
-        <div class="shop-details">
-          <div class="shop-name" style="color: ${config.color}; font-weight: bold;">
-            ${product.name} <span style="font-size: 0.8em; opacity: 0.7;">(${categoryDisplay})</span>
-          </div>
-          <div class="shop-description">Voorraad: ${count} stuks</div>
-          <div class="shop-price">€${product.sellPrice} per stuk</div>
-          <div class="shop-total" style="color: #2e8b57; font-size: 0.9em; font-weight: bold;">
-            Totaal: €${product.sellPrice * count}
-          </div>
-          ${
-            product.description
-              ? `<div style="font-size: 0.8em; color: #666; font-style: italic; margin-top: 5px;">${product.description}</div>`
-              : ""
-          }
-        </div>
-        <div class="shop-actions">
-          ${currentCustomer 
-            ? `<button class="serve-customer-button" onclick="serveCustomerProduct('${type}', '${category}')"
-                      style="background: ${type === currentCustomer.wantedIceCream ? '#4CAF50' : config.color}; ${type === currentCustomer.wantedIceCream ? 'border: 2px solid #2E7D32; box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);' : ''}">
-                ${type === currentCustomer.wantedIceCream ? '⭐ Gewenst!' : 'Bedien Klant'}
-              </button>`
-            : `<div style="text-align: center; color: #666; font-style: italic; padding: 10px; border: 2px dashed #ccc; border-radius: 8px;">
-                ${categoryDisplay} Alleen verkoop aan klanten!<br>
-                <small>Wacht tot er een klant bij de balie staat</small>
-              </div>`}
-        </div>
-      `;
-      shopContainer.appendChild(shopItem);
-    });
-  });
-}
-
-// Sell ice cream to shop
-function sellIceCreamToShop(iceCreamType, amount) {
-  const iceCream = iceCreams[iceCreamType];
-  if (!iceCream) return;
-
-  if (!gameState.iceCream[iceCreamType] || gameState.iceCream[iceCreamType] < amount) {
-    showMessage("Je hebt niet genoeg ijs om te verkopen! 🍦", "error");
-    return;
+    
+    shopHTML += '</div>';
   }
 
-  const totalPrice = iceCream.sellPrice * amount;
+  // Lemonade section (right side)  
+  if (hasLemonade) {
+    shopHTML += '<div class="product-section lemonade-section" style="flex: 1; border: 2px solid #ffa500; border-radius: 10px; padding: 15px; background: linear-gradient(135deg, #fff8e6 0%, #ffeb99 100%);">';
+    shopHTML += '<h3 style="text-align: center; color: #ffa500; margin-bottom: 15px; font-size: 1.3em;">🥤 LIMONADE VERKOPEN</h3>';
+    
+    // Sort lemonade by rarity (basic to mythical)
+    const sortedLemonades = Object.entries(gameState.lemonade)
+      .filter(([type, count]) => count > 0)
+      .map(([type, count]) => ({ type, count, product: lemonades[type] }))
+      .filter(item => item.product)
+      .sort((a, b) => {
+        const rarityOrder = { basic: 0, rare: 1, epic: 2, legendary: 3, mythical: 4 };
+        return rarityOrder[a.product.rarity || 'basic'] - rarityOrder[b.product.rarity || 'basic'];
+      });
 
-  // Remove ice cream from inventory
-  gameState.iceCream[iceCreamType] -= amount;
+    // Add lemonade items in sorted order
+    sortedLemonades.forEach(({ type, count, product }) => {
+      const isWanted = currentCustomer && currentCustomer.wantedIceCream === type;
+      shopHTML += createProductCard(type, product, count, 'lemonade', isWanted, currentCustomer);
+    });
+    
+    shopHTML += '</div>';
+  }
 
-  // Add money
-  gameState.money += totalPrice;
-
-  const itemText = amount === 1 ? iceCream.name : `${amount}x ${iceCream.name}`;
-  showMessage(`Je hebt ${itemText} verkocht voor €${totalPrice}! 💰🍦`, "success");
-
-  updateUI();
-  saveGame();
-  updateIceCreamShopModal(); // Refresh the modal display
+  shopHTML += '</div>';
+  shopContainer.innerHTML = shopHTML;
 }
+
+// Helper functie om product kaarten te maken
+function createProductCard(productType, product, count, category, isWanted, currentCustomer) {
+  const rarityConfig = {
+    basic: { color: '#666', name: '🥄 Basis', bg: '#f9f9f9' },
+    rare: { color: '#4169E1', name: '⭐ Speciaal', bg: '#f0f4ff' }, 
+    epic: { color: '#8A2BE2', name: '💎 Premium', bg: '#f8f0ff' },
+    legendary: { color: '#FF8C00', name: '🏆 Legendarisch', bg: '#fff8f0' },
+    mythical: { color: '#DC143C', name: '✨ Mythisch', bg: '#fff0f0' }
+  };
+  
+  const rarity = rarityConfig[product.rarity] || rarityConfig.basic;
+  const borderStyle = isWanted ? 'border: 3px solid #4CAF50; box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);' : `border: 2px solid ${rarity.color};`;
+  
+  return `
+    <div style="margin-bottom: 10px; padding: 10px; border-radius: 8px; background: ${rarity.bg}; ${borderStyle}">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="font-size: 1.8em;">${product.emoji}</div>
+        <div style="flex: 1;">
+          <div style="font-weight: bold; color: ${rarity.color};">
+            ${product.name} ${isWanted ? '⭐' : ''}
+          </div>
+          <div style="font-size: 0.8em; color: ${rarity.color}; font-weight: bold; margin-bottom: 2px;">
+            ${rarity.name}
+          </div>
+          <div style="font-size: 0.9em; color: #666;">
+            Voorraad: ${count} • €${product.sellPrice}/stuk
+          </div>
+          <div style="font-size: 0.8em; color: #2e8b57; font-weight: bold;">
+            Totaal: €${product.sellPrice * count}
+          </div>
+        </div>
+        <div>
+          ${currentCustomer 
+            ? `<button onclick="serveCustomerProduct('${productType}', '${category}')" 
+                      style="padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; ${isWanted ? 'background: #4CAF50; color: white;' : 'background: #e0e0e0; color: #666;'}">
+                ${isWanted ? 'Gewenst!' : 'Bedienen'}
+              </button>`
+            : `<div style="text-align: center; color: #666; font-style: italic; padding: 10px; border: 2px dashed #ccc; border-radius: 8px; background: #f9f9f9;">
+                💡 Wacht op klanten!<br>
+                <small style="font-size: 0.8em;">Je kunt alleen aan klanten verkopen</small>
+              </div>`
+          }
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Opmerking: Directe verkoop aan winkel is verwijderd
+// Je kunt nu alleen verkopen aan klanten die bij de balie staan
+
+// Verkoop functies verwijderd - alleen verkoop aan klanten toegestaan
 
 // Handle ESC key for closing ice cream shop
 function handleIceCreamShopEscKey(event) {

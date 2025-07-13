@@ -37,6 +37,16 @@ function updateUI() {
   const dayEl = document.getElementById("day");
   if (dayEl) dayEl.textContent = gameState.day;
 
+  // Update tijd
+  const timeEl = document.getElementById("time");
+  if (timeEl) {
+    const timeString = `${gameState.hour.toString().padStart(2, '0')}:${gameState.minute.toString().padStart(2, '0')}`;
+    timeEl.textContent = timeString;
+  }
+
+  // Update dag/nacht cyclus CSS klassen
+  updateDayNightCycle();
+
   // Update season with emoji and apply seasonal theme
   const seasonEmojis = {
     Lente: "🌸",
@@ -100,6 +110,33 @@ function updateUI() {
   // updateShopDisplay(); // Disabled - element doesn't exist
   updateSeasonInfo();
   // updateGameStats(); // Disabled - element doesn't exist
+}
+
+// Dag/nacht cyclus systeem
+function updateDayNightCycle() {
+  const body = document.body;
+  
+  // Verwijder alle tijd-gebaseerde klassen
+  body.classList.remove('time-morning', 'time-day', 'time-evening', 'time-night', 'time-late-night');
+  
+  const hour = gameState.hour;
+  
+  if (hour >= 6 && hour < 9) {
+    // Ochtend (6:00-9:00) - Zachte oranje gloed
+    body.classList.add('time-morning');
+  } else if (hour >= 9 && hour < 17) {
+    // Dag (9:00-17:00) - Helder licht
+    body.classList.add('time-day');
+  } else if (hour >= 17 && hour < 20) {
+    // Avond (17:00-20:00) - Warme oranje gloed
+    body.classList.add('time-evening');
+  } else if (hour >= 20 && hour < 24) {
+    // Nacht (20:00-24:00) - Donkerblauw
+    body.classList.add('time-night');
+  } else {
+    // Late nacht (0:00-6:00) - Zeer donker
+    body.classList.add('time-late-night');
+  }
 }
 
 // Update inventory display

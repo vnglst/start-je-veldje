@@ -19,13 +19,54 @@
   background: #ffe4e1; /* Light pink background */
   border: 3px solid #ff69b4; /* Hot pink border */
   border-radius: 15px;
-  max-width: 600px;
+  max-width: 900px; /* Maak breder voor twee kolommen */
   width: 100vw;
   max-height: 80vh;
   overflow-y: auto;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   animation: modalSlideIn 0.3s ease-out;
   box-sizing: border-box;
+}
+
+/* Product sections styling voor ijs/limonade scheiding */
+.product-sections {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.product-section {
+  max-height: 55vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.product-section::-webkit-scrollbar {
+  width: 6px;
+}
+
+.product-section::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.product-section::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.product-section::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Responsive voor mobiel - maak verticaal ipv horizontaal */
+@media (max-width: 768px) {
+  .product-sections {
+    flex-direction: column !important;
+  }
+  
+  .product-section {
+    max-height: 40vh;
+  }
 }
 
 @media (max-width: 700px) {

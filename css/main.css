@@ -13,6 +13,7 @@
 @import 'game/farm.css';
 @import 'game/sidebar.css';
 @import 'game/sleep.css';
+@import 'game/day-night.css';
 
 /* Component styles */
 @import 'components/modal.css';

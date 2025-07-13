@@ -42,6 +42,8 @@ let gameState = {
   inGreenhouse: false, // Of de speler momenteel in de kas is
   inIceCreamShop: false, // Of de speler momenteel in de ijssalon is
   day: 1,
+  hour: 6, // Start om 6:00 's ochtends (zoals Stardew Valley)
+  minute: 0,
   season: "Lente",
   wateringCan: true,
   water: 10,

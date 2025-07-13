@@ -147,24 +147,34 @@
   box-shadow: 0 4px 15px rgba(153, 50, 204, 0.3);
 }
 
-.stat:nth-child(8) { /* Seizoen */
+.stat:nth-child(8) { /* Tijd */
+  color: #ff8c69;
+  border-color: rgba(255, 140, 105, 0.4);
+}
+
+.stat:nth-child(8):hover {
+  border-color: #ff8c69;
+  box-shadow: 0 4px 15px rgba(255, 140, 105, 0.3);
+}
+
+.stat:nth-child(9) { /* Seizoen */
   color: #32cd32;
   border-color: rgba(50, 205, 50, 0.4);
 }
 
-.stat:nth-child(8):hover {
+.stat:nth-child(9):hover {
   border-color: #32cd32;
   box-shadow: 0 4px 15px rgba(50, 205, 50, 0.3);
 }
 
-.stat:nth-child(9) { /* Kas */
+.stat:nth-child(10) { /* Kas */
   color: #ff8c00;
   border-color: rgba(255, 140, 0, 0.4);
   background: linear-gradient(135deg, rgba(255, 248, 220, 0.95) 0%, rgba(255, 235, 205, 0.9) 100%);
   animation: greenhouse-glow 2s ease-in-out infinite alternate;
 }
 
-.stat:nth-child(9):hover {
+.stat:nth-child(10):hover {
   border-color: #ff8c00;
   box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
 }

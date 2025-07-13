@@ -23,6 +23,7 @@
           <li>🥤 Limonade: <span id="begin-lemonade">...</span></li>
           <li>💧 Water: <span id="begin-water">...</span></li>
           <li>📅 Dag: <span id="begin-day">...</span></li>
+          <li>⏰ Tijd: <span id="begin-time">...</span></li>
           <li>🌸 Seizoen: <span id="begin-season">...</span></li>
         </ul>
         <button id="startSpelBtn" class="startscreen-btn">Starten</button>
@@ -40,6 +41,7 @@
         <div class="stat" onclick="handleStatTap('🥤')"><span class="stat-emoji">🥤</span> Limonade: <span id="lemonadeCount">0</span></div>
         <div class="stat" onclick="handleStatTap('💧')"><span class="stat-emoji">💧</span> Water: <span id="water">10</span></div>
         <div class="stat" onclick="handleStatTap('📅')"><span class="stat-emoji">📅</span> Dag: <span id="day">1</span></div>
+        <div class="stat" onclick="handleStatTap('⏰')"><span class="stat-emoji">⏰</span> Tijd: <span id="time">06:00</span></div>
         <div class="stat" onclick="handleStatTap('🌸')"><span class="stat-emoji">🌸</span> <span id="season">Lente</span></div>
         <div class="stat greenhouse-stat" id="greenhouseStat" style="display: none" onclick="handleStatTap('🏡')"><span class="stat-emoji">🏡</span> Kas: ✅</div>
       </div>
@@ -289,6 +291,7 @@
         document.getElementById("begin-lemonade").textContent = document.getElementById("lemonadeCount")?.textContent || "0";
         document.getElementById("begin-water").textContent = document.getElementById("water")?.textContent || "0";
         document.getElementById("begin-day").textContent = document.getElementById("day")?.textContent || "1";
+        document.getElementById("begin-time").textContent = document.getElementById("time")?.textContent || "06:00";
         document.getElementById("begin-season").textContent = document.getElementById("season")?.textContent || "Lente";
       }
       function hideBeginschermEnStartSpel() {

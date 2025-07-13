@@ -107,6 +107,12 @@ function initializeGame() {
       };
     }
 
+    // Ensure time system exists for older saves
+    if (gameState.hour === undefined) {
+      gameState.hour = 6;
+      gameState.minute = 0;
+    }
+
     initializeFarm();
     updateUI();
     showMessage(`Welkom terug! 🌱 Dag ${gameState.day} in ${gameState.season}`, "success");
@@ -136,7 +142,31 @@ function startAutoSave() {
   }, 5000);
 }
 
-// Game time system - runs continuously
+// Game time system - runs continuously (5 minuten per 10 seconden)
+function startTimeSystem() {
+  setInterval(() => {
+    // 5 minuten per 10 seconden = 1 minuut per 2 seconden
+    gameState.minute += 5;
+    
+    if (gameState.minute >= 60) {
+      gameState.minute = 0;
+      gameState.hour++;
+      
+      // Een dag duurt van 6:00 tot 24:00 (18 uur)
+      if (gameState.hour >= 24) {
+        // Automatisch slapen om 24:00 (middernacht)
+        setTimeout(() => {
+          showMessage("Het is middernacht! Tijd om te slapen... 😴", "info");
+          setTimeout(() => {
+            sleep();
+          }, 2000);
+        }, 1000);
+      }
+    }
+    
+    updateUI();
+  }, 10000); // Elke 10 seconden = 5 minuten in-game
+}
 function startGameTime() {
   setInterval(() => {
     // Update klanten in ijssalon elke 100ms
@@ -155,5 +185,6 @@ function startGameTime() {
 window.onload = function () {
   initializeGame();
   startAutoSave();
-  startGameTime(); // Start de tijd loop
+  startTimeSystem(); // Start het tijdsysteem
+  startGameTime(); // Start de spelloop
 };

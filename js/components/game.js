@@ -11,6 +11,9 @@ function sleep() {
   // Process game logic after animation starts
   setTimeout(() => {
     gameState.day++;
+    // Reset time to 6:00 AM when waking up (zoals Stardew Valley)
+    gameState.hour = 6;
+    gameState.minute = 0;
 
     // Update seasons every 30 days
     const seasons = ["Lente", "Zomer", "Herfst", "Winter"];
