@@ -168,16 +168,25 @@
 
     <!-- JavaScript bestanden -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- Data modules (laden eerst) -->
+    <script src="js/data/crops.js"></script>
+    <script src="js/data/iceCreams.js"></script>
+    <!-- Utility modules -->
+    <script src="js/utils/saveLoad.js"></script>
+    <!-- System modules -->
     <script src="js/systems/muziek.js"></script>
     <script src="js/systems/gameState.js"></script>
     <script src="js/systems/ui.js"></script>
+    <!-- Component modules -->
     <script src="js/components/farm.js"></script>
+    <script src="js/components/game.js"></script>
+    <script src="js/components/movement.js"></script>
+    <!-- UI modules -->
     <script src="js/ui/shop.js"></script>
     <script src="js/ui/shop-interaction.js"></script>
     <script src="js/ui/ice-cream-shop.js"></script>
     <script src="js/ui/ice-cream-machine.js"></script>
-    <script src="js/components/game.js"></script>
-    <script src="js/components/movement.js"></script>
+    <!-- Main game loop -->
     <script src="main.js"></script>
     <script>
       // Zet juiste tekst op muziekknop bij laden
