@@ -1,13 +1,5 @@
 // IJs data (zonder regenboog, mint, chocolade)
 const iceCreams = {
-  vanilla: {
-    emoji: "🍦",
-    name: "Vanille IJs",
-    price: 15,
-    sellPrice: 110, // Verkoop prijs (minder dan koop prijs)
-    description: "Klassiek vanille ijs",
-    happiness: 5,
-  },
   // Fruit-gebaseerde ijsjes (gemaakt van je eigen gewassen)
   strawberry: {
     emoji: "🍓",
