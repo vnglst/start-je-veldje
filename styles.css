@@ -8,7 +8,7 @@
 body {
   font-family: "Arial", sans-serif;
   background: linear-gradient(135deg, #87ceeb 0%, #98fb98 100%);
-  min-height: 100vh;
+  min-height: 100dvh;
   padding: 20px;
   transition: background 1s ease-in-out;
 }
@@ -1686,17 +1686,17 @@ body.herfst .map-tile.farm-plot {
     width: 95%;
     margin: 10px;
   }
-  
+
   .settings-row {
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
   }
-  
+
   .settings-row label {
     text-align: center;
   }
-  
+
   .settings-controls {
     justify-content: center;
   }
@@ -1716,7 +1716,8 @@ body.herfst .map-tile.farm-plot {
 }
 
 @keyframes ice-cream-glow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 25px rgba(255, 105, 180, 0.5);
   }
   50% {
@@ -1741,15 +1742,15 @@ body.herfst .map-tile.farm-plot {
 
 /* Subtiele glitter effect op vloer */
 .ice-cream-shop-floor::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: radial-gradient(circle at 30% 70%, rgba(255, 215, 0, 0.1) 1px, transparent 1px),
-              radial-gradient(circle at 70% 20%, rgba(255, 105, 180, 0.1) 1px, transparent 1px),
-              radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+    radial-gradient(circle at 70% 20%, rgba(255, 105, 180, 0.1) 1px, transparent 1px),
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
   background-size: 15px 15px, 25px 25px, 20px 20px;
   pointer-events: none;
 }
@@ -1763,7 +1764,8 @@ body.herfst .map-tile.farm-plot {
 }
 
 @keyframes entrance-pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -1780,9 +1782,7 @@ body.herfst .map-tile.farm-plot {
 .ice-cream-shop-counter {
   background: linear-gradient(135deg, #ff1493 0%, #ff69b4 25%, #ffc0cb 50%, #ff69b4 75%, #ff1493 100%);
   border: 3px solid #8b008b;
-  box-shadow: 
-    0 4px 15px rgba(255, 20, 147, 0.5),
-    inset 0 2px 5px rgba(255, 255, 255, 0.3),
+  box-shadow: 0 4px 15px rgba(255, 20, 147, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.3),
     0 0 20px rgba(255, 105, 180, 0.3);
   cursor: pointer;
   animation: luxury-counter-glow 2s ease-in-out infinite;
@@ -1794,36 +1794,27 @@ body.herfst .map-tile.farm-plot {
 
 /* Luxe glitter effect voor de balie */
 .ice-cream-shop-counter::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
   width: 200%;
   height: 200%;
-  background: linear-gradient(
-    45deg,
-    transparent 30%, 
-    rgba(255, 255, 255, 0.3) 50%, 
-    transparent 70%
-  );
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
   animation: counter-shine 3s infinite;
   pointer-events: none;
 }
 
 @keyframes luxury-counter-glow {
-  0%, 100% {
-    box-shadow: 
-      0 4px 15px rgba(255, 20, 147, 0.5),
-      inset 0 2px 5px rgba(255, 255, 255, 0.3),
+  0%,
+  100% {
+    box-shadow: 0 4px 15px rgba(255, 20, 147, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.3),
       0 0 20px rgba(255, 105, 180, 0.3);
     transform: scale(1);
   }
   50% {
-    box-shadow: 
-      0 6px 25px rgba(255, 20, 147, 0.8),
-      inset 0 3px 8px rgba(255, 255, 255, 0.5),
-      0 0 30px rgba(255, 105, 180, 0.6),
-      0 0 40px rgba(255, 20, 147, 0.2);
+    box-shadow: 0 6px 25px rgba(255, 20, 147, 0.8), inset 0 3px 8px rgba(255, 255, 255, 0.5),
+      0 0 30px rgba(255, 105, 180, 0.6), 0 0 40px rgba(255, 20, 147, 0.2);
     transform: scale(1.02);
   }
 }
@@ -1867,9 +1858,7 @@ body.herfst .map-tile.farm-plot {
   background: linear-gradient(135deg, #ff6347 0%, #ffa500 50%, #ffd700 100%);
   border: 2px solid #8b4513;
   border-radius: 12px;
-  box-shadow: 
-    0 3px 12px rgba(255, 99, 71, 0.4),
-    inset 0 1px 3px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 3px 12px rgba(255, 99, 71, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.2);
   cursor: default;
   animation: table-warm-glow 3s ease-in-out infinite;
   font-size: 1.4em;
@@ -1877,15 +1866,12 @@ body.herfst .map-tile.farm-plot {
 }
 
 @keyframes table-warm-glow {
-  0%, 100% {
-    box-shadow: 
-      0 3px 12px rgba(255, 99, 71, 0.4),
-      inset 0 1px 3px rgba(255, 255, 255, 0.2);
+  0%,
+  100% {
+    box-shadow: 0 3px 12px rgba(255, 99, 71, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.2);
   }
   50% {
-    box-shadow: 
-      0 4px 16px rgba(255, 165, 0, 0.5),
-      inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    box-shadow: 0 4px 16px rgba(255, 165, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.3),
       0 0 15px rgba(255, 215, 0, 0.3);
   }
 }
@@ -1910,9 +1896,7 @@ body.herfst .map-tile.farm-plot {
   background: linear-gradient(135deg, #fff0f5 0%, #ffe4e6 50%, #ffd0dc 100%);
   border: 2px solid #ff69b4;
   border-radius: 12px;
-  box-shadow: 
-    0 2px 10px rgba(255, 105, 180, 0.3),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 2px 10px rgba(255, 105, 180, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.5);
   animation: decoration-elegant-float 5s ease-in-out infinite;
   font-size: 1.8em;
   position: relative;
@@ -1921,17 +1905,14 @@ body.herfst .map-tile.farm-plot {
 
 /* Elegant zwevend effect */
 @keyframes decoration-elegant-float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) scale(1);
-    box-shadow: 
-      0 2px 10px rgba(255, 105, 180, 0.3),
-      inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 2px 10px rgba(255, 105, 180, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.5);
   }
   50% {
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 
-      0 4px 15px rgba(255, 105, 180, 0.4),
-      inset 0 2px 4px rgba(255, 255, 255, 0.6),
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.6),
       0 0 8px rgba(255, 215, 0, 0.2);
   }
 }
@@ -1996,9 +1977,7 @@ body.herfst .map-tile.farm-plot {
   background: linear-gradient(135deg, #fff8f0, #ffe4e6);
   border: 2px solid #ffb6c1;
   border-radius: 50%;
-  box-shadow: 
-    0 2px 8px rgba(255, 182, 193, 0.3),
-    inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.4);
   animation: customer-bounce 3s ease-in-out infinite;
   font-size: 2em;
   position: relative;
@@ -2007,20 +1986,17 @@ body.herfst .map-tile.farm-plot {
 
 /* Vrolijke bounce animatie voor klanten */
 @keyframes customer-bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) scale(1);
-    box-shadow: 
-      0 2px 8px rgba(255, 182, 193, 0.3),
-      inset 0 1px 2px rgba(255, 255, 255, 0.4);
+    box-shadow: 0 2px 8px rgba(255, 182, 193, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.4);
   }
   25% {
     transform: translateY(-2px) scale(1.02);
   }
   50% {
     transform: translateY(-1px) scale(1.01);
-    box-shadow: 
-      0 4px 12px rgba(255, 182, 193, 0.4),
-      inset 0 2px 3px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 12px rgba(255, 182, 193, 0.4), inset 0 2px 3px rgba(255, 255, 255, 0.5);
   }
   75% {
     transform: translateY(-2px) scale(1.02);
@@ -2077,12 +2053,14 @@ body.herfst .map-tile.farm-plot {
 .ice-cream-shop-customer:nth-child(7),  /* Mama loopt naar balie */
 .ice-cream-shop-customer:nth-child(8),  /* Papa loopt naar balie */
 .ice-cream-shop-customer:nth-child(9),  /* Oma loopt naar balie */
-.ice-cream-shop-customer:nth-child(10) { /* Kind achteraan */
+.ice-cream-shop-customer:nth-child(10) {
+  /* Kind achteraan */
   animation: customer-walking-to-counter 2.5s ease-in-out infinite;
 }
 
 @keyframes customer-walking-to-counter {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0px) scale(1);
   }
   25% {
@@ -2128,7 +2106,8 @@ body.herfst .map-tile.farm-plot {
 }
 
 @keyframes customer-ordering {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -2172,24 +2151,19 @@ body.herfst .map-tile.farm-plot {
   background: linear-gradient(135deg, #ff69b4 0%, #ffd700 50%, #ff69b4 100%);
   border: 2px solid #ff1493;
   border-radius: 8px;
-  box-shadow: 
-    0 3px 12px rgba(255, 20, 147, 0.4),
-    inset 0 1px 3px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 3px 12px rgba(255, 20, 147, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.3);
   cursor: pointer;
   animation: extension-glow 2.5s ease-in-out infinite;
   font-size: 1.6em;
 }
 
 @keyframes extension-glow {
-  0%, 100% {
-    box-shadow: 
-      0 3px 12px rgba(255, 20, 147, 0.4),
-      inset 0 1px 3px rgba(255, 255, 255, 0.3);
+  0%,
+  100% {
+    box-shadow: 0 3px 12px rgba(255, 20, 147, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.3);
   }
   50% {
-    box-shadow: 
-      0 4px 16px rgba(255, 20, 147, 0.6),
-      inset 0 2px 5px rgba(255, 255, 255, 0.4),
+    box-shadow: 0 4px 16px rgba(255, 20, 147, 0.6), inset 0 2px 5px rgba(255, 255, 255, 0.4),
       0 0 15px rgba(255, 215, 0, 0.4);
   }
 }
