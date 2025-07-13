@@ -10,8 +10,6 @@
   align-items: center;
   justify-content: center;
   animation: fadeIn 0.7s;
-  overflow-y: scroll;
-  max-height: 100vh;
 }
 
 @keyframes fadeIn {
@@ -46,6 +44,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-height: 100vh;
+  overflow-y: auto;
 }
 
 .startscreen-welcome {
