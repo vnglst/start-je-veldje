@@ -1,6 +1,5 @@
 /* Beginscherm overlay voor Start je Veldje */
 
-
 .startscreen-overlay {
   position: fixed;
   z-index: 9999;
@@ -11,18 +10,24 @@
   align-items: center;
   justify-content: center;
   animation: fadeIn 0.7s;
+  overflow-y: scroll;
+  max-height: 100vh;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .startscreen-title {
   font-size: 2.5em;
   color: #2e8b57;
   margin-bottom: 20px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   font-family: "Arial", sans-serif;
   font-weight: bold;
   letter-spacing: 1px;
@@ -30,11 +35,11 @@
 }
 
 .startscreen-box {
-  background: rgba(255,255,255,0.95);
+  background: rgba(255, 255, 255, 0.95);
   border: 2px solid #daa520;
   border-radius: 15px;
   padding: 22px 28px 18px 28px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   min-width: 320px;
   max-width: 600px;
   margin-bottom: 10px;
@@ -78,7 +83,7 @@
 }
 
 .startscreen-stats li::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -99,52 +104,62 @@
 }
 
 /* Verschillende kleuren voor elke stat in startscherm */
-.startscreen-stats li:nth-child(1) { /* Geld */
+.startscreen-stats li:nth-child(1) {
+  /* Geld */
   color: #d4af37;
   border-color: rgba(212, 175, 55, 0.4);
 }
 
-.startscreen-stats li:nth-child(2) { /* Zaden */
+.startscreen-stats li:nth-child(2) {
+  /* Zaden */
   color: #228b22;
   border-color: rgba(34, 139, 34, 0.4);
 }
 
-.startscreen-stats li:nth-child(3) { /* Fruit */
+.startscreen-stats li:nth-child(3) {
+  /* Fruit */
   color: #ff6347;
   border-color: rgba(255, 99, 71, 0.4);
 }
 
-.startscreen-stats li:nth-child(4) { /* IJs */
+.startscreen-stats li:nth-child(4) {
+  /* IJs */
   color: #ff69b4;
   border-color: rgba(255, 105, 180, 0.4);
 }
 
-.startscreen-stats li:nth-child(5) { /* Water */
+.startscreen-stats li:nth-child(5) {
+  /* Water */
   color: #1e90ff;
   border-color: rgba(30, 144, 255, 0.4);
 }
 
-.startscreen-stats li:nth-child(6) { /* Dag */
+.startscreen-stats li:nth-child(6) {
+  /* Dag */
   color: #9932cc;
   border-color: rgba(153, 50, 204, 0.4);
 }
 
-.startscreen-stats li:nth-child(5) { /* Limonade */
+.startscreen-stats li:nth-child(5) {
+  /* Limonade */
   color: #ffa500;
   border-color: rgba(255, 165, 0, 0.4);
 }
 
-.startscreen-stats li:nth-child(6) { /* Water */
+.startscreen-stats li:nth-child(6) {
+  /* Water */
   color: #1e90ff;
   border-color: rgba(30, 144, 255, 0.4);
 }
 
-.startscreen-stats li:nth-child(7) { /* Dag */
+.startscreen-stats li:nth-child(7) {
+  /* Dag */
   color: #9932cc;
   border-color: rgba(153, 50, 204, 0.4);
 }
 
-.startscreen-stats li:nth-child(8) { /* Seizoen */
+.startscreen-stats li:nth-child(8) {
+  /* Seizoen */
   color: #32cd32;
   border-color: rgba(50, 205, 50, 0.4);
 }
