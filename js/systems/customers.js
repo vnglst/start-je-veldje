@@ -190,21 +190,21 @@ function removeFromQueue(customer) {
 
 // Update wachtrij posities
 function updateQueuePositions() {
-  // Verwijder klanten die weggaan uit de queue
+  // Verwijder klanten die de winkel hebben verlaten uit de queue
   gameState.customerQueue = gameState.customerQueue.filter(customer => 
-    customer.state !== CustomerState.LEAVING || 
-    (customer.position.x !== 0 || customer.position.y !== 5)
+    !(customer.state === CustomerState.LEAVING && 
+      customer.position.x === 0 && customer.position.y === 5)
   );
   
   // Zoek de eerste wachtende klant en stuur naar balie
-  let foundWaitingCustomer = false;
+  let foundOrderingCustomer = false;
   gameState.customerQueue.forEach((customer, index) => {
-    if (!foundWaitingCustomer && customer.state === CustomerState.WAITING) {
+    if (!foundOrderingCustomer && customer.state === CustomerState.WAITING) {
       moveCustomerToCounter(customer);
-      foundWaitingCustomer = true;
+      foundOrderingCustomer = true;
     } else if (customer.state === CustomerState.WAITING) {
       // Andere klanten wachten in rij
-      const queuePosition = index - (foundWaitingCustomer ? 1 : 0);
+      const queuePosition = index - (foundOrderingCustomer ? 1 : 0);
       const queueX = Math.min(4, queuePosition);
       customer.targetPosition = { x: queueX + 1, y: 2 };
     }
