@@ -46,6 +46,14 @@ function interactWithIceCreamShop() {
   // Ga ijssalon binnen
   gameState.inIceCreamShop = true;
   gameState.playerPosition = { x: 1, y: 5 }; // Positie binnen ijssalon (bij ingang)
+  
+  // Reset customer queue ALTIJD als er bugs zijn (tijdelijke fix)
+  console.log("Customer queue length:", gameState.customerQueue.length);
+  console.log("Resetting customer queue and customers - debug fix");
+  gameState.customerQueue = [];
+  gameState.customers = [];
+  gameState.customerSpawnTimer = 0;
+  
   showMessage("Welkom in je ijssalon! 🍦 Hier kun je je zelfgemaakte ijs verkopen!", "success");
   
   // Spawn eerste klant als de klanten lijst leeg is
@@ -70,6 +78,13 @@ function interactWithIceCreamShop() {
 function openIceCreamShopModal() {
   // Check of er een klant is om te bedienen
   const currentCustomer = window.getCurrentCustomer ? getCurrentCustomer() : null;
+  console.log("openIceCreamShopModal - currentCustomer:", currentCustomer);
+  console.log("gameState.customerQueue length:", gameState.customerQueue.length);
+  if (gameState.customerQueue.length > 0) {
+    console.log("Eerste klant in queue - state:", gameState.customerQueue[0].state);
+    console.log("Eerste klant in queue - position:", gameState.customerQueue[0].position);
+  }
+  console.log("gameState.customers:", gameState.customers);
   
   // Create modal overlay
   const modal = document.createElement("div");

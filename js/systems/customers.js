@@ -59,15 +59,16 @@ function updateCustomers() {
   }
   
   // Update elke klant
-  gameState.customers.forEach((customer, index) => {
+  for (let i = gameState.customers.length - 1; i >= 0; i--) {
+    const customer = gameState.customers[i];
     updateCustomer(customer);
     
     // Verwijder klanten die weggaan
     if (customer.state === CustomerState.LEAVING && 
         customer.position.x === 0 && customer.position.y === 5) {
-      gameState.customers.splice(index, 1);
+      gameState.customers.splice(i, 1);
     }
-  });
+  }
   
   // Update wachtrij
   updateQueuePositions();
@@ -189,15 +190,22 @@ function removeFromQueue(customer) {
 
 // Update wachtrij posities
 function updateQueuePositions() {
+  // Verwijder klanten die weggaan uit de queue
+  gameState.customerQueue = gameState.customerQueue.filter(customer => 
+    customer.state !== CustomerState.LEAVING || 
+    (customer.position.x !== 0 || customer.position.y !== 5)
+  );
+  
+  // Zoek de eerste wachtende klant en stuur naar balie
+  let foundWaitingCustomer = false;
   gameState.customerQueue.forEach((customer, index) => {
-    if (index === 0) {
-      // Eerste klant gaat naar balie als deze wacht
-      if (customer.state === CustomerState.WAITING) {
-        moveCustomerToCounter(customer);
-      }
+    if (!foundWaitingCustomer && customer.state === CustomerState.WAITING) {
+      moveCustomerToCounter(customer);
+      foundWaitingCustomer = true;
     } else if (customer.state === CustomerState.WAITING) {
       // Andere klanten wachten in rij
-      const queueX = Math.min(4, index - 1);
+      const queuePosition = index - (foundWaitingCustomer ? 1 : 0);
+      const queueX = Math.min(4, queuePosition);
       customer.targetPosition = { x: queueX + 1, y: 2 };
     }
   });
