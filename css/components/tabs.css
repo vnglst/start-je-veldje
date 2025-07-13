@@ -19,6 +19,7 @@
   color: #666;
   transition: all 0.3s ease;
   border-right: 1px solid #ddd;
+  min-height: 44px; /* Betere touch targets */
 }
 
 .tab-button:last-child {
@@ -199,4 +200,73 @@
 .util-btn:nth-child(3) {
   background: #ffa726;
   color: white;
+}
+
+/* Responsive design voor mobiel */
+@media (max-width: 768px) {
+  .tab-button {
+    font-size: 0.8em;
+    padding: 10px 6px;
+  }
+  
+  .tab-content {
+    min-height: 300px;
+    max-height: 400px;
+  }
+  
+  .tab-panel {
+    padding: 12px;
+  }
+  
+  .tools-grid {
+    gap: 8px;
+  }
+  
+  .tool-button {
+    padding: 10px;
+    font-size: 0.85em;
+    min-height: 44px; /* Betere touch targets */
+  }
+  
+  .movement-grid {
+    max-width: 140px;
+    gap: 8px;
+  }
+  
+  .move-btn {
+    padding: 10px;
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .action-btn {
+    padding: 12px;
+    min-height: 44px;
+  }
+  
+  .utility-buttons {
+    gap: 6px;
+  }
+  
+  .util-btn {
+    padding: 10px 6px;
+    font-size: 0.75em;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tab-button {
+    font-size: 0.7em;
+    padding: 8px 4px;
+  }
+  
+  .tool-button {
+    font-size: 0.8em;
+    padding: 8px;
+  }
+  
+  .movement-grid {
+    max-width: 120px;
+  }
 }

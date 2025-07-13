@@ -281,16 +281,63 @@
 }
 
 /* Responsive design voor modal */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+  .shop-modal-content {
+    max-width: 95%;
+    margin: 20px;
+    max-height: 90vh;
+  }
+  
+  .shop-modal-header {
+    padding: 12px 15px;
+  }
+  
+  .shop-modal-header h2 {
+    font-size: 1.3em;
+  }
+  
+  .shop-modal-body {
+    padding: 15px;
+  }
+  
+  .shop-modal-item {
+    padding: 12px;
+    gap: 12px;
+  }
+  
+  .item-icon {
+    font-size: 2.5em;
+    min-width: 50px;
+  }
+  
   .modal-content {
     width: 95%;
     margin: 10px;
+    max-height: 90vh;
+  }
+  
+  .modal-header {
+    padding: 15px 20px 12px;
+  }
+  
+  .modal-header h2 {
+    font-size: 1.3em;
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+  
+  .settings-section {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
   }
   
   .settings-row {
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
+    padding: 12px;
   }
   
   .settings-row label {
@@ -299,5 +346,31 @@
   
   .settings-controls {
     justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .settings-btn {
+    min-height: 44px;
+    padding: 10px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .shop-modal-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .item-icon {
+    font-size: 2em;
+  }
+  
+  .settings-controls {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .settings-btn {
+    width: 100%;
   }
 }

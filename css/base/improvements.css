@@ -1,0 +1,207 @@
+/* UI Verbeteringen voor Start je Veldje */
+
+/* Schaduw effecten voor betere diepte */
+.game-container {
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15), 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.game-stats {
+  box-shadow: 0 4px 12px rgba(70, 130, 180, 0.2);
+}
+
+.sidebar {
+  box-shadow: 0 8px 25px rgba(218, 165, 32, 0.2);
+}
+
+/* Gradient achtergronden voor meer visuele interesse */
+.stat {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(240, 248, 255, 0.9));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.stat:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Verbeterde knoppen met gradients */
+.tab-button.active {
+  background: linear-gradient(135deg, #4caf50, #45a049);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.tool-button {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border: 2px solid #dee2e6;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.tool-button:hover {
+  background: linear-gradient(135deg, #e9ecef, #dee2e6);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.tool-button.active {
+  background: linear-gradient(135deg, #4caf50, #45a049);
+  box-shadow: 0 6px 18px rgba(76, 175, 80, 0.4);
+}
+
+/* Mooiere game tiles */
+.map-tile {
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #90ee90, #98fb98);
+}
+
+.map-tile:hover {
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.map-tile.farm-plot {
+  background: linear-gradient(135deg, #8b4513, #a0522d);
+}
+
+.map-tile.well {
+  background: linear-gradient(135deg, #4682b4, #5a9bd4);
+}
+
+.map-tile.shop {
+  background: linear-gradient(135deg, #ff6347, #ff7f50);
+}
+
+/* Verbeterde actie knoppen */
+.action-btn {
+  background: linear-gradient(135deg, #4169e1, #1e4fb3);
+  box-shadow: 0 6px 18px rgba(65, 105, 225, 0.3);
+  border: none;
+}
+
+.action-btn:hover {
+  box-shadow: 0 8px 25px rgba(65, 105, 225, 0.4);
+  transform: translateY(-3px);
+}
+
+/* Betere bewegingsknoppen */
+.move-btn {
+  background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  border: 2px solid #d0d0d0;
+}
+
+.move-btn:hover {
+  background: linear-gradient(135deg, #e0e0e0, #d0d0d0);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Utility knoppen met betere kleuren */
+.util-btn:nth-child(1) {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+.util-btn:nth-child(2) {
+  background: linear-gradient(135deg, #51cf66, #40c057);
+  box-shadow: 0 4px 12px rgba(81, 207, 102, 0.3);
+}
+
+.util-btn:nth-child(3) {
+  background: linear-gradient(135deg, #ffa726, #ff9800);
+  box-shadow: 0 4px 12px rgba(255, 167, 38, 0.3);
+}
+
+.util-btn:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+/* Verbeterde inventaris items */
+.shop-item,
+.inventory-item {
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 2px solid #e9ecef;
+}
+
+.shop-item:hover,
+.inventory-item:hover {
+  background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  border-color: #87ceeb;
+}
+
+/* Betere focus states voor toegankelijkheid */
+.tab-button:focus,
+.tool-button:focus,
+.action-btn:focus,
+.move-btn:focus,
+.util-btn:focus {
+  outline: 3px solid rgba(65, 105, 225, 0.5);
+  outline-offset: 2px;
+}
+
+/* Subtiele animaties */
+.map-tile,
+.tool-button,
+.action-btn,
+.move-btn,
+.util-btn,
+.stat {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Verbeterde tekst leesbaarheid */
+.farm-area h3 {
+  color: #8b4513;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+  font-weight: bold;
+}
+
+/* Betere contrast voor help sectie */
+.help-section details {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.help-section summary {
+  background: linear-gradient(135deg, #fff8dc, #f5f5dc) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.help-section summary:hover {
+  background: linear-gradient(135deg, #f5f5dc, #f0f0dc) !important;
+}
+
+/* Verbeterde scrollbars */
+.tab-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tab-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #daa520, #b8860b);
+  border-radius: 4px;
+}
+
+.tab-content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #b8860b, #9a7209);
+}
+
+/* Responsive verbeteringen */
+@media (max-width: 768px) {
+  .game-container {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .map-tile:hover {
+    transform: scale(1.05);
+  }
+  
+  .tool-button:hover,
+  .action-btn:hover,
+  .move-btn:hover {
+    transform: scale(1.02);
+  }
+}
