@@ -107,6 +107,14 @@ function updateCustomer(customer) {
       break;
       
     case CustomerState.ORDERING:
+      // Als klant nog niet bij balie is, beweeg verder
+      if (customer.position.x !== customer.targetPosition.x || customer.position.y !== customer.targetPosition.y) {
+        if (customer.moveTimer >= 5) {
+          moveCustomerTowardsTarget(customer);
+          customer.moveTimer = 0;
+        }
+      }
+      
       // Wacht op bediening bij de balie
       customer.patience -= 0.005; // Langzamer geduld verlies bij balie
       if (customer.patience <= 0) {
@@ -214,7 +222,7 @@ function updateQueuePositions() {
 // Beweeg klant naar balie voor bestelling
 function moveCustomerToCounter(customer) {
   customer.state = CustomerState.ORDERING;
-  customer.targetPosition = { x: 5, y: 2 }; // Positie voor de balie (x=5 is balie area)
+  customer.targetPosition = { x: 5, y: 2 }; // Positie voor de balie (links van balie)
 }
 
 // Bedien de klant bij de balie
