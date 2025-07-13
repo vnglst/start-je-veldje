@@ -10,6 +10,13 @@
   align-items: center;
   justify-content: center;
   animation: fadeIn 0.7s;
+  min-height: 100dvh;
+  min-height: 100vh;
+  width: 100vw;
+  height: 100dvh;
+  height: 100vh;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 @keyframes fadeIn {
@@ -36,16 +43,54 @@
   background: rgba(255, 255, 255, 0.95);
   border: 2px solid #daa520;
   border-radius: 15px;
-  padding: 22px 28px 18px 28px;
+  padding: 22px 16px 18px 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  min-width: 320px;
+  min-width: 0;
+  width: 100%;
   max-width: 600px;
   margin-bottom: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-height: 100dvh;
+  max-height: 90vh;
   overflow-y: auto;
+  box-sizing: border-box;
+}
+@media (max-width: 700px) {
+  .startscreen-box {
+    max-width: 98vw;
+    padding: 14px 4vw 14px 4vw;
+    font-size: 0.98em;
+    max-height: 90dvh;
+  }
+  .startscreen-title {
+    font-size: 2em;
+  }
+}
+
+@media (max-width: 480px) {
+  .startscreen-overlay {
+    padding: 0;
+    min-height: 100dvh;
+    height: 100dvh;
+    width: 100vw;
+    overflow-y: auto;
+  }
+  .startscreen-box {
+    max-width: 100vw;
+    min-width: 0;
+    padding: 10px 2vw 10px 2vw;
+    font-size: 0.95em;
+    max-height: 92dvh;
+    overflow-y: auto;
+  }
+  .startscreen-title {
+    font-size: 1.3em;
+  }
+  .startscreen-stats {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
 }
 
 .startscreen-welcome {
