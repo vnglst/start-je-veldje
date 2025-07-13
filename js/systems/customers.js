@@ -32,16 +32,18 @@ function spawnCustomer() {
 
   const customerType = customerTypes[Math.floor(Math.random() * customerTypes.length)];
 
-  // Kies een willekeurig ijsje dat de klant wil, met hogere kans op favoriet
-  let wantedIceCream;
+  // Kies een willekeurig product dat de klant wil, met hogere kans op favoriet
+  let wantedProduct;
   const availableIceCreams = Object.keys(iceCreams);
+  const availableLemonades = Object.keys(lemonades);
+  const allProducts = [...availableIceCreams, ...availableLemonades];
 
-  if (Math.random() < 0.6) {
-    // 60% kans op favoriet ijsje
-    wantedIceCream = customerType.favoriteIceCream;
+  if (Math.random() < 0.5) {
+    // 50% kans op favoriet ijsje
+    wantedProduct = customerType.favoriteIceCream;
   } else {
-    // 40% kans op willekeurig ander ijsje
-    wantedIceCream = availableIceCreams[Math.floor(Math.random() * availableIceCreams.length)];
+    // 50% kans op willekeurig ander product (ijs of limonade)
+    wantedProduct = allProducts[Math.floor(Math.random() * allProducts.length)];
   }
 
   const customer = {
@@ -52,7 +54,7 @@ function spawnCustomer() {
     targetPosition: { x: 2, y: 2 }, // Loop naar midden rij positie
     patience: customerType.patience,
     maxPatience: customerType.patience,
-    wantedIceCream: wantedIceCream,
+    wantedIceCream: wantedProduct,
     favoriteIceCream: customerType.favoriteIceCream, // Bewaar ook het originele favoriet
     moveTimer: 0,
     hasOrdered: false,
@@ -61,7 +63,8 @@ function spawnCustomer() {
   };
 
   gameState.customers.push(customer);
-  console.log(`Nieuwe klant ${customer.type.name} is binnengekomen en wil ${iceCreams[wantedIceCream].name}!`);
+  const productName = iceCreams[wantedProduct]?.name || lemonades[wantedProduct]?.name || 'iets speciaals';
+  console.log(`Nieuwe klant ${customer.type.name} is binnengekomen en wil ${productName}!`);
 }
 
 // Update alle klanten
@@ -349,8 +352,69 @@ function getCurrentCustomer() {
   return null;
 }
 
+// Bedien de klant bij de balie met limonade
+function serveCurrentCustomerLemonade(lemonadeType) {
+  const currentCustomer = gameState.customerQueue[0];
+  if (!currentCustomer || currentCustomer.state !== CustomerState.ORDERING) {
+    showMessage("Er is geen klant om te bedienen!", "error");
+    return false;
+  }
+
+  // Check of je de limonade hebt
+  if (gameState.lemonade[lemonadeType] <= 0) {
+    showMessage(`Je hebt geen ${lemonades[lemonadeType].name}!`, "error");
+    return false;
+  }
+
+  // Check of klant dit drankje wil
+  if (lemonadeType !== currentCustomer.wantedIceCream) {
+    showMessage(
+      `${currentCustomer.type.name} wil geen ${lemonades[lemonadeType].name}, maar ${
+        iceCreams[currentCustomer.wantedIceCream]?.name || lemonades[currentCustomer.wantedIceCream]?.name || 'iets anders'
+      }! 😕`,
+      "error"
+    );
+    return false;
+  }
+
+  // Verkoop de limonade
+  gameState.lemonade[lemonadeType]--;
+  const price = lemonades[lemonadeType].sellPrice;
+  gameState.money += price;
+
+  // Extra tip als het ook hun favoriete smaak is
+  let tip = 0;
+  if (lemonadeType === currentCustomer.favoriteIceCream) {
+    tip = Math.floor(price * 0.3); // 30% extra tip voor favoriet
+    gameState.money += tip;
+    showMessage(
+      `${currentCustomer.type.name} is heel blij met hun favoriete ${lemonades[lemonadeType].name}! +€${price} +€${tip} extra tip! 😍`,
+      "success"
+    );
+  } else {
+    showMessage(`${currentCustomer.type.name} koopt ${lemonades[lemonadeType].name} voor €${price}! 😊`, "success");
+  }
+
+  // Zoek een vrij tafeltje
+  const table = findFreeTable();
+  if (table) {
+    currentCustomer.state = CustomerState.MOVING_TO_TABLE;
+    currentCustomer.targetPosition = table;
+    currentCustomer.tablePosition = table;
+  } else {
+    // Geen tafeltje vrij, klant gaat direct weg
+    currentCustomer.state = CustomerState.LEAVING;
+    currentCustomer.targetPosition = { x: 0, y: 5 };
+  }
+
+  // Verwijder uit wachtrij
+  removeFromQueue(currentCustomer);
+  return true;
+}
+
 // Maak functies globaal beschikbaar
 window.updateCustomers = updateCustomers;
 window.serveCurrentCustomer = serveCurrentCustomer;
+window.serveCurrentCustomerLemonade = serveCurrentCustomerLemonade;
 window.getCurrentCustomer = getCurrentCustomer;
 window.spawnCustomer = spawnCustomer;

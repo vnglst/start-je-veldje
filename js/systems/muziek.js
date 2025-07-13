@@ -321,12 +321,33 @@ function stopMusic() {
 // --- UI voor muziekkeuze ---
 window.selectedSongType = "main";
 
+// Laad muziek settings uit localStorage
+function loadMusicSettings() {
+  const savedMusicEnabled = localStorage.getItem('musicEnabled');
+  const savedSongType = localStorage.getItem('selectedSongType');
+  
+  if (savedSongType) {
+    window.selectedSongType = savedSongType;
+  }
+  
+  // Return of muziek aan moet staan
+  return savedMusicEnabled === 'true';
+}
+
+// Sla muziek settings op in localStorage
+function saveMusicSettings() {
+  localStorage.setItem('musicEnabled', isPlaying.toString());
+  localStorage.setItem('selectedSongType', window.selectedSongType);
+}
+
 window.toggleMusic = function () {
   if (isPlaying) {
     stopMusic();
   } else {
     playMusic(window.selectedSongType);
   }
+  // Sla setting op
+  saveMusicSettings();
 };
 
 window.setSongType = function (type) {
@@ -336,6 +357,8 @@ window.setSongType = function (type) {
     playMusic(type);
   }
   updateMusicDropdown();
+  // Sla setting op
+  saveMusicSettings();
 };
 
 window.updateMusicButton = function () {
@@ -349,6 +372,21 @@ window.updateMusicDropdown = function () {
   if (!dropdown) return;
   dropdown.value = window.selectedSongType;
 };
+
+// Start muziek automatisch als setting is opgeslagen
+window.startMusic = function() {
+  const shouldPlayMusic = loadMusicSettings();
+  updateMusicDropdown(); // Update dropdown naar opgeslagen type
+  
+  if (shouldPlayMusic && !isPlaying) {
+    playMusic(window.selectedSongType);
+  }
+  updateMusicButton();
+};
+
+// Maak functies globaal beschikbaar
+window.loadMusicSettings = loadMusicSettings;
+window.saveMusicSettings = saveMusicSettings;
 
 // Voeg deze HTML toe aan je UI, bijvoorbeeld boven de muziekknop:
 // <select id="musicSelect" onchange="window.setSongType(this.value)">

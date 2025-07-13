@@ -38,6 +38,21 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+}
+
+.stat:active {
+  transform: scale(0.95);
+}
+
+.stat-emoji {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.stat:active .stat-emoji {
+  transform: scale(1.2);
 }
 
 .stat::before {
@@ -102,44 +117,54 @@
   box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
 }
 
-.stat:nth-child(5) { /* Water */
+.stat:nth-child(5) { /* Limonade */
+  color: #ffa500;
+  border-color: rgba(255, 165, 0, 0.4);
+}
+
+.stat:nth-child(5):hover {
+  border-color: #ffa500;
+  box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
+}
+
+.stat:nth-child(6) { /* Water */
   color: #1e90ff;
   border-color: rgba(30, 144, 255, 0.4);
 }
 
-.stat:nth-child(5):hover {
+.stat:nth-child(6):hover {
   border-color: #1e90ff;
   box-shadow: 0 4px 15px rgba(30, 144, 255, 0.3);
 }
 
-.stat:nth-child(6) { /* Dag */
+.stat:nth-child(7) { /* Dag */
   color: #9932cc;
   border-color: rgba(153, 50, 204, 0.4);
 }
 
-.stat:nth-child(6):hover {
+.stat:nth-child(7):hover {
   border-color: #9932cc;
   box-shadow: 0 4px 15px rgba(153, 50, 204, 0.3);
 }
 
-.stat:nth-child(7) { /* Seizoen */
+.stat:nth-child(8) { /* Seizoen */
   color: #32cd32;
   border-color: rgba(50, 205, 50, 0.4);
 }
 
-.stat:nth-child(7):hover {
+.stat:nth-child(8):hover {
   border-color: #32cd32;
   box-shadow: 0 4px 15px rgba(50, 205, 50, 0.3);
 }
 
-.stat:nth-child(8) { /* Kas */
+.stat:nth-child(9) { /* Kas */
   color: #ff8c00;
   border-color: rgba(255, 140, 0, 0.4);
   background: linear-gradient(135deg, rgba(255, 248, 220, 0.95) 0%, rgba(255, 235, 205, 0.9) 100%);
   animation: greenhouse-glow 2s ease-in-out infinite alternate;
 }
 
-.stat:nth-child(8):hover {
+.stat:nth-child(9):hover {
   border-color: #ff8c00;
   box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
 }

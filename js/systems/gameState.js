@@ -52,6 +52,7 @@ let gameState = {
   greenhousePosition: { x: 0, y: 0 }, // Greenhouse position at top left
   iceCreamShopPosition: { x: 7, y: 5 }, // IJswinkel positie rechts onder
   iceCreamMachinePosition: { x: 0, y: 1 }, // IJsmachine positie links midden
+  lemonadeMachinePosition: { x: 0, y: 2 }, // Limonade machine positie links onder ijsmachine
   
   // Klanten systeem
   customers: [], // Array van klanten in de ijssalon
@@ -73,6 +74,19 @@ let gameState = {
     veggie_surprise: 0,
     summer_festival: 0,
     golden_treasure: 0,
+  },
+  // Limonade inventaris toevoegen
+  lemonade: {
+    strawberry_lemonade: 0,
+    apple_lemonade: 0,
+    carrot_juice: 0,
+    corn_smoothie: 0,
+    berry_mix_lemonade: 0,
+    veggie_surprise: 0,
+    summer_paradise: 0,
+    harvest_celebration: 0,
+    rainbow_delight: 0,
+    golden_elixir: 0,
   },
 };
 

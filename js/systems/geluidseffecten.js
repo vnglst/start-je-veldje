@@ -5,6 +5,20 @@
 let uiSynth, clickSynth, swooshSynth, bellSynth;
 let geluidseffectenEnabled = true;
 
+// Laad geluidseffecten setting uit localStorage
+function loadSoundSettings() {
+  const savedSoundEnabled = localStorage.getItem('soundEnabled');
+  if (savedSoundEnabled !== null) {
+    geluidseffectenEnabled = savedSoundEnabled === 'true';
+  }
+  return geluidseffectenEnabled;
+}
+
+// Sla geluidseffecten setting op in localStorage
+function saveSoundSettings() {
+  localStorage.setItem('soundEnabled', geluidseffectenEnabled.toString());
+}
+
 // Initialiseer de synthesizers voor UI geluiden
 function initUISynths() {
   // Knop klik geluid (korte 'beep')
@@ -231,6 +245,7 @@ function initializeIfNeeded() {
 // Toggle voor geluidseffecten aan/uit
 function toggleGeluidseffecten() {
   geluidseffectenEnabled = !geluidseffectenEnabled;
+  saveSoundSettings(); // Sla setting op
   speelMeldingGeluid(); // Bevestiging
   return geluidseffectenEnabled;
 }
@@ -246,6 +261,17 @@ function updateSoundButton() {
   if (!btn) return;
   btn.textContent = geluidseffectenEnabled ? "🔊 Geluid aan" : "🔇 Geluid uit";
 }
+
+// Initialiseer geluidseffecten settings
+function initSoundSettings() {
+  loadSoundSettings();
+  updateSoundButton();
+}
+
+// Maak functies globaal beschikbaar
+window.loadSoundSettings = loadSoundSettings;
+window.saveSoundSettings = saveSoundSettings;
+window.initSoundSettings = initSoundSettings;
 
 // Exporteer alle functies voor gebruik in andere bestanden
 window.speelKnopKlikGeluid = speelKnopKlikGeluid;

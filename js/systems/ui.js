@@ -27,6 +27,9 @@ function updateUI() {
 
   const iceCreamCountEl = document.getElementById("iceCreamCount");
   if (iceCreamCountEl) iceCreamCountEl.textContent = Object.values(gameState.iceCream).reduce((a, b) => a + b, 0);
+  
+  const lemonadeCountEl = document.getElementById("lemonadeCount");
+  if (lemonadeCountEl) lemonadeCountEl.textContent = Object.values(gameState.lemonade).reduce((a, b) => a + b, 0);
 
   const waterEl = document.getElementById("water");
   if (waterEl) waterEl.textContent = gameState.water;
@@ -275,6 +278,13 @@ function renderRegularMap(gameMap) {
         tile.innerHTML = "🏭";
         tile.title = "IJsmachine - Klik om ijs te maken en verkopen";
         tile.onclick = () => interactWithIceCreamMachine();
+      }
+      // Check if this is the lemonade machine position
+      else if (x === gameState.lemonadeMachinePosition.x && y === gameState.lemonadeMachinePosition.y) {
+        tile.classList.add("lemonade-machine");
+        tile.innerHTML = "🥤";
+        tile.title = "Limonade Machine - Klik om verse drankjes te maken!";
+        tile.onclick = () => interactWithLemonadeMachine();
       }
       // Check if this is the greenhouse position
       else if (x === gameState.greenhousePosition.x && y === gameState.greenhousePosition.y) {

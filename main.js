@@ -27,6 +27,9 @@ function initializeGame() {
     if (!gameState.iceCreamMachinePosition) {
       gameState.iceCreamMachinePosition = { x: 0, y: 1 };
     }
+    if (!gameState.lemonadeMachinePosition) {
+      gameState.lemonadeMachinePosition = { x: 0, y: 2 };
+    }
 
     // Ensure ice cream inventory exists for older saves (zonder regenboog, mint, chocolade)
     if (!gameState.iceCream) {
@@ -86,6 +89,22 @@ function initializeGame() {
     }
     if (gameState.inGreenhouse === undefined) {
       gameState.inGreenhouse = false;
+    }
+
+    // Ensure lemonade inventory exists for older saves
+    if (!gameState.lemonade) {
+      gameState.lemonade = {
+        strawberry_lemonade: 0,
+        apple_lemonade: 0,
+        carrot_juice: 0,
+        corn_smoothie: 0,
+        berry_mix_lemonade: 0,
+        veggie_surprise: 0,
+        summer_paradise: 0,
+        harvest_celebration: 0,
+        rainbow_delight: 0,
+        golden_elixir: 0,
+      };
     }
 
     initializeFarm();

@@ -1,5 +1,11 @@
 // Player movement and well interaction functions
 
+// Geheime mobiele cheat activatie - dubbeltap systeem
+let cheatTapCount = 0;
+let cheatTapTimer = null;
+const CHEAT_EMOJI = '💰'; // Tap 5x snel op geld emoji
+const REQUIRED_TAPS = 5;
+
 // Check if player is near a farm plot (adjacent or on the plot)
 function isPlayerNearPlot(plotIndex) {
   const playerX = gameState.playerPosition.x;
@@ -252,6 +258,39 @@ document.addEventListener("keydown", function (event) {
   }
 });
 
+// Geheime mobiele cheat - tap 5x snel op geld emoji
+function handleStatTap(emoji) {
+  // Check alleen op geld emoji
+  if (emoji !== CHEAT_EMOJI) {
+    return;
+  }
+  
+  // Reset timer bij elke tap
+  if (cheatTapTimer) {
+    clearTimeout(cheatTapTimer);
+  }
+  
+  // Verhoog tap count
+  cheatTapCount++;
+  console.log('Cheat tap count:', cheatTapCount);
+  
+  // Check of genoeg taps
+  if (cheatTapCount >= REQUIRED_TAPS) {
+    // Cheat geactiveerd!
+    cheatTapCount = 0;
+    showMessage("🎉 Geheime code ontdekt! 💰🎉", "success");
+    setTimeout(() => {
+      giveStarterPack();
+    }, 1000);
+    return;
+  }
+  
+  // Reset na 2 seconden inactiviteit
+  cheatTapTimer = setTimeout(() => {
+    cheatTapCount = 0;
+  }, 2000);
+}
+
 // Cheat function: Give starter pack with money and seeds
 function giveStarterPack() {
   if (confirm("Wil je een starter pack krijgen? (€500 + diverse zaden & fruit + kas)")) {
@@ -273,8 +312,16 @@ function giveStarterPack() {
       gameState.iceCream[iceCreamType] += 3;
     });
 
+    // Give 3 of each lemonade type
+    Object.keys(gameState.lemonade).forEach((lemonadeType) => {
+      gameState.lemonade[lemonadeType] += 3;
+    });
+
     updateUI();
     saveGame();
-    showMessage("Starter pack gekregen! €500 + 2 van elk zaad + 3 van elk fruit + kas! 🎁", "success");
+    showMessage("Starter pack gekregen! €500 + 2 van elk zaad + 3 van elk fruit + 3 van elk ijs + 3 van elke limonade + kas! 🎁", "success");
   }
 }
+
+// Maak handleStatTap globaal beschikbaar
+window.handleStatTap = handleStatTap;

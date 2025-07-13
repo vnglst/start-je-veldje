@@ -95,7 +95,7 @@ function openIceCreamShopModal() {
               ${currentCustomer.type.emoji} ${currentCustomer.type.name} wil graag:
             </div>
             <div style="font-size: 1.1em; font-weight: bold; color: #ff69b4; margin-top: 5px;">
-              ${iceCreams[currentCustomer.wantedIceCream]?.emoji || '🍦'} ${iceCreams[currentCustomer.wantedIceCream]?.name || 'IJs'}
+              ${iceCreams[currentCustomer.wantedIceCream]?.emoji || lemonades[currentCustomer.wantedIceCream]?.emoji || '🍦'} ${iceCreams[currentCustomer.wantedIceCream]?.name || lemonades[currentCustomer.wantedIceCream]?.name || 'Drankje'}
             </div>
           </div>
           <button class="close-button" onclick="closeIceCreamShopModal()">✖️</button>
@@ -157,22 +157,23 @@ function updateIceCreamShopModal(currentCustomer = null) {
 
   shopContainer.innerHTML = "";
 
-  // Show all ice cream in inventory for selling
+  // Show all ice cream and lemonade in inventory for selling
   const hasIceCream = Object.entries(gameState.iceCream).some(([type, count]) => count > 0);
+  const hasLemonade = Object.entries(gameState.lemonade).some(([type, count]) => count > 0);
 
-  if (!hasIceCream) {
+  if (!hasIceCream && !hasLemonade) {
     shopContainer.innerHTML =
       '<div style="text-align: center; color: #666; padding: 40px; line-height: 1.6;">' +
-      '<div style="font-size: 2em; margin-bottom: 15px;">🏭</div>' +
-      '<div style="font-weight: bold; margin-bottom: 10px;">Geen ijs om te verkopen!</div>' +
-      "<div>Ga naar de IJsmachine om ijs te maken van je fruit.</div>" +
+      '<div style="font-size: 2em; margin-bottom: 15px;">🏭🥤</div>' +
+      '<div style="font-weight: bold; margin-bottom: 10px;">Geen ijs of limonade om te verkopen!</div>' +
+      "<div>Ga naar de IJsmachine (🏭) of Limonade Machine (🥤) om drankjes te maken van je fruit.</div>" +
       '<div style="margin-top: 10px; font-size: 0.9em; color: #888;">💡 Combineer verschillende vruchten voor waardevolle recepten!</div>' +
       "</div>";
     return;
   }
 
-  // Group ice cream by rarity for display
-  const groupedIceCream = {
+  // Group ice cream and lemonade by rarity for display
+  const groupedProducts = {
     basic: [],
     rare: [],
     epic: [],
@@ -180,6 +181,7 @@ function updateIceCreamShopModal(currentCustomer = null) {
     mythical: [],
   };
 
+  // Add ice cream products
   Object.entries(gameState.iceCream).forEach(([iceCreamType, count]) => {
     if (count <= 0) return;
 
@@ -187,21 +189,44 @@ function updateIceCreamShopModal(currentCustomer = null) {
     if (!iceCream) return;
 
     const rarity = iceCream.rarity || "basic";
-    groupedIceCream[rarity].push({ iceCreamType, iceCream, count });
+    groupedProducts[rarity].push({ 
+      type: iceCreamType, 
+      product: iceCream, 
+      count: count, 
+      category: 'iceCream',
+      categoryDisplay: '🍦 IJs'
+    });
+  });
+
+  // Add lemonade products
+  Object.entries(gameState.lemonade).forEach(([lemonadeType, count]) => {
+    if (count <= 0) return;
+
+    const lemonade = lemonades[lemonadeType];
+    if (!lemonade) return;
+
+    const rarity = lemonade.rarity || "basic";
+    groupedProducts[rarity].push({ 
+      type: lemonadeType, 
+      product: lemonade, 
+      count: count, 
+      category: 'lemonade',
+      categoryDisplay: '🥤 Limonade'
+    });
   });
 
   // Rarity display configuration
   const rarityConfig = {
-    basic: { name: "🥄 Basis IJs", color: "#666", bgColor: "#f9f9f9" },
-    rare: { name: "⭐ Zeldzaam IJs", color: "#4169E1", bgColor: "#f0f4ff" },
-    epic: { name: "💎 Episch IJs", color: "#8A2BE2", bgColor: "#f8f0ff" },
-    legendary: { name: "🏆 Legendarisch IJs", color: "#FF8C00", bgColor: "#fff8f0" },
-    mythical: { name: "✨ Mythisch IJs", color: "#DC143C", bgColor: "#fff0f0" },
+    basic: { name: "🥄 Basis Producten", color: "#666", bgColor: "#f9f9f9" },
+    rare: { name: "⭐ Speciale Mix", color: "#4169E1", bgColor: "#f0f4ff" },
+    epic: { name: "💎 Premium Producten", color: "#8A2BE2", bgColor: "#f8f0ff" },
+    legendary: { name: "🏆 Legendarische Drankjes", color: "#FF8C00", bgColor: "#fff8f0" },
+    mythical: { name: "✨ Mythische Elixers", color: "#DC143C", bgColor: "#fff0f0" },
   };
 
-  // Display ice cream by rarity
-  Object.entries(groupedIceCream).forEach(([rarity, iceCreamList]) => {
-    if (iceCreamList.length === 0) return;
+  // Display products by rarity
+  Object.entries(groupedProducts).forEach(([rarity, productList]) => {
+    if (productList.length === 0) return;
 
     const config = rarityConfig[rarity];
 
@@ -220,8 +245,8 @@ function updateIceCreamShopModal(currentCustomer = null) {
     rarityHeader.textContent = config.name;
     shopContainer.appendChild(rarityHeader);
 
-    // Add ice cream items in this rarity
-    iceCreamList.forEach(({ iceCreamType, iceCream, count }) => {
+    // Add products in this rarity
+    productList.forEach(({ type, product, count, category, categoryDisplay }) => {
       const shopItem = document.createElement("div");
       shopItem.className = "shop-item";
       shopItem.style.cssText = `
@@ -230,30 +255,30 @@ function updateIceCreamShopModal(currentCustomer = null) {
       `;
 
       shopItem.innerHTML = `
-        <div class="shop-icon" style="font-size: 1.5em;">${iceCream.emoji}</div>
+        <div class="shop-icon" style="font-size: 1.5em;">${product.emoji}</div>
         <div class="shop-details">
           <div class="shop-name" style="color: ${config.color}; font-weight: bold;">
-            ${iceCream.name}
+            ${product.name} <span style="font-size: 0.8em; opacity: 0.7;">(${categoryDisplay})</span>
           </div>
           <div class="shop-description">Voorraad: ${count} stuks</div>
-          <div class="shop-price">€${iceCream.sellPrice} per stuk</div>
+          <div class="shop-price">€${product.sellPrice} per stuk</div>
           <div class="shop-total" style="color: #2e8b57; font-size: 0.9em; font-weight: bold;">
-            Totaal: €${iceCream.sellPrice * count}
+            Totaal: €${product.sellPrice * count}
           </div>
           ${
-            iceCream.description
-              ? `<div style="font-size: 0.8em; color: #666; font-style: italic; margin-top: 5px;">${iceCream.description}</div>`
+            product.description
+              ? `<div style="font-size: 0.8em; color: #666; font-style: italic; margin-top: 5px;">${product.description}</div>`
               : ""
           }
         </div>
         <div class="shop-actions">
           ${currentCustomer 
-            ? `<button class="serve-customer-button" onclick="serveCustomerIceCream('${iceCreamType}')"
-                      style="background: ${iceCreamType === currentCustomer.wantedIceCream ? '#4CAF50' : config.color}; ${iceCreamType === currentCustomer.wantedIceCream ? 'border: 2px solid #2E7D32; box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);' : ''}">
-                ${iceCreamType === currentCustomer.wantedIceCream ? '⭐ Gewenst!' : 'Bedien Klant'}
+            ? `<button class="serve-customer-button" onclick="serveCustomerProduct('${type}', '${category}')"
+                      style="background: ${type === currentCustomer.wantedIceCream ? '#4CAF50' : config.color}; ${type === currentCustomer.wantedIceCream ? 'border: 2px solid #2E7D32; box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);' : ''}">
+                ${type === currentCustomer.wantedIceCream ? '⭐ Gewenst!' : 'Bedien Klant'}
               </button>`
             : `<div style="text-align: center; color: #666; font-style: italic; padding: 10px; border: 2px dashed #ccc; border-radius: 8px;">
-                🍦 Alleen verkoop aan klanten!<br>
+                ${categoryDisplay} Alleen verkoop aan klanten!<br>
                 <small>Wacht tot er een klant bij de balie staat</small>
               </div>`}
         </div>
@@ -313,8 +338,29 @@ function serveCustomerIceCream(iceCreamType) {
   }
 }
 
+// Bedien klant met specifiek product (ijs of limonade)
+function serveCustomerProduct(productType, category) {
+  let success = false;
+  
+  if (category === 'iceCream') {
+    success = window.serveCurrentCustomer && serveCurrentCustomer(productType);
+  } else if (category === 'lemonade') {
+    success = window.serveCurrentCustomerLemonade && serveCurrentCustomerLemonade(productType);
+  }
+  
+  if (success) {
+    // Klant succesvol bediend, sluit modal
+    closeIceCreamShopModal();
+    // Speel succes geluid
+    if (window.speelGeluidseffect) {
+      speelGeluidseffect('kassa');
+    }
+  }
+}
+
 // Maak functies globaal beschikbaar
 window.serveCustomerIceCream = serveCustomerIceCream;
+window.serveCustomerProduct = serveCustomerProduct;
 window.interactWithIceCreamShop = interactWithIceCreamShop;
 window.interactWithIceCreamShopCounter = interactWithIceCreamShopCounter;
 

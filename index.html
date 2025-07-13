@@ -7,6 +7,7 @@
     <title>Start je Veldje</title>
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/startscreen.css" />
+    <link rel="stylesheet" href="css/components/lemonade-machine.css" />
   </head>
   <body>
     <!-- Beginscherm overlay -->
@@ -19,6 +20,7 @@
           <li>🌱 Zaden: <span id="begin-seeds">...</span></li>
           <li>🍎 Fruit: <span id="begin-fruit">...</span></li>
           <li>🍦 IJs: <span id="begin-ice">...</span></li>
+          <li>🥤 Limonade: <span id="begin-lemonade">...</span></li>
           <li>💧 Water: <span id="begin-water">...</span></li>
           <li>📅 Dag: <span id="begin-day">...</span></li>
           <li>🌸 Seizoen: <span id="begin-season">...</span></li>
@@ -31,14 +33,15 @@
       <h1>🌱 Start je Veldje 🌾</h1>
 
       <div class="game-stats">
-        <div class="stat">💰 Geld: €<span id="money">100</span></div>
-        <div class="stat">🌱 Zaden: <span id="seedCount">0</span></div>
-        <div class="stat">🍎 Fruit: <span id="fruitCount">0</span></div>
-        <div class="stat">🍦 IJs: <span id="iceCreamCount">0</span></div>
-        <div class="stat">💧 Water: <span id="water">10</span></div>
-        <div class="stat">📅 Dag: <span id="day">1</span></div>
-        <div class="stat">🌸 <span id="season">Lente</span></div>
-        <div class="stat greenhouse-stat" id="greenhouseStat" style="display: none">🏡 Kas: ✅</div>
+        <div class="stat" onclick="handleStatTap('💰')"><span class="stat-emoji">💰</span> Geld: €<span id="money">100</span></div>
+        <div class="stat" onclick="handleStatTap('🌱')"><span class="stat-emoji">🌱</span> Zaden: <span id="seedCount">0</span></div>
+        <div class="stat" onclick="handleStatTap('🍎')"><span class="stat-emoji">🍎</span> Fruit: <span id="fruitCount">0</span></div>
+        <div class="stat" onclick="handleStatTap('🍦')"><span class="stat-emoji">🍦</span> IJs: <span id="iceCreamCount">0</span></div>
+        <div class="stat" onclick="handleStatTap('🥤')"><span class="stat-emoji">🥤</span> Limonade: <span id="lemonadeCount">0</span></div>
+        <div class="stat" onclick="handleStatTap('💧')"><span class="stat-emoji">💧</span> Water: <span id="water">10</span></div>
+        <div class="stat" onclick="handleStatTap('📅')"><span class="stat-emoji">📅</span> Dag: <span id="day">1</span></div>
+        <div class="stat" onclick="handleStatTap('🌸')"><span class="stat-emoji">🌸</span> <span id="season">Lente</span></div>
+        <div class="stat greenhouse-stat" id="greenhouseStat" style="display: none" onclick="handleStatTap('🏡')"><span class="stat-emoji">🏡</span> Kas: ✅</div>
       </div>
 
       <div class="game-area">
@@ -254,6 +257,7 @@
     <!-- Data modules (laden eerst) -->
     <script src="js/data/crops.js"></script>
     <script src="js/data/iceCreams.js"></script>
+    <script src="js/data/lemonades.js"></script>
     <!-- Utility modules -->
     <script src="js/utils/saveLoad.js"></script>
     <!-- System modules -->
@@ -271,6 +275,7 @@
     <script src="js/ui/shop-interaction.js"></script>
     <script src="js/ui/ice-cream-shop.js"></script>
     <script src="js/ui/ice-cream-machine.js"></script>
+    <script src="js/ui/lemonade-machine.js"></script>
     <!-- Main game loop -->
     <script src="main.js"></script>
     <script>
@@ -281,6 +286,7 @@
         document.getElementById("begin-seeds").textContent = document.getElementById("seedCount")?.textContent || "0";
         document.getElementById("begin-fruit").textContent = document.getElementById("fruitCount")?.textContent || "0";
         document.getElementById("begin-ice").textContent = document.getElementById("iceCreamCount")?.textContent || "0";
+        document.getElementById("begin-lemonade").textContent = document.getElementById("lemonadeCount")?.textContent || "0";
         document.getElementById("begin-water").textContent = document.getElementById("water")?.textContent || "0";
         document.getElementById("begin-day").textContent = document.getElementById("day")?.textContent || "1";
         document.getElementById("begin-season").textContent = document.getElementById("season")?.textContent || "Lente";
@@ -289,18 +295,31 @@
         document.getElementById("startscreen").style.display = "none";
         var gc = document.getElementById("gameContainer");
         gc.classList.remove("startscreen-blur");
-        // Start muziek als die aan staat
-        if (window.musicEnabled !== false && typeof window.startMusic === "function") {
+        // Start muziek op basis van opgeslagen settings
+        if (typeof window.startMusic === "function") {
           window.startMusic();
-        } else if (window.toggleMusic && document.getElementById("musicToggleBtn")?.textContent?.includes("aan")) {
-          // Fallback: als knop zegt "aan", muziek starten
-          window.toggleMusic();
         }
       }
       document.addEventListener("DOMContentLoaded", function () {
         toonBeginschermStats();
         document.getElementById("gameContainer").classList.add("startscreen-blur");
         document.getElementById("startSpelBtn").addEventListener("click", hideBeginschermEnStartSpel);
+        
+        // Laad muziek settings en update UI
+        if (typeof window.loadMusicSettings === "function") {
+          window.loadMusicSettings();
+        }
+        if (typeof window.updateMusicButton === "function") {
+          window.updateMusicButton();
+        }
+        if (typeof window.updateMusicDropdown === "function") {
+          window.updateMusicDropdown();
+        }
+        
+        // Laad geluid settings
+        if (typeof window.initSoundSettings === "function") {
+          window.initSoundSettings();
+        }
       });
     </script>
     <script>
