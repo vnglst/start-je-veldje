@@ -10,6 +10,7 @@ function toonBeginschermStats() {
   document.getElementById("begin-day").textContent = document.getElementById("day")?.textContent || "1";
   document.getElementById("begin-time").textContent = document.getElementById("time")?.textContent || "06:00";
   document.getElementById("begin-season").textContent = document.getElementById("season")?.textContent || "Lente";
+  document.getElementById("begin-sword").textContent = document.getElementById("sword")?.textContent || "❌";
 }
 
 function hideBeginschermEnStartSpel() {

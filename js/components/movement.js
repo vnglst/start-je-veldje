@@ -72,6 +72,11 @@ function movePlayer(direction) {
 
     // Geen irritante locatie berichten meer - spelers kunnen gewoon klikken of spatie gebruiken
 
+    // Check voor monster aanvallen in Groenland
+    if (gameState.inGroenland) {
+      checkMonsterAttack();
+    }
+
     updateGameMap();
     saveGame();
   }
@@ -176,6 +181,22 @@ document.addEventListener("keydown", function (event) {
         if (playerX === 0 && playerY === 0) {
           interactWithGreenhouse(); // This will exit the greenhouse
         }
+      } else if (gameState.inGroenland) {
+        // In Groenland - check for portal exit of interacties
+        if (playerX === 0 && playerY === 0) {
+          interactWithGroenlandPortal(); // This will exit Groenland
+        } else {
+          // Check voor schatkist interactie
+          checkTreasureChest();
+          // Check voor gat interactie
+          checkNextLevel();
+          // Check voor monster gevecht
+          if (gameState.heeftZwaard && isMonsterAt(playerX, playerY)) {
+            doodMonster(playerX, playerY);
+          } else if (isMonsterAt(playerX, playerY)) {
+            showMessage("Er is een monster hier! 👺 Je hebt een zwaard nodig om te vechten!", "error");
+          }
+        }
       } else if (gameState.inIceCreamShop) {
         // In ijssalon - check for exit of balie interaction
         if (playerX === 0 && playerY === 5) {
@@ -233,6 +254,26 @@ document.addEventListener("keydown", function (event) {
           interactWithGreenhouse();
           break;
         }
+
+        const groenlandPortalX = gameState.groenlandPortalPosition.x;
+        const groenlandPortalY = gameState.groenlandPortalPosition.y;
+        if (playerX === groenlandPortalX && playerY === groenlandPortalY) {
+          interactWithGroenlandPortal();
+          break;
+        }
+      }
+      break;
+    case "Escape":
+      // Escape key - nooduitgang uit Groenland
+      if (gameState.inGroenland) {
+        event.preventDefault();
+        showMessage("🚨 NOODUITGANG! Je gebruikt de escape toets om terug te gaan naar je boerderij!", "info");
+        stopMonsterAI();
+        gameState.inGroenland = false;
+        gameState.playerPosition = { x: 6, y: 0 }; // Naast portal
+        updateGameMap();
+        updateUI();
+        saveGame();
       }
       break;
     case "n":
@@ -318,6 +359,311 @@ function giveStarterPack() {
     "Starter pack gekregen! €500 + 2 van elk zaad + 3 van elk fruit + 3 van elk ijs + 3 van elke limonade + kas! 🎁",
     "success"
   );
+}
+
+// Interact met Groenland portal
+function interactWithGroenlandPortal() {
+  const groenlandPortalX = gameState.groenlandPortalPosition.x;
+  const groenlandPortalY = gameState.groenlandPortalPosition.y;
+  const playerX = gameState.playerPosition.x;
+  const playerY = gameState.playerPosition.y;
+
+  // Check of speler exact op de portal staat
+  if (playerX === groenlandPortalX && playerY === groenlandPortalY) {
+    // Speel portal geluid
+    if (window.speelDeurGeluid) {
+      speelDeurGeluid();
+    }
+
+    // Toggle tussen Groenland en normale wereld
+    if (gameState.inGroenland) {
+      // Verlaat Groenland
+      stopMonsterAI();
+      gameState.inGroenland = false;
+      gameState.playerPosition = { x: 6, y: 0 }; // Positie naast portal
+      showMessage("Je reist terug naar je boerderij! 🏡", "success");
+    } else {
+      // Ga naar Groenland
+      gameState.inGroenland = true;
+      gameState.playerPosition = { x: 1, y: 1 }; // Positie in Groenland
+      initializeGroenlandMonsters(); // Maak monsters aan als ze er nog niet zijn
+      showMessage("🎮 Welkom in Groenland! ❄️\n\n📖 INSTRUCTIES:\n• Lees eerst het waarschuwingsbord (⚠️)\n• Pak het zwaard uit de gouden schatkist (💎)\n• Monsters vallen je aan als je te dichtbij komt!\n• Dood alle monsters om naar het volgende level te gaan!", "info");
+    }
+    updateGameMap();
+    updateUI();
+    saveGame();
+  } else {
+    showMessage("Je bent te ver van de portal! Loop er naartoe. 🏃‍♂️", "error");
+  }
+}
+
+// Initialiseer monsters in de mijn
+function initializeGroenlandMonsters() {
+  if (gameState.monstersInMijn.length === 0) {
+    // Maak 5 monsters in de mijn (posities binnen de mijn)
+    for (let i = 0; i < 5; i++) {
+      gameState.monstersInMijn.push({
+        id: i + 1,
+        x: Math.floor(Math.random() * 3) + 2, // Posities 2-4 (mijn gebied)
+        y: Math.floor(Math.random() * 2) + 2, // Posities 2-3 (mijn gebied)
+        alive: true,
+        lastMoveTime: Date.now(),
+        moveSpeed: 2000 + Math.random() * 1000 // Willekeurige snelheid tussen 2-3 seconden
+      });
+    }
+  }
+  
+  // Start monster AI systeem
+  if (gameState.inGroenland && !gameState.monsterAIRunning) {
+    startMonsterAI();
+  }
+}
+
+// Functie om te checken of er monsters zijn op een positie
+function isMonsterAt(x, y) {
+  return gameState.monstersInMijn.some(monster => 
+    monster.alive && monster.x === x && monster.y === y
+  );
+}
+
+// Functie om monster te doden
+function doodMonster(x, y) {
+  if (!gameState.heeftZwaard) {
+    showMessage("💀 Je hebt geen zwaard! Ga eerst naar de gouden schatkist (💎) in het midden van het veldje om het zwaard te pakken!", "error");
+    return;
+  }
+  
+  const monster = gameState.monstersInMijn.find(monster => 
+    monster.alive && monster.x === x && monster.y === y
+  );
+  if (monster) {
+    monster.alive = false;
+    const remainingMonsters = gameState.monstersInMijn.filter(m => m.alive).length;
+    showMessage(`🎉 Monster gedood! ⚔️👺\n\nNog ${remainingMonsters} monsters over!`, "success");
+    // Speel vechtsound als beschikbaar
+    if (window.speelWaterGeluid) {
+      speelWaterGeluid(); // Gebruik water geluid als vechtsound
+    }
+    updateGameMap();
+    saveGame();
+  }
+}
+
+// Functie om te checken of speler schatkist kan pakken
+function checkTreasureChest() {
+  const playerX = gameState.playerPosition.x;
+  const playerY = gameState.playerPosition.y;
+  
+  // Schatkist staat op positie (5, 3) - midden-rechts van het veldje
+  if (playerX === 5 && playerY === 3) {
+    if (!gameState.heeftZwaard) {
+      gameState.heeftZwaard = true;
+      showMessage("🎉 Je hebt een magisch zwaard gevonden! ⚔️\n\nNu kun je monsters doden door er op te klikken of door ernaartoe te lopen!", "success");
+      updateUI();
+      saveGame();
+    } else {
+      showMessage("De schatkist is al leeg. Je hebt het zwaard al! ⚔️", "info");
+    }
+  }
+}
+
+// Functie om te checken of monsters je aanvallen
+function checkMonsterAttack() {
+  const playerX = gameState.playerPosition.x;
+  const playerY = gameState.playerPosition.y;
+  
+  // Check alle levende monsters
+  const nearbyMonsters = gameState.monstersInMijn.filter(monster => {
+    if (!monster.alive) return false;
+    
+    // Check of monster naast speler staat (1 veld afstand)
+    const distance = Math.abs(monster.x - playerX) + Math.abs(monster.y - playerY);
+    return distance <= 1;
+  });
+  
+  if (nearbyMonsters.length > 0) {
+    const monster = nearbyMonsters[0];
+    if (gameState.heeftZwaard) {
+      // Speler heeft zwaard - monster doet schade
+      const damage = Math.floor(Math.random() * 20) + 10; // 10-30 schade
+      gameState.hitPoints -= damage;
+      gameState.hitPoints = Math.max(0, gameState.hitPoints); // Kan niet onder 0
+      
+      showMessage(`👺 Een monster valt je aan! Je verliest ${damage} hitpoints! (${gameState.hitPoints} over)`, "error");
+      
+      // Check voor game over
+      if (gameState.hitPoints <= 0) {
+        showMessage("💀 GAME OVER! Je bent verslagen door de monsters!\n\nJe wordt terug naar je boerderij gebracht...", "error");
+        setTimeout(() => {
+          stopMonsterAI();
+          gameState.inGroenland = false;
+          gameState.playerPosition = { x: 6, y: 0 }; // Naast portal
+          gameState.hitPoints = 100; // Reset hitpoints
+          updateGameMap();
+          updateUI();
+          saveGame();
+        }, 2000);
+      }
+    } else {
+      // Speler heeft geen zwaard - monster wint
+      showMessage("👺 AHHH! Een monster valt je aan! Je hebt geen zwaard om je te verdedigen!\n\nJe bent terug naar je boerderij gevlucht! 🏃‍♂️💨", "error");
+      
+      // Stuur speler terug naar boerderij
+      setTimeout(() => {
+        stopMonsterAI();
+        gameState.inGroenland = false;
+        gameState.playerPosition = { x: 6, y: 0 }; // Naast portal
+        updateGameMap();
+        updateUI();
+        saveGame();
+      }, 2000);
+    }
+  }
+}
+
+// Functie om te checken of speler in het gat kan springen
+function checkNextLevel() {
+  const playerX = gameState.playerPosition.x;
+  const playerY = gameState.playerPosition.y;
+  
+  // Gat staat op positie (6, 4) - rechts onderaan
+  if (playerX === 6 && playerY === 4) {
+    // Check of alle monsters dood zijn
+    const aliveMonsters = gameState.monstersInMijn.filter(monster => monster.alive);
+    if (aliveMonsters.length === 0) {
+      showMessage("🎉 Gefeliciteerd! Je hebt alle monsters verslagen! Het volgende level komt binnenkort... 🕳️", "success");
+    } else {
+      showMessage(`Je moet eerst alle monsters doden! Nog ${aliveMonsters.length} monsters over. 👺`, "error");
+    }
+  }
+}
+
+// Monster AI systeem
+function startMonsterAI() {
+  if (gameState.monsterAIRunning) return;
+  
+  gameState.monsterAIRunning = true;
+  
+  const monsterAIInterval = setInterval(() => {
+    // Stop AI als we niet meer in Groenland zijn
+    if (!gameState.inGroenland) {
+      clearInterval(monsterAIInterval);
+      gameState.monsterAIRunning = false;
+      return;
+    }
+    
+    // Beweeg elk levend monster
+    gameState.monstersInMijn.forEach(monster => {
+      if (!monster.alive) return;
+      
+      const now = Date.now();
+      
+      // Bereken afstand tot speler voor agressiviteit
+      const playerDistance = Math.abs(monster.x - gameState.playerPosition.x) + 
+                           Math.abs(monster.y - gameState.playerPosition.y);
+      
+      // Monsters worden agressiever als je dichtbij bent
+      let currentMoveSpeed = monster.moveSpeed;
+      if (playerDistance <= 2) {
+        currentMoveSpeed = monster.moveSpeed * 0.5; // 2x sneller als dichtbij
+      } else if (playerDistance <= 3) {
+        currentMoveSpeed = monster.moveSpeed * 0.7; // 1.5x sneller als redelijk dichtbij
+      }
+      
+      if (now - monster.lastMoveTime < currentMoveSpeed) return;
+      
+      // Beweeg monster naar speler toe
+      moveMonsterTowardsPlayer(monster);
+      monster.lastMoveTime = now;
+    });
+    
+    // Update de map na monster beweging
+    if (gameState.inGroenland) {
+      updateGameMap();
+    }
+  }, 500); // Check elke 500ms voor vloeiende beweging
+}
+
+function stopMonsterAI() {
+  gameState.monsterAIRunning = false;
+}
+
+// Beweeg monster richting speler
+function moveMonsterTowardsPlayer(monster) {
+  const playerX = gameState.playerPosition.x;
+  const playerY = gameState.playerPosition.y;
+  
+  // Bereken afstand tot speler
+  const distanceToPlayer = Math.abs(monster.x - playerX) + Math.abs(monster.y - playerY);
+  
+  // Alleen bewegen als speler niet te ver weg is (binnen 5 velden)
+  if (distanceToPlayer > 5) return;
+  
+  // Bereken beste richting naar speler
+  let bestX = monster.x;
+  let bestY = monster.y;
+  let bestDistance = distanceToPlayer;
+  
+  // Probeer alle mogelijke bewegingen
+  const directions = [
+    { dx: 0, dy: -1 }, // omhoog
+    { dx: 0, dy: 1 },  // omlaag
+    { dx: -1, dy: 0 }, // links
+    { dx: 1, dy: 0 }   // rechts
+  ];
+  
+  directions.forEach(dir => {
+    const newX = monster.x + dir.dx;
+    const newY = monster.y + dir.dy;
+    
+    // Check of nieuwe positie geldig is
+    if (newX < 0 || newX > 7 || newY < 0 || newY > 5) return;
+    
+    // Check of er geen ander monster op die positie staat
+    if (gameState.monstersInMijn.some(otherMonster => 
+      otherMonster.alive && otherMonster.id !== monster.id && 
+      otherMonster.x === newX && otherMonster.y === newY)) {
+      return;
+    }
+    
+    // Bereken afstand tot speler vanuit nieuwe positie
+    const newDistance = Math.abs(newX - playerX) + Math.abs(newY - playerY);
+    
+    // Als dit dichter bij de speler is, gebruik deze positie
+    if (newDistance < bestDistance) {
+      bestX = newX;
+      bestY = newY;
+      bestDistance = newDistance;
+    }
+  });
+  
+  // Beweeg monster naar beste positie
+  if (bestX !== monster.x || bestY !== monster.y) {
+    monster.x = bestX;
+    monster.y = bestY;
+    
+    // Speel bewegingsgeluid en waarschuwing als monster dichtbij is
+    if (bestDistance <= 2) {
+      if (window.speelWaterGeluid) {
+        speelWaterGeluid(); // Gebruik water geluid voor monster beweging
+      }
+      
+      // Toon waarschuwing als monster heel dichtbij komt
+      if (bestDistance <= 1 && !gameState.heeftZwaard) {
+        showMessage("👺 MONSTER KOMT DICHTBIJ! Ga naar de schatkist voor een zwaard!", "error");
+      }
+    }
+  }
+}
+
+// Stop monster AI als we Groenland verlaten
+function exitGroenland() {
+  gameState.inGroenland = false;
+  stopMonsterAI();
+  gameState.playerPosition = { x: 6, y: 0 }; // Naast portal
+  updateGameMap();
+  updateUI();
+  saveGame();
 }
 
 // Maak handleStatTap globaal beschikbaar

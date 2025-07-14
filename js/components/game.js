@@ -15,6 +15,21 @@ function sleep() {
     gameState.hour = 6;
     gameState.minute = 0;
 
+    // Reset monsters in Groenland - ze komen terug na het slapen
+    if (gameState.monstersInMijn && gameState.monstersInMijn.length > 0) {
+      gameState.monstersInMijn.forEach(monster => {
+        if (!monster.alive) {
+          monster.alive = true; // Breng dode monsters terug tot leven
+          // Reset naar willekeurige positie in de mijn
+          monster.x = Math.floor(Math.random() * 3) + 2; // Posities 2-4
+          monster.y = Math.floor(Math.random() * 2) + 2; // Posities 2-3
+        }
+      });
+    }
+
+    // Herstel hitpoints volledig na slapen
+    gameState.hitPoints = 100;
+
     // Update seasons every 30 days
     const seasons = ["Lente", "Zomer", "Herfst", "Winter"];
     const seasonIndex = Math.floor((gameState.day - 1) / 30) % 4;
@@ -162,8 +177,18 @@ function sleep() {
     setTimeout(() => {
       let message = `🌅 Dag ${gameState.day} - `;
 
+      // Check if any monsters were revived
+      const revivedMonsters = gameState.monstersInMijn ? gameState.monstersInMijn.filter(m => m.alive).length : 0;
+      let monsterMessage = "";
+      if (revivedMonsters > 0) {
+        monsterMessage = `👺 De monsters in Groenland zijn teruggekeerd! (${revivedMonsters} monsters actief) `;
+      }
+      
+      // Hitpoints herstel bericht
+      const hitpointsMessage = "❤️ Je hitpoints zijn volledig hersteld! (100 HP) ";
+
       if (deadPlants > 0) {
-        message += `💀 ${deadPlants} plant(en) zijn doodgegaan door gebrek aan water! `;
+        message += hitpointsMessage + monsterMessage + `💀 ${deadPlants} plant(en) zijn doodgegaan door gebrek aan water! `;
         if (newlyGrownCrops > 0) {
           message += `Maar ${newlyGrownCrops} gewas(sen) zijn klaar om te oogsten! ✨`;
           showMessage(message, "error");
@@ -174,16 +199,16 @@ function sleep() {
           showMessage(message, "error");
         }
       } else if (newlyGrownCrops > 0 && witheredPlants > 0) {
-        message += `${newlyGrownCrops} gewas(sen) zijn klaar om te oogsten! ✨ Maar ${witheredPlants} plant(en) verwelken door gebrek aan water. 💧`;
+        message += hitpointsMessage + monsterMessage + `${newlyGrownCrops} gewas(sen) zijn klaar om te oogsten! ✨ Maar ${witheredPlants} plant(en) verwelken door gebrek aan water. 💧`;
         showMessage(message, "success");
       } else if (newlyGrownCrops > 0) {
-        message += `${newlyGrownCrops} gewas(sen) zijn klaar om te oogsten! ✨`;
+        message += hitpointsMessage + monsterMessage + `${newlyGrownCrops} gewas(sen) zijn klaar om te oogsten! ✨`;
         showMessage(message, "success");
       } else if (witheredPlants > 0) {
-        message += `${witheredPlants} plant(en) verwelken door gebrek aan water. Geef ze snel water voordat ze doodgaan! 💧`;
+        message += hitpointsMessage + monsterMessage + `${witheredPlants} plant(en) verwelken door gebrek aan water. Geef ze snel water voordat ze doodgaan! 💧`;
         showMessage(message, "error");
       } else {
-        message += "Goedemorgen! Tijd om je boerderij te verzorgen. 🌱";
+        message += hitpointsMessage + monsterMessage + "Goedemorgen! Tijd om je boerderij te verzorgen. 🌱";
         showMessage(message, "success");
       }
     }, 500);

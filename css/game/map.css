@@ -16,6 +16,14 @@
   max-width: 100%;
 }
 
+/* Groenland themed map styling */
+.game-map.groenland-interior {
+  background: linear-gradient(135deg, #b0e0e6 0%, #e0f6ff 100%);
+  border: 3px solid #4682b4;
+  border-radius: 10px;
+  padding: 8px;
+}
+
 /* Houd de blokken altijd vierkant met aspect-ratio en laat ze alle ruimte innemen */
 .map-tile {
   width: 100%;

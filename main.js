@@ -112,6 +112,29 @@ function initializeGame() {
       gameState.minute = 0;
     }
 
+    // Ensure Groenland features exist for older saves
+    if (gameState.groenlandPortalPosition === undefined) {
+      gameState.groenlandPortalPosition = { x: 7, y: 0 };
+    }
+    if (gameState.inGroenland === undefined) {
+      gameState.inGroenland = false;
+    }
+    if (gameState.heeftZwaard === undefined) {
+      gameState.heeftZwaard = false;
+    }
+    if (gameState.monstersInMijn === undefined) {
+      gameState.monstersInMijn = [];
+    }
+    if (gameState.mijnBetreden === undefined) {
+      gameState.mijnBetreden = false;
+    }
+    if (gameState.monsterAIRunning === undefined) {
+      gameState.monsterAIRunning = false;
+    }
+    if (gameState.hitPoints === undefined) {
+      gameState.hitPoints = 100;
+    }
+
     initializeFarm();
     updateUI();
     showMessage(`Welkom terug! 🌱 Dag ${gameState.day} in ${gameState.season}`, "success");

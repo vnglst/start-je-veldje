@@ -412,12 +412,60 @@
   animation: greenhouse-glow 2s ease-in-out infinite alternate;
 }
 
+.stat:nth-child(11) {
+  /* Zwaard */
+  color: #b8860b;
+  border-color: rgba(184, 134, 11, 0.4);
+  background: linear-gradient(135deg, rgba(255, 248, 220, 0.95) 0%, rgba(218, 165, 32, 0.3) 100%);
+  animation: sword-gleam 2s ease-in-out infinite alternate;
+}
+
+.stat:nth-child(11):hover {
+  color: #8b4513;
+  border-color: #b8860b;
+  box-shadow: 0 4px 15px rgba(184, 134, 11, 0.4);
+}
+
 @keyframes greenhouse-glow {
   0% {
     box-shadow: 0 2px 8px rgba(255, 140, 0, 0.2);
   }
   100% {
     box-shadow: 0 2px 8px rgba(255, 140, 0, 0.4);
+  }
+}
+
+@keyframes sword-gleam {
+  0% {
+    box-shadow: 0 2px 8px rgba(184, 134, 11, 0.2);
+  }
+  100% {
+    box-shadow: 0 2px 8px rgba(184, 134, 11, 0.5);
+  }
+}
+
+/* Hitpoints status styling */
+.stat:nth-child(12) {
+  color: #dc143c;
+  border-color: rgba(220, 20, 60, 0.4);
+  background: linear-gradient(135deg, rgba(255, 228, 228, 0.95) 0%, rgba(220, 20, 60, 0.3) 100%);
+  animation: heartbeat 2s ease-in-out infinite;
+}
+
+.stat:nth-child(12):hover {
+  color: #8b0000;
+  border-color: #dc143c;
+  box-shadow: 0 4px 15px rgba(220, 20, 60, 0.4);
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 2px 8px rgba(220, 20, 60, 0.2);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(220, 20, 60, 0.5);
   }
 }
 

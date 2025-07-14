@@ -25,6 +25,7 @@
           <li>📅 Dag: <span id="begin-day">...</span></li>
           <li>⏰ Tijd: <span id="begin-time">...</span></li>
           <li>🌸 Seizoen: <span id="begin-season">...</span></li>
+          <li>⚔️ Zwaard: <span id="begin-sword">❌</span></li>
         </ul>
         <button id="startSpelBtn" class="startscreen-btn">Starten</button>
       </div>
@@ -61,6 +62,12 @@
         </div>
         <div class="stat greenhouse-stat" id="greenhouseStat" style="display: none" onclick="handleStatTap('🏡')">
           <span class="stat-emoji">🏡</span><span>✅</span>
+        </div>
+        <div class="stat sword-stat" id="swordStat" onclick="handleStatTap('⚔️')">
+          <span class="stat-emoji">⚔️</span><span id="sword">❌</span>
+        </div>
+        <div class="stat hitpoints-stat" id="hitPointsStat" onclick="handleStatTap('❤️')">
+          <span class="stat-emoji">❤️</span><span id="hitPoints">100</span>
         </div>
       </div>
 

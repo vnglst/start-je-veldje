@@ -55,7 +55,16 @@ let gameState = {
   iceCreamShopPosition: { x: 7, y: 5 }, // IJswinkel positie rechts onder
   iceCreamMachinePosition: { x: 0, y: 1 }, // IJsmachine positie links midden
   lemonadeMachinePosition: { x: 0, y: 2 }, // Limonade machine positie links onder ijsmachine
+  groenlandPortalPosition: { x: 7, y: 0 }, // Portal naar Groenland rechts boven
 
+  // Groenland avontuur systeem
+  inGroenland: false, // Of de speler momenteel in Groenland is
+  heeftZwaard: false, // Of de speler een zwaard heeft
+  monstersInMijn: [], // Array met monsters in de mijn
+  mijnBetreden: false, // Of de speler de mijn al is binnengegaan
+  monsterAIRunning: false, // Of monster AI actief is
+  hitPoints: 100, // Speler levenspunten (vol bij start)
+  
   // Klanten systeem
   customers: [], // Array van klanten in de ijssalon
   customerQueue: [], // Wachtrij van klanten bij de balie

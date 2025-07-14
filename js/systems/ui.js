@@ -9,6 +9,9 @@ function updateUI() {
     } else if (gameState.inIceCreamShop) {
       farmTitle.innerHTML = "🍦 Je IJssalon";
       farmTitle.style.color = "#ff69b4";
+    } else if (gameState.inGroenland) {
+      farmTitle.innerHTML = "❄️ Groenland Avontuur";
+      farmTitle.style.color = "#4682b4";
     } else {
       farmTitle.innerHTML = "🚜 Je Boerderij";
       farmTitle.style.color = "#8b4513";
@@ -36,6 +39,30 @@ function updateUI() {
 
   const dayEl = document.getElementById("day");
   if (dayEl) dayEl.textContent = gameState.day;
+
+  // Update zwaard status
+  const swordEl = document.getElementById("sword");
+  if (swordEl) swordEl.textContent = gameState.heeftZwaard ? "⚔️" : "❌";
+
+  // Update hitpoints
+  const hitPointsEl = document.getElementById("hitPoints");
+  if (hitPointsEl) {
+    hitPointsEl.textContent = gameState.hitPoints;
+    // Verander kleur als hitpoints laag zijn
+    const hitPointsStat = document.getElementById("hitPointsStat");
+    if (hitPointsStat) {
+      if (gameState.hitPoints <= 30) {
+        hitPointsStat.style.color = "#ff0000";
+        hitPointsStat.style.animation = "heartbeat 0.5s ease-in-out infinite";
+      } else if (gameState.hitPoints <= 60) {
+        hitPointsStat.style.color = "#ff6600";
+        hitPointsStat.style.animation = "heartbeat 1s ease-in-out infinite";
+      } else {
+        hitPointsStat.style.color = "#dc143c";
+        hitPointsStat.style.animation = "heartbeat 2s ease-in-out infinite";
+      }
+    }
+  }
 
   // Update tijd
   const timeEl = document.getElementById("time");
@@ -256,16 +283,21 @@ function updateGameMap() {
   if (gameState.inGreenhouse) {
     // Render greenhouse interior (6x4 grid)
     gameMap.classList.add("greenhouse-interior");
-    gameMap.classList.remove("ice-cream-shop-interior");
+    gameMap.classList.remove("ice-cream-shop-interior", "groenland-interior");
     renderGreenhouseMap(gameMap);
   } else if (gameState.inIceCreamShop) {
     // Render ijssalon interior (8x6 grid)
     gameMap.classList.add("ice-cream-shop-interior");
-    gameMap.classList.remove("greenhouse-interior");
+    gameMap.classList.remove("greenhouse-interior", "groenland-interior");
     renderIceCreamShopMap(gameMap);
+  } else if (gameState.inGroenland) {
+    // Render Groenland adventure map (8x6 grid)
+    gameMap.classList.add("groenland-interior");
+    gameMap.classList.remove("greenhouse-interior", "ice-cream-shop-interior");
+    renderGroenlandMap(gameMap);
   } else {
     // Render regular farm map (8x6 grid)
-    gameMap.classList.remove("greenhouse-interior", "ice-cream-shop-interior");
+    gameMap.classList.remove("greenhouse-interior", "ice-cream-shop-interior", "groenland-interior");
     renderRegularMap(gameMap);
   }
 }
@@ -335,6 +367,13 @@ function renderRegularMap(gameMap) {
           tile.title = "Bouwplaats - Koop een kas in de winkel voor €1000";
           tile.onclick = () => showMessage("Je hebt nog geen kas! Koop er een in de winkel voor €1000. 🏪", "error");
         }
+      }
+      // Check if this is the Groenland portal position  
+      else if (x === gameState.groenlandPortalPosition.x && y === gameState.groenlandPortalPosition.y) {
+        tile.classList.add("groenland-portal");
+        tile.innerHTML = "🌀";
+        tile.title = "Portal naar Groenland - Klik om te reizen!";
+        tile.onclick = () => interactWithGroenlandPortal();
       }
       // Regular pathway tiles
       else {
@@ -927,6 +966,113 @@ function renderIceCreamShopMap(gameMap) {
           tile.appendChild(player);
         }
       }
+    }
+  }
+}
+
+// Render Groenland adventure map
+function renderGroenlandMap(gameMap) {
+  // Create 8x6 grid voor Groenland
+  for (let y = 0; y < 6; y++) {
+    for (let x = 0; x < 8; x++) {
+      const tile = document.createElement("div");
+      tile.className = "map-tile groenland-tile";
+      tile.id = `groenland-tile-${x}-${y}`;
+
+      // Groenland layout:
+      // (0,0) = Portal terug
+      // (1,1) = Waarschuwingsbord "Hier is een mijn, let op!"
+      // (2-4, 2-3) = Mijn gebied met monsters
+      // (4,3) = Schatkist met zwaard (midden van veldje)
+      // (6,4) = Gat naar volgende level
+
+      if (x === 0 && y === 0) {
+        // Portal terug
+        tile.classList.add("groenland-portal-exit");
+        tile.innerHTML = "🌀";
+        tile.title = "🏠 PORTAL TERUG NAAR BOERDERIJ 🏠 - Klik om terug te gaan!";
+        tile.onclick = () => interactWithGroenlandPortal();
+      } else if (x === 1 && y === 1) {
+        // Waarschuwingsbord
+        tile.classList.add("groenland-warning-sign");
+        tile.innerHTML = "⚠️";
+        tile.title = "Waarschuwingsbord: 'Hier is een mijn, let op!'";
+        tile.onclick = () => showMessage("⚠️ WAARSCHUWING ⚠️\n\n'Hier is een mijn, let op! Monsters binnen!\n\nVind eerst het zwaard in de gouden schatkist in het midden van het veldje!\n\nMonsters vallen je aan als je te dichtbij komt zonder zwaard!' 👺⚔️", "warning");
+      } else if (x >= 2 && x <= 4 && y >= 2 && y <= 3) {
+        // Mijn gebied
+        tile.classList.add("groenland-mine");
+        tile.innerHTML = "⬛"; // Donkere mijn achtergrond
+        tile.title = "Mijn - Hier zitten monsters!";
+        
+        // Check of er een monster op deze positie is
+        const monster = gameState.monstersInMijn.find(m => m.alive && m.x === x && m.y === y);
+        if (monster) {
+          // Voeg monster toe
+          const monsterDiv = document.createElement("div");
+          monsterDiv.className = "monster";
+          monsterDiv.innerHTML = "👺";
+          monsterDiv.title = "Monster - Klik om te vechten (zwaard vereist)";
+          tile.appendChild(monsterDiv);
+        }
+      } else if (x === 5 && y === 3) {
+        // Schatkist (midden van veldje) - verplaatst naar meer zichtbare positie
+        tile.classList.add("groenland-treasure");
+        if (!gameState.heeftZwaard) {
+          tile.innerHTML = "💎";
+          tile.title = "✨ MAGISCHE SCHATKIST ✨ - Loop ernaartoe om het zwaard te pakken!";
+          tile.onclick = () => checkTreasureChest();
+        } else {
+          tile.innerHTML = "📦";
+          tile.title = "Lege schatkist - Je hebt het zwaard al!";
+        }
+      } else if (x === 6 && y === 4) {
+        // Gat naar volgende level
+        tile.classList.add("groenland-hole");
+        tile.innerHTML = "🕳️";
+        tile.title = "Gat naar volgende level - Dood eerst alle monsters!";
+        tile.onclick = () => checkNextLevel();
+      } else if (x === 0 && y === 1) {
+        // Sneeuw decoratie
+        tile.classList.add("groenland-snow");
+        tile.innerHTML = "❄️";
+        tile.title = "Koude Groenlandse sneeuw";
+      } else if (x === 7 && y === 0) {
+        // IJs decoratie
+        tile.classList.add("groenland-ice");
+        tile.innerHTML = "🧊";
+        tile.title = "Bevroren ijs";
+      } else if (x === 1 && y === 4) {
+        // Kleine boom
+        tile.classList.add("groenland-tree");
+        tile.innerHTML = "🌲";
+        tile.title = "Eenzame dennenboom";
+      } else if (x === 5 && y === 1) {
+        // Pijl naar schatkist (alleen als speler nog geen zwaard heeft)
+        if (!gameState.heeftZwaard) {
+          tile.classList.add("groenland-arrow");
+          tile.innerHTML = "⬇️";
+          tile.title = "🎯 KIJK NAAR BENEDEN! Daar is de gouden schatkist! 💎";
+        } else {
+          // Normale rots als speler het zwaard al heeft
+          tile.classList.add("groenland-rock");
+          tile.innerHTML = "🪨";
+          tile.title = "Grote rots";
+        }
+      } else {
+        // Gewone grond
+        tile.classList.add("groenland-ground");
+        tile.innerHTML = ""; // Lege grond
+      }
+
+      // Add player if on this tile
+      if (x === gameState.playerPosition.x && y === gameState.playerPosition.y) {
+        const player = document.createElement("div");
+        player.className = "player";
+        player.innerHTML = "🧑‍🌾";
+        tile.appendChild(player);
+      }
+
+      gameMap.appendChild(tile);
     }
   }
 }
