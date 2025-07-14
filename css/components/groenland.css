@@ -12,7 +12,8 @@
 }
 
 @keyframes groenland-aurora {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 30px rgba(70, 130, 180, 0.6), inset 0 0 20px rgba(176, 224, 230, 0.3);
   }
   50% {
@@ -39,9 +40,15 @@
 }
 
 @keyframes portal-swirl {
-  0% { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(180deg) scale(1.1); }
-  100% { transform: rotate(360deg) scale(1); }
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
 }
 
 .groenland-portal-exit:hover {
@@ -51,8 +58,13 @@
 }
 
 @keyframes portal-excited {
-  0%, 100% { transform: scale(1.15) rotate(0deg); }
-  50% { transform: scale(1.2) rotate(10deg); }
+  0%,
+  100% {
+    transform: scale(1.15) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(10deg);
+  }
 }
 
 /* Waarschuwingsbord - alarmerende kleuren */
@@ -66,11 +78,12 @@
 }
 
 @keyframes warning-urgent {
-  0%, 100% { 
+  0%,
+  100% {
     background: linear-gradient(135deg, #ffff00 0%, #ff6600 25%, #ffff00 50%, #ff6600 75%, #ffff00 100%);
     transform: scale(1);
   }
-  50% { 
+  50% {
     background: linear-gradient(135deg, #ff6600 0%, #ffff00 25%, #ff6600 50%, #ffff00 75%, #ff6600 100%);
     transform: scale(1.05);
   }
@@ -82,9 +95,16 @@
 }
 
 @keyframes warning-shake {
-  0%, 100% { transform: translateX(0) scale(1.1); }
-  25% { transform: translateX(-2px) scale(1.1); }
-  75% { transform: translateX(2px) scale(1.1); }
+  0%,
+  100% {
+    transform: translateX(0) scale(1.1);
+  }
+  25% {
+    transform: translateX(-2px) scale(1.1);
+  }
+  75% {
+    transform: translateX(2px) scale(1.1);
+  }
 }
 
 /* Mijn gebied - donker en gevaarlijk */
@@ -99,10 +119,11 @@
 }
 
 @keyframes mine-darkness {
-  0%, 100% { 
+  0%,
+  100% {
     box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8), 0 0 10px rgba(47, 47, 47, 0.5);
   }
-  50% { 
+  50% {
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9), 0 0 15px rgba(47, 47, 47, 0.7);
   }
 }
@@ -113,8 +134,13 @@
 }
 
 @keyframes mine-danger {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.02); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
 }
 
 /* Monsters in de mijn */
@@ -124,28 +150,115 @@
   left: 50%;
   transform: translate(-50%, -50%);
   animation: monster-lurk 2s ease-in-out infinite;
-  z-index: 5;
-  font-size: 1.2em;
+  z-index: 1000;
+  font-size: 2.8em;
   cursor: pointer;
-  text-shadow: 0 0 5px rgba(255, 0, 0, 0.8);
+  text-shadow: 
+    0 0 5px rgba(0, 0, 0, 1),
+    0 0 10px rgba(0, 0, 0, 1),
+    0 0 15px rgba(0, 0, 0, 1),
+    0 0 20px rgba(255, 0, 0, 1),
+    0 0 25px rgba(255, 0, 0, 1),
+    0 0 30px rgba(255, 255, 255, 1),
+    0 0 35px rgba(255, 255, 255, 1);
+  background: radial-gradient(
+    circle,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(139, 0, 0, 0.9) 20%,
+    rgba(255, 0, 0, 0.6) 40%,
+    rgba(0, 0, 0, 0.8) 80%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  border-radius: 50%;
+  padding: 8px;
+  border: 4px solid rgba(255, 0, 0, 1);
+  box-shadow: 
+    0 0 15px rgba(0, 0, 0, 1),
+    0 0 25px rgba(255, 0, 0, 1), 
+    0 0 35px rgba(255, 255, 255, 0.8),
+    inset 0 0 15px rgba(0, 0, 0, 1);
+  min-width: 50px;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline-offset: 2px;
 }
 
 @keyframes monster-lurk {
-  0%, 100% { 
+  0%,
+  100% {
     transform: translate(-50%, -50%) scale(1) rotate(0deg);
-    text-shadow: 0 0 5px rgba(255, 0, 0, 0.8);
+    text-shadow: 
+      0 0 5px rgba(0, 0, 0, 1),
+      0 0 10px rgba(0, 0, 0, 1),
+      0 0 15px rgba(0, 0, 0, 1),
+      0 0 20px rgba(255, 0, 0, 1),
+      0 0 25px rgba(255, 0, 0, 1),
+      0 0 30px rgba(255, 255, 255, 1),
+      0 0 35px rgba(255, 255, 255, 1);
+    border-color: rgba(255, 0, 0, 1);
+    box-shadow: 
+      0 0 15px rgba(0, 0, 0, 1),
+      0 0 25px rgba(255, 0, 0, 1), 
+      0 0 35px rgba(255, 255, 255, 0.8),
+      inset 0 0 15px rgba(0, 0, 0, 1);
+    outline-color: rgba(255, 255, 255, 0.8);
   }
-  25% { 
+  25% {
     transform: translate(-48%, -50%) scale(1.05) rotate(5deg);
-    text-shadow: 0 0 8px rgba(255, 0, 0, 1);
+    text-shadow: 
+      0 0 8px rgba(0, 0, 0, 1),
+      0 0 12px rgba(0, 0, 0, 1),
+      0 0 18px rgba(0, 0, 0, 1),
+      0 0 25px rgba(255, 0, 0, 1),
+      0 0 30px rgba(255, 0, 0, 1),
+      0 0 35px rgba(255, 255, 255, 1),
+      0 0 40px rgba(255, 255, 255, 1);
+    border-color: rgba(255, 0, 0, 1);
+    box-shadow: 
+      0 0 20px rgba(0, 0, 0, 1),
+      0 0 30px rgba(255, 0, 0, 1), 
+      0 0 40px rgba(255, 255, 255, 0.9),
+      inset 0 0 18px rgba(0, 0, 0, 1);
+    outline-color: rgba(255, 255, 255, 0.9);
   }
-  50% { 
+  50% {
     transform: translate(-50%, -52%) scale(1.1) rotate(0deg);
-    text-shadow: 0 0 10px rgba(255, 0, 0, 1);
+    text-shadow: 
+      0 0 10px rgba(0, 0, 0, 1),
+      0 0 15px rgba(0, 0, 0, 1),
+      0 0 20px rgba(0, 0, 0, 1),
+      0 0 30px rgba(255, 0, 0, 1),
+      0 0 35px rgba(255, 0, 0, 1),
+      0 0 40px rgba(255, 255, 255, 1),
+      0 0 45px rgba(255, 255, 255, 1);
+    border-color: rgba(255, 255, 0, 1);
+    box-shadow: 
+      0 0 25px rgba(0, 0, 0, 1),
+      0 0 35px rgba(255, 0, 0, 1), 
+      0 0 45px rgba(255, 255, 255, 1),
+      inset 0 0 20px rgba(0, 0, 0, 1);
+    outline-color: rgba(255, 255, 255, 1);
   }
-  75% { 
+  75% {
     transform: translate(-52%, -50%) scale(1.05) rotate(-5deg);
-    text-shadow: 0 0 8px rgba(255, 0, 0, 1);
+    text-shadow: 
+      0 0 8px rgba(0, 0, 0, 1),
+      0 0 12px rgba(0, 0, 0, 1),
+      0 0 18px rgba(0, 0, 0, 1),
+      0 0 25px rgba(255, 0, 0, 1),
+      0 0 30px rgba(255, 0, 0, 1),
+      0 0 35px rgba(255, 255, 255, 1),
+      0 0 40px rgba(255, 255, 255, 1);
+    border-color: rgba(255, 0, 0, 1);
+    box-shadow: 
+      0 0 20px rgba(0, 0, 0, 1),
+      0 0 30px rgba(255, 0, 0, 1), 
+      0 0 40px rgba(255, 255, 255, 0.9),
+      inset 0 0 18px rgba(0, 0, 0, 1);
+    outline-color: rgba(255, 255, 255, 0.9);
   }
 }
 
@@ -155,13 +268,42 @@
 }
 
 @keyframes monster-angry {
-  0%, 100% { 
+  0%,
+  100% {
     transform: translate(-50%, -50%) scale(1.3) rotate(0deg);
-    text-shadow: 0 0 15px rgba(255, 0, 0, 1);
+    text-shadow: 
+      0 0 10px rgba(0, 0, 0, 1),
+      0 0 15px rgba(0, 0, 0, 1),
+      0 0 20px rgba(0, 0, 0, 1),
+      0 0 30px rgba(255, 0, 0, 1),
+      0 0 35px rgba(255, 0, 0, 1),
+      0 0 40px rgba(255, 255, 255, 1),
+      0 0 45px rgba(255, 255, 255, 1);
+    border-color: rgba(255, 0, 0, 1);
+    box-shadow: 
+      0 0 25px rgba(0, 0, 0, 1),
+      0 0 35px rgba(255, 0, 0, 1), 
+      0 0 45px rgba(255, 255, 255, 1),
+      inset 0 0 20px rgba(0, 0, 0, 1);
+    outline-color: rgba(255, 255, 255, 1);
   }
-  50% { 
+  50% {
     transform: translate(-50%, -50%) scale(1.4) rotate(10deg);
-    text-shadow: 0 0 20px rgba(255, 0, 0, 1);
+    text-shadow: 
+      0 0 15px rgba(0, 0, 0, 1),
+      0 0 20px rgba(0, 0, 0, 1),
+      0 0 25px rgba(0, 0, 0, 1),
+      0 0 40px rgba(255, 0, 0, 1),
+      0 0 45px rgba(255, 0, 0, 1),
+      0 0 50px rgba(255, 255, 255, 1),
+      0 0 55px rgba(255, 255, 255, 1);
+    border-color: rgba(255, 255, 0, 1);
+    box-shadow: 
+      0 0 35px rgba(0, 0, 0, 1),
+      0 0 50px rgba(255, 0, 0, 1), 
+      0 0 60px rgba(255, 255, 255, 1),
+      inset 0 0 25px rgba(0, 0, 0, 1);
+    outline-color: rgba(255, 255, 0, 1);
   }
 }
 
@@ -179,13 +321,13 @@
 }
 
 @keyframes treasure-glow {
-  0%, 100% { 
+  0%,
+  100% {
     box-shadow: 0 0 25px rgba(255, 215, 0, 0.8), inset 0 0 10px rgba(255, 255, 255, 0.3);
     transform: scale(1);
   }
-  50% { 
-    box-shadow: 0 0 35px rgba(255, 215, 0, 1), inset 0 0 15px rgba(255, 255, 255, 0.5),
-      0 0 20px rgba(255, 140, 0, 0.6);
+  50% {
+    box-shadow: 0 0 35px rgba(255, 215, 0, 1), inset 0 0 15px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 140, 0, 0.6);
     transform: scale(1.05);
   }
 }
@@ -203,8 +345,12 @@
 }
 
 @keyframes treasure-shine {
-  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
 }
 
 .groenland-treasure:hover {
@@ -214,8 +360,13 @@
 }
 
 @keyframes treasure-excited {
-  0%, 100% { transform: scale(1.1) rotate(0deg); }
-  50% { transform: scale(1.15) rotate(5deg); }
+  0%,
+  100% {
+    transform: scale(1.1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.15) rotate(5deg);
+  }
 }
 
 /* Gat naar volgende level - mysterieuze afgrond */
@@ -229,11 +380,12 @@
 }
 
 @keyframes hole-mystery {
-  0%, 100% { 
+  0%,
+  100% {
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9), 0 0 15px rgba(51, 51, 51, 0.6);
     transform: scale(1);
   }
-  50% { 
+  50% {
     box-shadow: inset 0 0 25px rgba(0, 0, 0, 1), 0 0 20px rgba(51, 51, 51, 0.8);
     transform: scale(1.02);
   }
@@ -245,8 +397,13 @@
 }
 
 @keyframes hole-beckoning {
-  0%, 100% { transform: scale(1.05); }
-  50% { transform: scale(1.1); }
+  0%,
+  100% {
+    transform: scale(1.05);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 /* Decoratie elementen */
@@ -259,10 +416,11 @@
 }
 
 @keyframes snow-sparkle {
-  0%, 100% { 
+  0%,
+  100% {
     box-shadow: 0 0 15px rgba(176, 196, 222, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.8);
   }
-  50% { 
+  50% {
     box-shadow: 0 0 20px rgba(176, 196, 222, 0.7), inset 0 0 15px rgba(255, 255, 255, 1);
   }
 }
@@ -276,11 +434,12 @@
 }
 
 @keyframes ice-crystal {
-  0%, 100% { 
+  0%,
+  100% {
     transform: rotate(0deg) scale(1);
     box-shadow: 0 0 15px rgba(70, 130, 180, 0.4), inset 0 0 10px rgba(175, 238, 238, 0.6);
   }
-  50% { 
+  50% {
     transform: rotate(5deg) scale(1.02);
     box-shadow: 0 0 20px rgba(70, 130, 180, 0.6), inset 0 0 15px rgba(175, 238, 238, 0.8);
   }
@@ -295,10 +454,19 @@
 }
 
 @keyframes tree-sway {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(2deg); }
-  50% { transform: rotate(0deg); }
-  75% { transform: rotate(-2deg); }
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(2deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-2deg);
+  }
 }
 
 .groenland-rock {
@@ -310,8 +478,13 @@
 }
 
 @keyframes rock-steady {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.01); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.01);
+  }
 }
 
 .groenland-ground {
@@ -321,10 +494,11 @@
 }
 
 @keyframes ground-peaceful {
-  0%, 100% { 
+  0%,
+  100% {
     background: linear-gradient(135deg, #f0f8ff 0%, #e6e6fa 50%, #b0c4de 100%);
   }
-  50% { 
+  50% {
     background: linear-gradient(135deg, #e6e6fa 0%, #f0f8ff 50%, #b0c4de 100%);
   }
 }
@@ -351,10 +525,11 @@
 }
 
 @keyframes title-frost {
-  0%, 100% { 
+  0%,
+  100% {
     box-shadow: 0 0 10px rgba(70, 130, 180, 0.5);
   }
-  50% { 
+  50% {
     box-shadow: 0 0 20px rgba(70, 130, 180, 0.8);
   }
 }
@@ -374,11 +549,12 @@
 }
 
 @keyframes arrow-bounce {
-  0%, 100% { 
+  0%,
+  100% {
     transform: translateY(0px) scale(1);
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
   }
-  50% { 
+  50% {
     transform: translateY(-5px) scale(1.1);
     box-shadow: 0 0 30px rgba(255, 215, 0, 1);
   }
@@ -389,8 +565,13 @@
 }
 
 @keyframes arrow-excited {
-  0%, 100% { transform: scale(1.2); }
-  50% { transform: scale(1.4); }
+  0%,
+  100% {
+    transform: scale(1.2);
+  }
+  50% {
+    transform: scale(1.4);
+  }
 }
 
 /* Groenland portal in regular map */
@@ -404,11 +585,12 @@
 }
 
 @keyframes portal-main-pulse {
-  0%, 100% { 
+  0%,
+  100% {
     transform: scale(1);
     box-shadow: 0 0 20px rgba(0, 0, 205, 0.6);
   }
-  50% { 
+  50% {
     transform: scale(1.05);
     box-shadow: 0 0 30px rgba(0, 0, 205, 0.9);
   }
@@ -421,6 +603,11 @@
 }
 
 @keyframes portal-main-excited {
-  0%, 100% { transform: scale(1.1) rotate(0deg); }
-  50% { transform: scale(1.15) rotate(10deg); }
+  0%,
+  100% {
+    transform: scale(1.1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.15) rotate(10deg);
+  }
 }

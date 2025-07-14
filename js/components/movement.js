@@ -400,22 +400,33 @@ function interactWithGroenlandPortal() {
 // Initialiseer monsters in de mijn
 function initializeGroenlandMonsters() {
   if (gameState.monstersInMijn.length === 0) {
+    console.log("🏭 Maak 5 nieuwe monsters aan...");
     // Maak 5 monsters in de mijn (posities binnen de mijn)
     for (let i = 0; i < 5; i++) {
-      gameState.monstersInMijn.push({
+      const monster = {
         id: i + 1,
         x: Math.floor(Math.random() * 3) + 2, // Posities 2-4 (mijn gebied)
         y: Math.floor(Math.random() * 2) + 2, // Posities 2-3 (mijn gebied)
         alive: true,
         lastMoveTime: Date.now(),
         moveSpeed: 2000 + Math.random() * 1000 // Willekeurige snelheid tussen 2-3 seconden
-      });
+      };
+      console.log(`👺 Monster ${monster.id} gemaakt op positie (${monster.x}, ${monster.y})`);
+      gameState.monstersInMijn.push(monster);
     }
   }
   
+  console.log(`🎯 Groenland status: inGroenland=${gameState.inGroenland}, monsterAIRunning=${gameState.monsterAIRunning}`);
+  console.log(`👺 Monsters in mijn: ${gameState.monstersInMijn.length} totaal, ${gameState.monstersInMijn.filter(m => m.alive).length} levend`);
+  
   // Start monster AI systeem
   if (gameState.inGroenland && !gameState.monsterAIRunning) {
+    console.log("🚀 Start monster AI...");
     startMonsterAI();
+  } else if (gameState.inGroenland && gameState.monsterAIRunning) {
+    console.log("⚠️ Monster AI al actief, forceer herstart...");
+    stopMonsterAI();
+    setTimeout(() => startMonsterAI(), 100);
   }
 }
 
@@ -540,19 +551,27 @@ function checkNextLevel() {
 
 // Monster AI systeem
 function startMonsterAI() {
-  if (gameState.monsterAIRunning) return;
+  if (gameState.monsterAIRunning) {
+    console.log("⚠️ Monster AI al actief - geen herstart");
+    return;
+  }
   
+  console.log("🎮 Monster AI gestart!");
   gameState.monsterAIRunning = true;
   
   const monsterAIInterval = setInterval(() => {
     // Stop AI als we niet meer in Groenland zijn
     if (!gameState.inGroenland) {
+      console.log("🚪 Verlaat Groenland - stop monster AI");
       clearInterval(monsterAIInterval);
       gameState.monsterAIRunning = false;
       return;
     }
     
     // Beweeg elk levend monster
+    const aliveMonsters = gameState.monstersInMijn.filter(m => m.alive);
+    console.log(`👺 ${aliveMonsters.length} levende monsters bewegen...`);
+    
     gameState.monstersInMijn.forEach(monster => {
       if (!monster.alive) return;
       
@@ -572,6 +591,8 @@ function startMonsterAI() {
       
       if (now - monster.lastMoveTime < currentMoveSpeed) return;
       
+      console.log(`👺 Monster ${monster.id} beweegt van (${monster.x}, ${monster.y}) naar speler (${gameState.playerPosition.x}, ${gameState.playerPosition.y})`);
+      
       // Beweeg monster naar speler toe
       moveMonsterTowardsPlayer(monster);
       monster.lastMoveTime = now;
@@ -585,6 +606,7 @@ function startMonsterAI() {
 }
 
 function stopMonsterAI() {
+  console.log("🛑 Monster AI gestopt!");
   gameState.monsterAIRunning = false;
 }
 
@@ -597,7 +619,10 @@ function moveMonsterTowardsPlayer(monster) {
   const distanceToPlayer = Math.abs(monster.x - playerX) + Math.abs(monster.y - playerY);
   
   // Alleen bewegen als speler niet te ver weg is (binnen 5 velden)
-  if (distanceToPlayer > 5) return;
+  if (distanceToPlayer > 5) {
+    console.log(`👺 Monster ${monster.id} te ver weg (${distanceToPlayer} velden) - geen beweging`);
+    return;
+  }
   
   // Bereken beste richting naar speler
   let bestX = monster.x;
@@ -635,10 +660,18 @@ function moveMonsterTowardsPlayer(monster) {
       bestY = newY;
       bestDistance = newDistance;
     }
+    
+    // Als monster naast speler kan komen, doe dat altijd (voor aanval)
+    if (newDistance === 1) {
+      bestX = newX;
+      bestY = newY;
+      bestDistance = newDistance;
+    }
   });
   
   // Beweeg monster naar beste positie
   if (bestX !== monster.x || bestY !== monster.y) {
+    console.log(`👺 Monster ${monster.id} beweegt van (${monster.x}, ${monster.y}) naar (${bestX}, ${bestY}) - afstand ${bestDistance}`);
     monster.x = bestX;
     monster.y = bestY;
     
@@ -652,7 +685,18 @@ function moveMonsterTowardsPlayer(monster) {
       if (bestDistance <= 1 && !gameState.heeftZwaard) {
         showMessage("👺 MONSTER KOMT DICHTBIJ! Ga naar de schatkist voor een zwaard!", "error");
       }
+      
+      // Automatische aanval als monster naast speler staat
+      if (bestDistance <= 1) {
+        console.log(`🥊 Monster ${monster.id} valt aan vanaf positie (${bestX}, ${bestY})`);
+        // Trigger de aanval logica
+        setTimeout(() => {
+          checkMonsterAttack();
+        }, 100);
+      }
     }
+  } else {
+    console.log(`👺 Monster ${monster.id} kan niet dichter bij - blijft op (${monster.x}, ${monster.y})`);
   }
 }
 
@@ -668,3 +712,15 @@ function exitGroenland() {
 
 // Maak handleStatTap globaal beschikbaar
 window.handleStatTap = handleStatTap;
+
+// Noodreset functie voor monster AI (gebruik in console)
+window.resetMonsterAI = function() {
+  console.log("🔄 NOODRESET Monster AI...");
+  stopMonsterAI();
+  setTimeout(() => {
+    if (gameState.inGroenland) {
+      console.log("🚀 Herstart Monster AI...");
+      startMonsterAI();
+    }
+  }, 500);
+};
