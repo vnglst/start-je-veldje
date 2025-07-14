@@ -1,8 +1,8 @@
 // Shop interaction functions
 
-// Check of de winkel open is (9:00-18:00)
+// Check of de winkel open is (8:00-18:00)
 function isShopOpen() {
-  return gameState.hour >= 9 && gameState.hour < 18;
+  return gameState.hour >= 8 && gameState.hour < 18;
 }
 
 // Interact with shop (open shop modal)
@@ -19,7 +19,7 @@ function interactWithShop() {
   // Check of de winkel open is
   if (!isShopOpen()) {
     const currentTime = `${gameState.hour.toString().padStart(2, "0")}:${gameState.minute.toString().padStart(2, "0")}`;
-    showMessage(`De winkel is nog gesloten! 🏪 Openingstijden: 9:00-18:00 (Nu: ${currentTime})`, "error");
+    showMessage(`De winkel is nog gesloten! 🏪 Openingstijden: 8:00-18:00 (Nu: ${currentTime})`, "error");
     return;
   }
 

@@ -1,8 +1,8 @@
 // Ice cream shop interaction functions
 
-// Check of de ijssalon open is (10:00-18:00)
+// Check of de ijssalon open is (8:00-18:00)
 function isIceCreamShopOpen() {
-  return gameState.hour >= 10 && gameState.hour < 18;
+  return gameState.hour >= 8 && gameState.hour < 18;
 }
 
 // Interact with ice cream shop (enter/exit or open shop modal)
@@ -38,7 +38,7 @@ function interactWithIceCreamShop() {
   // Check of de ijssalon open is
   if (!isIceCreamShopOpen()) {
     const currentTime = `${gameState.hour.toString().padStart(2, "0")}:${gameState.minute.toString().padStart(2, "0")}`;
-    showMessage(`De ijssalon is nog gesloten! ⏰ Openingstijden: 10:00-18:00 (Nu: ${currentTime})`, "error");
+    showMessage(`De ijssalon is nog gesloten! ⏰ Openingstijden: 8:00-18:00 (Nu: ${currentTime})`, "error");
     return;
   }
 
